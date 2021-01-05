@@ -1,0 +1,560 @@
+[meta title:"Теория множеств" /]
+
+[Header
+  fullWidth:true
+  title:"Теория множеств"
+/]
+
+Множество (неформально) — неупорядоченный набор различных элементов. Например:
+
+[Equation display: true]Suit = \{♡, ♢, ♣, ♠\}[/Equation]
+
+[Equation display: true]ℕ = \{0, 1, 2, 3, …\}[/Equation]
+
+Множество (менее неформально) — сущность, определяемая бинарным отношением [Equation]elem ∈ Set[/Equation].
+
+Например, множеству [Equation]Qhb = \{\mathtt{"Q"}, \mathtt{"H"}, \mathtt{"B"}\}[/Equation] соответствует следующее отношение:
+
+```
+"Q" ∈ Qhb истино
+"H" ∈ Qhb истино
+"B" ∈ Qhb истино
+_   ∈ Qhb ложно
+```
+
+Множества равны, когда они содержат одни и те же элементы. Например, [Equation]\{1, 1, 1\}[/Equation] это то же самое, что и просто [Equation]\{1\}[/Equation]. Однако, [Equation]\{♡, ♠\} \neq \{♡\}[/Equation], так как второе множество не содержит [Equation]♠[/Equation].
+
+Пустое множество не содержит элементов. Оно обозначается как [Equation]\varnothing[/Equation].
+
+Множество элементов одного и того же типа как трейт:
+
+```rust
+// Реализация Eq для T должна соответствовать равенству множеств
+trait Set<T> {
+    fn contains(&self, elem: &T) -> bool;
+}
+```
+
+Пусть даны два множества, [Equation]A[/Equation] и [Equation]B[/Equation]. Мы говорим, что [Equation]A[/Equation] является подмножеством [Equation]B[/Equation] (пишем [Equation]A ⊆ B[/Equation]), если [Equation]B[/Equation] содержит все элементы множества [Equation]A[/Equation]. Например, [Equation]\{2, 3, 5\} ⊆ \Bbb N[/Equation].
+
+Отметим, что
+
+[Equation display:true]A \subseteq B \mathrel\mathrm{and} B \subseteq A \iff A = B[/Equation]
+
+## Базовые операции над множествами
+
+### Схема построения
+
+Мы можем построить подмножество всех тех элементов из [Equation]Set[/Equation], что удволетворяют
+предикату [Equation]Pred[/Equation]:
+
+[Equation display:true]\{var \in Set \mid Pred(var)\}[/Equation]
+
+Например, натуральные числа до трёх включительно: [Equation]\{n \in \Bbb N \mid n \leqslant 3 \}[/Equation].
+
+Более того, мы можем записать множество всех выражений, переменные [Equation]v_1, \dots, v_n[/Equation] в котором удволетворяют предикату:
+
+[Equation display:true]\{expr \mid Pred(v_1, \dots, v_n)\}[/Equation]
+
+Например: [Equation]\{x^2 \mid x \in \Bbb N \}[/Equation] — множество всех квадратов натуральных чисел.
+
+Логические операции в математике те же, что и в программировании (modulo нотация):
+
+[Equation display:true]
+\begin{aligned}
+False &\mathbin\mathrm{or} False = False \\
+\_ &\mathbin\mathrm{or} \_ = True
+\end{aligned}
+\qquad
+\begin{aligned}
+True &\mathbin\mathrm{and} True = True \\
+\_ &\mathbin\mathrm{and} \_ = False
+\end{aligned}
+[/Equation]
+
+[Aside]
+А именнно:
+
+[ol]
+[li]Нейтральный элемент[/li]
+[li]Нулевой элемент[/li]
+[li]Идемпотентность[/li]
+[li]Коммутативность[/li]
+[li]Aссоциативность[/li]
+[/ol]
+[/Aside]
+Они обладают множеством полезных свойств:
+
+[Equation display:true]
+\begin{aligned}
+P \mathbin\mathrm{or} False &= P\\
+P \mathbin\mathrm{or} True &= True\\
+P \mathbin\mathrm{or} P &= P \\
+P \mathbin\mathrm{or} Q &= Q \mathbin\mathrm{or} P \\
+(P \mathbin\mathrm{or} Q) \mathbin\mathrm{or} R &= P \mathbin\mathrm{or} (Q \mathbin\mathrm{or} R)
+\end{aligned}
+\qquad
+\begin{aligned}
+P \mathbin\mathrm{and} True &= P \\
+P \mathbin\mathrm{and} False &= False\\
+P \mathbin\mathrm{and} P &= P \\
+P \mathbin\mathrm{and} Q &= Q \mathbin\mathrm{and} P \\
+(P \mathbin\mathrm{and} Q) \mathbin\mathrm{and} R &= P \mathbin\mathrm{and} (Q \mathbin\mathrm{and} R)
+\end{aligned}
+[/Equation]
+
+Кроме того:
+
+[Aside]А это — дистрибутивность.[/Aside]
+[Equation display:true]
+P \mathbin\mathrm{and} (Q \mathbin\mathrm{or} R) = (P \mathbin\mathrm{and} Q) \mathbin\mathrm{or} (P \mathbin\mathrm{and} R)
+[/Equation]
+
+Отрицание превращает [Equation]\mathrm{or}[/Equation] в [Equation]\mathrm{and}[/Equation] и наоборот:
+
+[Equation display:true]
+\begin{aligned}
+\operatorname{not}(P \mathbin\mathrm{or} Q) = (\operatorname{not} P) \mathbin\mathrm{and} (\operatorname{not} Q)\\
+\operatorname{not}(P \mathbin\mathrm{and} Q) = (\operatorname{not} P) \mathbin\mathrm{or} (\operatorname{not} Q)
+\end{aligned}
+[/Equation]
+
+### Объединение
+
+Объединение множеств [Equation]A[/Equation] и [Equation]B[/Equation] (пишем [Equation]A \cup B[/Equation])
+это множество, которое содержит те и только те элементы, что принадлежат множеству
+[Equation]A[/Equation] или пренадлежат множеству [Equation]B[/Equation].
+
+Символьно, это можно записать так:
+
+[Equation display:true](\forall e) \enspace e \in A \cup B \iff e \in A \mathbin\mathrm{or} e \in B[/Equation]
+
+Графически, это изображают вот так:
+
+[img src:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Venn0111.svg/1280px-Venn0111.svg.png" height:300 /][br /]
+
+Пример объединения:
+
+[Equation display:true]\{2, 3, 5\} \cup \{2, 4, 8\} = \{2, 3, 4, 5, 8\}[/Equation]
+
+Если [Equation]A \subseteq B[/Equation], то [Equation]A \cup B = B[/Equation].
+В частности, [Equation]\varnothing \cup B = B[/Equation].
+
+Кроме того,
+
+[Equation display: true]
+\begin{aligned}
+(A \cup B) \cup C &= A \cup (B \cup C) \\
+A \cup B &= B \cup A
+\end{aligned}
+[/Equation]
+
+### Пересечение
+
+Пересечение множеств [Equation]A[/Equation] и [Equation]B[/Equation] (пишем [Equation]A \cap B[/Equation]) это множество, которое содержит те и только те элементы, что принадлежат одновременно и множеству [Equation]A[/Equation], и множеству [Equation]B[/Equation].
+
+Символьно:
+
+[Equation display:true](\forall e)\enspace e \in A \cup B \iff e \in A \mathbin\mathrm{and} e \in B[/Equation]
+
+Графически:
+
+[img src:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Venn0001.svg/1280px-Venn0001.svg.png" height:300 /][br /]
+
+Пример пересечения:
+
+[Equation display:true]\{2, 3, 5\} \cap \{2, 4, 8\} = \{2\}[/Equation]
+
+Если [Equation]A \subseteq B[/Equation], то [Equation]A \cap B = A[/Equation]. В частности, [Equation]\varnothing \cap B = \varnothing[/Equation].
+
+Так же, как и в случае с объединением множеств:
+[Equation display: true]
+\begin{aligned}
+(A \cap B) \cap C &= A \cap (B \cap C)\\
+A \cap B &= B \cap A
+\end{aligned}
+[/Equation]
+
+Но кроме того:
+
+[Equation display:true]
+A \cap (B \cup C) = (A \cap B) \cup (A \cap C)
+[/Equation]
+
+### Разность
+
+Разность множеств [Equation]A[/Equation] и [Equation]B[/Equation] (пишем [Equation]A \setminus B[/Equation])
+это множество всех элементов множества [Equation]A[/Equation], что не входят в множество [Equation]B[/Equation].
+
+Символьно:
+
+[Equation display:true](\forall e)\enspace e \in A \setminus B \iff e \in A \mathbin\mathrm{and} e \notin B[/Equation]
+
+Графически: 
+
+[img src:"https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Venn0100.svg/1280px-Venn0100.svg.png" height:300 /][br /]
+
+Пример:
+
+[Equation display:true]\{2, 3, 5\} \setminus \{2, 4, 8\} = \{3, 5\}[/Equation]
+
+Пусть мы зафиксировали некое множество [Equation]U[/Equation]. Определим операцию *дополнения* множества [Equation]A \subseteq U[/Equation]:
+
+[Equation display:true]A^\mathrm{c} = U \setminus A[/Equation]
+
+Для любых [Equation]A, B \subseteq U[/Equation] верно:
+
+[Equation display:true]
+\begin{aligned}
+A \setminus B &= A \cap B^\mathrm{c} \\
+(A \cup B)^\mathrm{c} &= A^\mathrm{c} \cap B^\mathrm{c} \\
+(A \cap B)^\mathrm{c} &= A^\mathrm{c} \cup B^\mathrm{c}
+\end{aligned}
+[/Equation]
+
+### Булева алгебра как операции над множествами
+
+Определим множества:
+
+[Equation display: true]
+False = \varnothing \qquad True = \{\varnothing\}
+[/Equation]
+
+С их помощью, мы можем записать логические операции как операции над множествами:
+
+[Equation display: true]
+\begin{aligned}
+P \mathbin\mathrm{or} Q &\longleftrightarrow P \cup Q \\
+P \mathbin\mathrm{and} Q &\longleftrightarrow P \cap Q \\
+\operatorname{not} P &\longleftrightarrow True \setminus P
+\end{aligned}
+[/Equation]
+
+В математике, логические выражения [Equation]P \mathbin\mathrm{or} Q[/Equation]
+и [Equation]P \mathbin\mathrm{and} Q[/Equation] записывают как [Equation]P \lor Q[/Equation]
+и [Equation]P \land Q[/Equation].
+
+## Множество в `std`: `HashSet`
+
+Тип `HashMap<T, ()>` можно рассматривать как множество элементов типа `T`. Действительно:
+
+```rust
+/// Хешмапы равны, когда они содержат одни и те же ключи.
+/// Поэтому, равенство определено корректно.
+impl<T: Hash + Eq> Set<T> for HashMap<T, ()> {
+    fn contains(&self, elem: &T) -> bool {
+        self.contains_key(elem)
+    }
+}
+```
+
+В `std::collections` есть специализированная версия этого типа: `HashSet<T>`. Этот тип поддерживает
+все базовые операции с множествами:
+
+- `contains`
+- `is_subset`
+- `is_superset`
+- `union`
+- `intersection`
+- `difference`
+
+Кроме того, он поддерживает операцию симметрической разницы (`symmetric_difference`), которую можно
+определить следующим образом:
+
+[Equation display:true]A \mathbin\triangle B = (A \cup B) \setminus (A \cap B)[/Equation]
+
+Она соответствует логической операции [Equation]\mathrm{xor}[/Equation].
+
+## Характеристическая функция
+
+Скобка Айверсона определяется следующим образом
+
+[Equation display: true]
+[P] = \begin{cases}
+1,\ P\ \text{истино}\\
+0,\ P\ \text{ложно}
+\end{cases}
+[/Equation]
+
+С её помощью можно выразить логические операции как операции над числами:
+
+[Equation display: true]
+\begin{aligned}
+[P \mathbin\mathrm{or} Q] &= \max([P], [Q]) \\
+[P \mathbin\mathrm{and} Q] &= \min([P], [Q]) \\
+[\operatorname{not} P] &= 1 - [P]
+\end{aligned}
+[/Equation]
+
+Так как множество определяется лишь отношением [Equation]\in[/Equation],
+функция [Equation]e \mapsto [e \in S][/Equation] является представленим множества [Equation]S[/Equation].
+Эта функция называется характеристической функцией множества [Equation]S[/Equation].
+
+Характеристическая функции для основных операций над множествами:
+
+[Equation display: true]
+\begin{aligned}
+[e \in A \cup B] &= \max([e \in A], [e \in B]) \\
+[e \in A \cap B] &= \min([e \in A], [e \in B]) \\
+[e \in A \setminus B] &= [e \in A \cup B] - [e \in B]
+\end{aligned}
+[/Equation]
+
+В случае конечного набора фиксированных элементов, в качестве характеристической функции можно использовать
+последовательнось битов. Поэтому, битовая карта является представлением некоторого множества:
+
+```rust
+#[derive(Clone, Copy, PartialEq)]
+enum Element {
+    First = 1 << 0,
+    Second = 1 << 1,
+    Third = 1 << 2,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+struct Bitmap(u8);
+
+impl Set<Element> for Bitmap {
+    fn containts(&self, elem: &Element) -> bool {
+        self.0 & *elem as u8 != 0
+    }
+}
+
+impl Bitmap {
+    fn empty() -> Self {
+        Bitmap(0)
+    }
+
+    fn new(elem: Element) -> Self {
+        Bitmap(elem as u8)
+    }
+
+    fn union(self, other: Bitmap) -> Bitmap {
+        Bitmap(self.0 | other.0)
+    }
+
+    fn intersection(self, other: Bitmap) -> Bitmap {
+        Bitmap(self.0 & other.0)
+    }
+
+    fn difference(self, other: Bitmap) -> Bitmap {
+        Bitmap(self.union(other).0 - other.0)
+    }
+}
+```
+
+## Функкции между множествами
+
+Функция из множества [Equation]A[/Equation] в множество [Equation]A[/Equation]
+([Equation]f : A \to B[/Equation]) это некоторая сущность,
+которая соотносит каждому элементу множества [Equation]A[/Equation] единственный элемент
+множества [Equation]B[/Equation].
+
+Символьно:
+
+[Equation display:true](\forall x \in A)\ (\exists! y \in B)\enspace f(x) = y[/Equation]
+
+Множество [Equation]A[/Equation] называется областью (доменом) функции [Equation]f[/Equation]
+(пишем [Equation]\operatorname{dom} f[/Equation]), когда же множество [Equation]B[/Equation] называется
+кообластью (кодоменом) функции [Equation]f[/Equation] (пишем [Equation]\operatorname{cod} f[/Equation]).
+
+Функции [Equation]f : A \to B[/Equation] и [Equation]g : A \to B[/Equation] равны,
+если
+
+[Equation display:true](\forall x \in A)\enspace f(x) = g(x)[/Equation]
+
+Множество всех функций из [Equation]A[/Equation] в [Equation]B[/Equation] обозначается как [Equation]B^A[/Equation]
+
+Образ множества [Equation]A[/Equation] при функции [Equation]f[/Equation] это следующее подмножество
+её кообласти:
+
+[Equation display:true]f(A) = \{f(x) \mid x \in A\}[/Equation]
+
+Образ *функции* [Equation]f[/Equation] это образ области [Equation]f[/Equation]:
+
+[Equation display:true]\operatorname{im} f = f(\operatorname{dom} f)[/Equation]
+
+Функция называется *инъективной*, если если из равенства значений следует равенство аргументов:
+
+[Equation display:true]
+(\forall x_1, x_2 \in \operatorname{dom} f)\enspace f(x_1) = f(x_2) \implies x_1 = x_2
+[/Equation]
+
+Иначе говоря, каждому значению функции соответствует единственный аргумент функции:
+
+[img src:"https://mathworld.wolfram.com/images/eps-gif/Injection_1000.gif" /][br /]
+
+Функция называется *сюръективной*, если её образ совпадает с её областью:
+
+[Equation display:true]\operatorname{im} f = \operatorname{cod} f[/Equation]
+
+Графически, это может выглядеть так:
+
+[img src:"https://mathworld.wolfram.com/images/eps-gif/Surjection_1000.gif" /][br /]
+
+Функция называется *биективной*, если она инъекьтивна и сюръективна. Иначе говоря, она задаёт взаимно
+однозначное соответствие между множествами:
+
+[img src:"https://mathworld.wolfram.com/images/eps-gif/Bijection_1000.gif" /][br /]
+
+Для биективной функции можно определить обратную функцию:
+
+[Equation display:true]
+(\forall x\in A)\ (\forall y \in B)\enspace f^{-1}(y) = x \iff f(x) = y
+[/Equation]
+
+Очевидно, что каждой инъективной функции [Equation]f[/Equation] соответствует некоторая биективная
+функция [Equation]\bar f[/Equation] из [Equation]\operatorname{dom} f[/Equation] в [Equation]\operatorname{im} f[/Equation]:
+
+[Equation display:true]
+(\forall x \in \operatorname{dom} f)\enspace\bar f(x) = f(x)
+[/Equation]
+
+Чуть менее очевидно, что каждой сюръективной функции также соответствует некоторая биективная функция.
+А именно, определим *кообраз* функции [Equation]\operatorname{coim} f[/Equation], как некоторое
+подмножество её области, такое, что
+
+[Equation display:true]
+\begin{aligned}
+(\forall x_1, x_2 \in \operatorname{coim} f)\enspace &f(x_1) \neq f(x_2) \\
+(\forall y \in \operatorname{cod} f)\ (\exists x \in \operatorname{coim} f)\enspace &y = f(x)
+\end{aligned}
+[/Equation]
+
+Тогда существует биекция
+
+[Equation display:true]
+(\forall x \in \operatorname{coim} f)\enspace\bar f(x) = f(x)
+[/Equation]
+
+## Ещё операции над множествами
+
+Упорядоченная пара аналогична кортежу в программировании. Мы можем определить её используя множества:
+
+[Equation display:true]
+(a, b) = \{\{a\}, \{a, b\}\}
+[/Equation]
+
+Декартово произведение множеств [Equation]A[/Equation] и [Equation]B[/Equation]
+(пишем [Equation]A \times B[/Equation]) это следующее множество:
+
+[Equation display:true]
+A \times B = \{(a, b) \mid a \in A \mathbin\mathrm{and} b \in B\}
+[/Equation]
+
+Например, [Equation]\{2, \dots, 10, J, Q, K, A\} \times \{♠, ♡, ♣, ♢\}[/Equation] это множество
+
+[FullWidth]
+[img src:"https://upload.wikimedia.org/wikipedia/commons/0/02/Piatnikcards.jpg" height:600 /][br /]
+[/FullWidth]
+
+Или, чуть более формально: [Equation]\{(2, ♠), (2, ♡), \dots\}[/Equation].
+
+Мы можем сопоставить функции [Equation]f : A \to B[/Equation] некоторе подмножество [Equation]A \times B[/Equation]
+(её *график*):
+
+[Equation display:true]\Gamma_f = \{(x, y) \in A \times B \mid f(x) = y\}[/Equation]
+
+Вообще, функцию на множествах можно рассматривать как тройку
+
+[Equation display:true]f = (\operatorname{dom} f, \operatorname{cod} f, \Gamma_f)[/Equation]
+
+Показательное множество множества [Equation]A[/Equation] (пишем [Equation]2^A[/Equation]) это
+множество всех подмножеств множества [Equation]A[/Equation].
+
+Символьно:
+
+[Equation display:true]
+(\forall s)\enspace e \in 2^A \iff e \subseteq A
+[/Equation]
+
+Например
+
+[Equation display:true]
+\begin{aligned}
+2^{\{1, 2, 3\}} = \{&\{\}, \\
+&\{1\}, \{2\}, \{3\}, \\
+&\{1, 2\},\{1, 3\}, \{2, 3\}, \\
+&\{1, 2, 3\}\}
+\end{aligned}
+[/Equation]
+
+**Предложение:** существует биекция между [Equation]2^A[/Equation] и множеством всех
+функций из [Equation]A[/Equation] в [Equation]\{0, 1\}[/Equation].
+
+Определим функцию [Equation]X : 2^A \to \{0, 1\}^A[/Equation]:
+
+[Equation display:true]
+X(S) = e \mapsto [e \in S]
+[/Equation]
+
+Она сюръективна: каждой функции [Equation]\chi \in \operatorname{cod} X[/Equation] соответствует
+подмножество [Equation]\{e \in A \mid \chi(e) = 1\}[/Equation]. Она инъективна — это подмножество
+единственно. Следовательно, она является биекцией.
+
+## Отношение эквивалентности
+
+Одно из ключевых понятий в математике — отношение эквивалентности.
+
+Отношение [Equation]\sim[/Equation] на множестве [Equation]S[/Equation] называется отношением эквивалентности, если для
+любых [Equation]a, b, c \in S[/Equation] верно:
+
+- [Equation]a \sim a[/Equation] (рефлексивность)
+- [Equation]a \sim b \implies b \sim a[/Equation] (симметричность)
+- [Equation]a \sim b \mathbin\mathrm{and} b \sim c \implies a \sim c[/Equation] (транзитивность)
+
+[Aside][img src:"https://images3.sw-cdn.net/product/picture/710x528_9200864_6240480_1512231364.jpg"/][/Aside]
+Примеров эквивалентности можно привести много:
+
+- Равенство, очевидно, является отношением эквивалентности
+- Равенство геометрических фигур, как и их подобие
+- Гомеоморфность
+- Равенство ASCII строк без учёта регистра
+- Равенство двух значений типа `Box<T>`
+- AST, семантика кода
+
+На самом деле, нас практически никогда не интересует истинное равенство вещей, только их эквивалентность.
+
+Существование биекции между множествами это также отношение эквивалентности:
+
+1. [Equation](\forall e \in A)\enspace id_A(e) = e[/Equation] это биекция
+2. Обратная функция биекции это биекция
+3. Композиция биекций [Equation]g \circ f = x \mapsto g(f(x))[/Equation] это биекция
+
+Мы можем превратить эквивалентность в равенство с помощью классов эквивалентности.
+
+Класс эквивалентности элемента [Equation]a \in S[/Equation] по отношению
+эквивалентности [Equation]\sim[/Equation] это следующее подмножество множества [Equation]S[/Equation]:
+
+[Equation display:true]
+[a]_\sim = \{e \in S \mid e \sim a\}
+[/Equation]
+
+Фактор-множество [Equation]S/{\sim}[/Equation] это множество классов эквивалентности всех
+элементов множества [Equation]S[/Equation].
+
+**Предложение:** пусть [Equation][a]_\sim \neq [b]_\sim[/Equation].
+Тогда [Equation][a]_\sim \cap [b]_\sim = \varnothing[/Equation].
+
+Действительно, пусть [Equation]e \in [a]_\sim \cap [b]_\sim[/Equation]. Тогда для
+любых [Equation]x \in[a]_\sim[/Equation] и [Equation]y \in [b]_\sim[/Equation]
+верно [Equation]x \sim e \sim y[/Equation]
+и классы содержат одни и те же элементы.
+
+Так как классы эквивалентности не пересекаются, единственный элемент класса однозначно определяет
+класс целиком. Мы можем рассмотреть некую функцию [Equation]\varphi : S \to S[/Equation], которая
+отображает каждый элемент множества [Equation]S[/Equation] в некий единственный элемент
+соответствующего класса эквивалентности:
+
+[Equation display:true]
+(\forall C \in S/{\sim})\ (\exists! c \in C)\ (\forall x \in C)\enspace \varphi(x) = c
+[/Equation]
+
+[Aside]Правда, не в математике. Математики просто используют функцию [Equation]\varphi : S \to S/{\sim}[/Equation][/Aside]
+Применение подобной функции называется *нормализацией*.
+
+Примеры нормализации:
+
+- `to_lower`
+
+## Аксиоматика (NBG)
