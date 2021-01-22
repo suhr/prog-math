@@ -622,7 +622,7 @@ c &\longleftrightarrow 2
 подмножеству множества [Equation]S[/Equation] единственный элемент этого подмножества:
 
 [Equation display:true]
-(\forall P \in 2^{S} \setminus \{\varnothing\})\ (\exists! p \in P)\enspace \varepsilon(P) = p
+(\forall P \in \mathcal{P}(S) \setminus \{\varnothing\})\ (\exists! p \in P)\enspace \varepsilon(P) = p
 [/Equation]
 
 Пусть [Equation]f[/Equation] это отображение множества [Equation]S[/Equation] в его собственное
@@ -672,10 +672,10 @@ S \setminus S_1 \xrightarrow{f} S_1 \setminus S_2 \xrightarrow{f} S_2 \setminus 
 Таким образом, [Equation]\Bbb N[/Equation] это наименьшее из бесконечных множеств. А бывают ли *более*
 мощные множества? Да — бывают.
 
-**Предложение:** Для любого непустого множества [Equation]S[/Equation], [Equation]|2^S| > |S|[/Equation]
+**Предложение:** Для любого непустого множества [Equation]S[/Equation], [Equation]|\mathcal{P}(S)| > |S|[/Equation]
 (строго мощнее).
 
-Нам надо доказать, что не существует биекция из [Equation]S[/Equation] в [Equation]2^S[/Equation].
+Нам надо доказать, что не существует биекция из [Equation]S[/Equation] в [Equation]\mathcal{P}(S)[/Equation].
 Предположим, что [Equation]f[/Equation] является такой биекцией. Определим множество
 
 [Equation display:true]
@@ -705,11 +705,10 @@ D = \{s \in S \mid s \notin f(s)\}
 
 **Предложение:** Не существует множества всех множеств.
 
-[Aside]Если просто применить диагональный аргумент, то получим знаменитое
-выражение [Equation]\{s \mid s \notin s\}[/Equation].[/Aside]
+[Aside]А можно было просто написать [Equation]\{s \mid s \notin s\}[/Equation].[/Aside]
 Действительно, пусть [Equation]\mathcal V[/Equation] является таким множеством. Из теоремы о мощности
-показательного множества, [Equation]|2^{\mathcal V}| > |\mathcal V|[/Equation]. Но в то же
-время, [Equation]|2^{\mathcal V}| \leqslant |\mathcal V|[/Equation], так
+показательного множества, [Equation]|\mathcal{P}(\mathcal V)| > |\mathcal V|[/Equation]. Но в то же
+время, [Equation]|\mathcal{P}(\mathcal V)| \leqslant |\mathcal V|[/Equation], так
 как [Equation]\mathcal V[/Equation] это множество *всех* множеств. Противоречие.
 
 Из этого результата есть два важных следствия:
@@ -772,7 +771,7 @@ D = \{s \in S \mid s \notin f(s)\}
 **Аксиома объединения:** для любого множества [Equation]s[/Equation], класс [Equation]\bigcup_{e \in S} e[/Equation]
 является множеством.
 
-**Аксиома множества подмножеств:** для любого множества [Equation]s[/Equation], класс [Equation]2^s[/Equation]
+**Аксиома множества подмножеств:** для любого множества [Equation]s[/Equation], класс [Equation]\mathcal{P}(S)[/Equation]
 является множеством.
 
 С помощью этих аксиом, мы можем определять сколь угодно большие конечные множества. Но чтобы вырваться
@@ -812,7 +811,7 @@ S(n) &= n \cup \{n\}
 существует функция из [Equation]\operatorname{\pi}_A[R][/Equation] в [Equation]B[/Equation],
 график которой является подклассом [Equation]R[/Equation].
 
-Здесь [Equation]\operatorname{\pi}_A[R] = \{a \mid (a, _) \in R\}[/Equation].
+Здесь [Equation]\operatorname{\pi}_A[R] = \{a \mid (a, \_) \in R\}[/Equation].
 
 Эта аксиома позволяет получить глобальную функцию выбора из класса [Equation]\{(a, b) \mid b \in a\}[/Equation].
 
