@@ -441,7 +441,8 @@ impl Bitmap {
 
 [Equation display:true]f[A] = \{f(x) \mid x \in A\}[/Equation]
 
-Образ *функции* [Equation]f[/Equation] это образ области [Equation]f[/Equation].
+Образ *функции* [Equation]f[/Equation] (пишется [Equation]\operatorname{im} f[/Equation]) это образ
+области [Equation]f[/Equation].
 
 Функция называется *инъективной*, если если из равенства значений следует равенство аргументов.
 
@@ -810,11 +811,11 @@ D = \{s \in S \mid s \notin f(s)\}
 является множеством.
 
 [Aside][Equation]\bigcup_{e \in s} e = \{x \mid (\exists e \in s)\enspace x \in e\}[/Equation][/Aside]
-**Аксиома объединения:** для любого множества [Equation]s[/Equation], класс [Equation]\bigcup_{e \in S} e[/Equation]
+**Аксиома объединения:** для любого множества [Equation]s[/Equation], класс [Equation]\bigcup_{e \in s} e[/Equation]
 является множеством.
 
 [Aside][Equation]\mathcal{P}(s) = \{x \mid x \subseteq s\}[/Equation][/Aside]
-**Аксиома множества подмножеств:** для любого множества [Equation]s[/Equation], класс [Equation]\mathcal{P}(S)[/Equation]
+**Аксиома множества подмножеств:** для любого множества [Equation]s[/Equation], класс [Equation]\mathcal{P}(s)[/Equation]
 является множеством.
 
 С помощью этих аксиом, мы можем определять сколь угодно большие конечные множества. Но чтобы вырваться
@@ -869,7 +870,7 @@ x \notin \bigcap p \mathbin\mathrm{or}
 В первую очередь, нам хотелось бы получить функцию выбора для множеств, так как без неё даже наличие
 счётного подмножества в бесконечном множестве доказать нельзя.
 
-**Глобальная аксиома выбора:** существует аксиома выбора, определённая на классе всех непустых множеств.
+**Глобальная аксиома выбора:** существует функция выбора, определённая на классе всех непустых множеств.
 
 [Aside]Например, [Equation]\bigcup_{n \in \Bbb N} \mathcal{P}^n(\Bbb N)[/Equation].[/Aside]
 Наконец, аксиома, позволяющее существование *по настоящему больших множеств.*
@@ -892,4 +893,6 @@ x \notin \bigcap p \mathbin\mathrm{or}
 
 ## Ссылки
 
+- Paolo Aluffi, “Algebra Chapter 0”
 - J. Donald Monk, “Introduction to Set Theory”
+- Зорич, «Математический анализ»
