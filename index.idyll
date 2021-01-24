@@ -35,7 +35,17 @@ trait Set<T> {
 }
 ```
 
-Пусть даны два множества, [Equation]A[/Equation] и [Equation]B[/Equation]. Мы говорим, что [Equation]A[/Equation] является подмножеством [Equation]B[/Equation] (пишем [Equation]A ⊆ B[/Equation]), если [Equation]B[/Equation] содержит все элементы множества [Equation]A[/Equation]. Например, [Equation]\{2, 3, 5\} ⊆ \Bbb N[/Equation].
+[Aside]
+[Equation]\in[/Equation] это не то же самое, что [Equation]\subseteq[/Equation].
+Так, [Equation]\{2\} \subseteq \Bbb N[/Equation], но [Equation]\{2\} \notin \Bbb N[/Equation].
+[/Aside]
+Пусть даны два множества, [Equation]A[/Equation] и [Equation]B[/Equation]. Мы говорим,
+что [Equation]A[/Equation] является подмножеством [Equation]B[/Equation] (пишем [Equation]A ⊆ B[/Equation]),
+если [Equation]B[/Equation] содержит все элементы множества [Equation]A[/Equation].
+Например, [Equation]\{2, 3, 5\} ⊆ \Bbb N[/Equation].
+
+Множество [Equation]A[/Equation] называется строгим подмножеством [Equation]B[/Equation] (пишем [Equation]A \subset B[/Equation]),
+если [Equation]A \subseteq B[/Equation] и [Equation]A ≠ B[/Equation].
 
 Отметим, что
 
@@ -155,7 +165,7 @@ A \cup B &= B \cup A
 
 Символьно:
 
-[Equation display:true](\forall e)\enspace e \in A \cup B \iff e \in A \mathbin\mathrm{and} e \in B[/Equation]
+[Equation display:true](\forall e)\enspace e \in A \cap B \iff e \in A \mathbin\mathrm{and} e \in B[/Equation]
 
 Графически:
 
@@ -181,6 +191,17 @@ A \cap B &= B \cap A
 A \cap (B \cup C) = (A \cap B) \cup (A \cap C)
 [/Equation]
 
+Доказывается просто:
+
+[Equation display:true]
+\begin{aligned}
+(\forall e)\enspace &e \in A \cap (B \cup C) \iff \\
+&e \in A \mathbin\mathrm{and} (e \in B \mathbin\mathrm{or} e \in C) \iff \\
+&(e \in A \mathbin\mathrm{and} e \in B)  \mathbin\mathrm{or} (e \in A \mathbin\mathrm{and} e \in B) \iff \\
+&e \in (A \cap B) \cup (A \cap C)
+\end{aligned}
+[/Equation]
+
 ### Разность
 
 Разность множеств [Equation]A[/Equation] и [Equation]B[/Equation] (пишем [Equation]A \setminus B[/Equation])
@@ -198,9 +219,14 @@ A \cap (B \cup C) = (A \cap B) \cup (A \cap C)
 
 [Equation display:true]\{2, 3, 5\} \setminus \{2, 4, 8\} = \{3, 5\}[/Equation]
 
-Пусть мы зафиксировали некое множество [Equation]U[/Equation]. Определим операцию *дополнения* множества [Equation]A \subseteq U[/Equation]:
+Пусть у нас есть некое множество [Equation]U[/Equation], которое содержит все интересущие нас объекты.
+Определим операцию *дополнения* множества [Equation]A \subseteq U[/Equation]:
 
 [Equation display:true]A^\mathrm{c} = U \setminus A[/Equation]
+
+Графически:
+
+[img src:"https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Venn10.svg/1024px-Venn10.svg.png" height:300 /][br /]
 
 Для любых [Equation]A, B \subseteq U[/Equation] верно:
 
@@ -214,11 +240,8 @@ A \setminus B &= A \cap B^\mathrm{c} \\
 
 ### Декартово произведение
 
-Упорядоченная пара аналогична кортежу в программировании. Мы можем определить её используя множества:
-
-[Equation display:true]
-(a, b) = \{\{a\}, \{a, b\}\}
-[/Equation]
+Упорядоченная пара из элементов [Equation]a[/Equation] и [Equation]b[/Equation] аналогична кортежу
+в программировании и обозначается [Equation](a, b)[/Equation].
 
 Декартово произведение множеств [Equation]A[/Equation] и [Equation]B[/Equation]
 (пишем [Equation]A \times B[/Equation]) это такое множество:
@@ -252,6 +275,10 @@ A \times (B \cap C) &= (A \times B) \cap (A \times C)
 False = \varnothing \qquad True = \{\varnothing\}
 [/Equation]
 
+[Aside]
+Если бы мы выбрали [Equation]False = \{\varnothing\},\ True = \varnothing[/Equation],
+то тогда «или» стало бы пересечением, а «и» — объединением.
+[/Aside]
 С их помощью, мы можем записать логические операции как операции над множествами:
 
 [Equation display: true]
@@ -283,19 +310,22 @@ impl<T: Hash + Eq> Set<T> for HashMap<T, ()> {
 В `std::collections` есть специализированная версия этого типа: `HashSet<T>`. Этот тип поддерживает
 все базовые операции с множествами:
 
-- `contains`
-- `is_subset`
-- `is_superset`
-- `union`
-- `intersection`
-- `difference`
+- `contains` (содержит, [Equation]e \in S[/Equation])
+- `is_subset` (подмножество, [Equation]A \subseteq B[/Equation])
+- `is_superset` (надмножество, [Equation]A \supseteq B[/Equation])
+- `union` (объединение, [Equation]A \cup B[/Equation])
+- `intersection` (пересечение, [Equation]A \cap B[/Equation])
+- `difference` (разность, [Equation]A \setminus B[/Equation])
 
 Кроме того, он поддерживает операцию симметрической разницы (`symmetric_difference`), которую можно
 определить следующим образом:
 
 [Equation display:true]A \mathbin\triangle B = (A \cup B) \setminus (A \cap B)[/Equation]
 
-Она соответствует логической операции [Equation]\mathrm{xor}[/Equation].
+Она соответствует логической операции [Equation]\mathrm{xor}[/Equation]. Графически, её можно
+описать так:
+
+[img src:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Venn0110.svg/1280px-Venn0110.svg.png" height:300 /][br /]
 
 ## Характеристическая функция
 
@@ -318,9 +348,19 @@ impl<T: Hash + Eq> Set<T> for HashMap<T, ()> {
 \end{aligned}
 [/Equation]
 
-Так как множество определяется лишь отношением [Equation]\in[/Equation],
-функция [Equation]e \mapsto [e \in S][/Equation] является представленим множества [Equation]S[/Equation].
-Эта функция называется характеристической функцией множества [Equation]S[/Equation].
+Пусть есть некое множество [Equation]U[/Equation]. Для любого [Equation]A \subseteq U[/Equation],
+можно определить функцию [Equation]\chi(e) = [e \in S][/Equation]. Эта функция называется характеристической
+функцией множества [Equation]A[/Equation].
+
+Любое подмножество [Equation]U[/Equation] определяет некую характеристическую функцию на [Equation]U[/Equation],
+а из характеристической функции подмножества мы легко можем восстановить само подмножество:
+
+[Equation display: true]
+A = \{x \in U \mid \chi(x) = 1\}
+[/Equation]
+
+Поэтому, характеристическая функция является представлением множества, аналогично тому, как столбец
+чисел является представлением вектора.
 
 Характеристическая функции для основных операций над множествами:
 
@@ -765,12 +805,15 @@ D = \{s \in S \mid s \notin f(s)\}
 
 **Аксиома пустого множества:** пустой класс это множество.
 
-**Аксиома пары:** для любых [Equation]x, y \in \mathcal V[/Equation] класс [Equation]\{e \mid e = x \mathbin\mathrm{or} e = y\}[/Equation]
+[Aside][Equation]\{x, y\} = \{e \mid e = x \mathbin\mathrm{or} e = y\}[/Equation][/Aside]
+**Аксиома пары:** для любых [Equation]x, y \in \mathcal V[/Equation] класс [Equation]\{x, y\}[/Equation]
 является множеством.
 
+[Aside][Equation]\bigcup_{e \in s} e = \{x \mid (\exists e \in s)\enspace x \in e\}[/Equation][/Aside]
 **Аксиома объединения:** для любого множества [Equation]s[/Equation], класс [Equation]\bigcup_{e \in S} e[/Equation]
 является множеством.
 
+[Aside][Equation]\mathcal{P}(s) = \{x \mid x \subseteq s\}[/Equation][/Aside]
 **Аксиома множества подмножеств:** для любого множества [Equation]s[/Equation], класс [Equation]\mathcal{P}(S)[/Equation]
 является множеством.
 
@@ -799,24 +842,37 @@ S(n) &= n \cup \{n\}
 Наша система аксиом уже весьма выразительна. Но добавив ещё пару аксиом, мы можем сделать её намного
 мощнее.
 
-Но сначала надо определить, что же такое функция:
+Но сначала надо определить упорядоченные пары и функции. Упорядоченная пара это множество:
+
+[Equation display:true]
+(a, b) = \{\{a\}, \{a, b\}\}
+[/Equation]
+
+Функции, достающие элемент из пары [Equation]p[/Equation], имеют вид:
+
+[Aside]Здесь [Equation]\bigcup s = \bigcup_{e \in s} e[/Equation].[/Aside]
+[Equation display:true]
+\begin{aligned}
+\pi_1(p) &= \bigcup\left(\bigcap u\right) \\
+\pi_2(p) &= \bigcup\left\{x \in \textstyle\bigcup p \mid
+x \notin \bigcap p \mathbin\mathrm{or}
+\bigcap p = \bigcup p
+\right\}
+\end{aligned}
+[/Equation]
+
+С определением понятия функции немного сложнее:
 
 - Функции между множествами определяем как тройку [Equation](\operatorname{dom} f, \operatorname{cod} f, \Gamma_f)[/Equation]
-- Функции между собственными классами мы вынуждены определять как их график. При этом мы теряем понятие кообласти
+- Функции между собственными классами мы будем определять как их график. При этом мы теряем понятие кообласти
 
 В первую очередь, нам хотелось бы получить функцию выбора для множеств, так как без неё даже наличие
 счётного подмножества в бесконечном множестве доказать нельзя.
 
-**Реляционная аксиома выбора:** для любого класса [Equation]R \subseteq A \times B[/Equation],
-существует функция из [Equation]\operatorname{\pi}_A[R][/Equation] в [Equation]B[/Equation],
-график которой является подклассом [Equation]R[/Equation].
-
-Здесь [Equation]\operatorname{\pi}_A[R] = \{a \mid (a, \_) \in R\}[/Equation].
-
-Эта аксиома позволяет получить глобальную функцию выбора из класса [Equation]\{(a, b) \mid b \in a\}[/Equation].
+**Глобальная аксиома выбора:** существует аксиома выбора, определённая на классе всех непустых множеств.
 
 [Aside]Например, [Equation]\bigcup_{n \in \Bbb N} \mathcal{P}^n(\Bbb N)[/Equation].[/Aside]
-Ну и, наконец, аксиома, позволяющее существование *по настоящему больших множеств.*
+Наконец, аксиома, позволяющее существование *по настоящему больших множеств.*
 
 **Аксиома подстановки:** Если область функции — множество, то и образ — множество.
 
