@@ -1,0 +1,594 @@
+[meta title:"Теория категорий" /]
+
+[Header
+  fullWidth:true
+  title:"Теория категорий"
+/]
+
+Теория категорий была создана как скромный инструмент для нужд алгебраической топологии. Теперь же
+она захватила всю математику, успешно завоёвывает информатику и совершает регулярные набеги на
+естественные науки.
+
+Причина столь впечатляющей мощи проста и описывается одним словом: *абстракция*. Так же, как в
+программировании мы описываем интерфейсы с помощью методов, в теории категорий мы описываем
+алгебраические структуры с помощью функций. При этом, внутренняя стуктура объектов, между которыми
+заданы функции, скрыта от нас.
+
+[Aside]Кроме, пожалуй, C, Go и PHP.[/Aside]
+Мы, программисты, находимся в довольно привелегированном положении. Категориальные понятия *уже*
+даны нам в языках, подходах и культуре, хотя и не осознаются. И несмотря на многочисленные шутки
+про непостижимость монад™, `flat_map` уже есть в каждом языке.
+
+## Диаграммы
+
+[Aside]
+В математике обычно пишут композицию справо налево, как [Equation]g \circ f[/Equation]. Но мы читаем,
+пишем и рисуем диаграммы слева направо, и потому так записывать композицию не будем.
+[/Aside]
+Но сначала посмотрим на функции между множествами ещё раз. Для начала, определим операцию компоцизии
+функций:
+
+[Equation display:true]
+(f \mathbin\bm; g)(x) = g(f(x))
+[/Equation]
+
+И тождественную функцию из множества [Equation]A[/Equation] в само себя:
+
+[Equation display:true]
+(\forall x \in A)\enspace \mathrm{id}_A(x) = x
+[/Equation]
+
+Любая функция [Equation]f: A \to B[/Equation] имеет единицу слева и справо относительно композиции:
+
+[Equation display:true]
+\begin{aligned}
+\mathrm{id}_{A} \mathbin\bm; f &= f \\
+f \mathbin\bm; \mathrm{id}_{B} &= f \\
+\end{aligned}
+[/Equation]
+
+И для любых трёх функций, их композиция ассоциативна (если определена):
+
+[Equation display:true]
+(f \mathbin\bm; g) \mathbin\bm; h = f \mathbin\bm; (g \mathbin\bm; h)
+[/Equation]
+
+Имея какие-то множества, мы можем рисовать функции как стрелочки между ними. Например:
+
+[img src:"static/rzn.png" height:100 /]
+
+Это называется диаграммой.
+
+Для равенств, касающихся тождественных функций, мы тоже можем нарисовать диаграму:
+
+[img src:"static/id_f.png" height:250 /]
+
+Но чтобы диаграмма определяла равенства, нужно дополнительное условие. А именно: все пути,
+соединяющие любые две вершины, равны. Диаграмма, обладающая подобным свойством,
+называется *коммутативной*.
+
+(правый и левый обратные)
+
+## Категории
+
+Неформально, категория это класс объектов с функциями между ними. Формально же,
+категория [Equation]\mathsf C[/Equation] это:
+
+1. Класс объектов [Equation]\operatorname{obj}(\mathsf C)[/Equation]
+2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\operatorname{hom}(A, B)[/Equation]
+3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \operatorname{hom}(A, A)[/Equation]
+4. Для любой пары стрелок [Equation]f \in \operatorname{hom}(A, B)[/Equation] и [Equation]g \in \operatorname{hom}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \operatorname{hom}(A, C)[/Equation]
+
+[Aside]Мы будем писать [Equation]f: A \to B[/Equation] имея в виду [Equation]f \in \operatorname{hom}(A, B).[/Equation][/Aside]
+Неравные классы стрелок не должны пересекаться. Кроме того, композиция стрелок должна вести себя
+как композиция функций:
+
+[Equation display:true]
+\begin{aligned}
+\mathrm{id}_{A} \mathbin\bm; f &= f \\
+f \mathbin\bm; \mathrm{id}_{B} &= f \\
+(f \mathbin\bm; g) \mathbin\bm; h &= f \mathbin\bm; (g \mathbin\bm; h)\\
+\end{aligned}
+\qquad\quad
+\forall\left(\begin{aligned}
+f &\in \operatorname{hom}(A, B) \\
+g &\in \operatorname{hom}(B, C) \\
+h &\in \operatorname{hom}(C, D)
+\end{aligned}\right)
+[/Equation]
+
+При этом, стрелки вовсе не обязаны быть функциями. Они могут быть чем угодно, если выполнены
+соответствующие условия.
+
+Очевидные примеры категорий:
+
+[Aside]Точнее, класс эквивалетности чистых тотальных функций по действию на значения типа.[/Aside]
+
+- Категория типов [Equation]\mathsf{Type}[/Equation], где объекты это типы, а стрелки это чистые тотальные функции
+- Категория множеств [Equation]\mathsf{Set}[/Equation], где объекты — множества, а стрелки — отображения
+
+Менее очевидные примеры:
+
+- Категория [Equation]\mathsf{Set}_\subseteq[/Equation], где объекты — множества, а стрелки — отношение подмножества
+- Категория [Equation]\Bbb N_{div}[/Equation], где объекты — натуральные числа, а стрелки — отношение делимости
+
+В случае отношения неравенства, мы можем определить стрелки так:
+
+[Equation display:true]
+\operatorname{hom}(x, y) = \{(x, y) \mid x \leqslant y\}
+[/Equation]
+
+И из свойств отношения неравенства следуют требования, которым должна соответствовать категория:
+
+[Equation display:true]
+\begin{aligned}
+x \leqslant x \\
+x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z
+\end{aligned}
+\qquad
+\begin{aligned}
+\operatorname{id}_x &= (x, x) \\
+(x, y) \mathbin\bm; (y, z) &= (x, z)
+\end{aligned}
+[/Equation]
+
+Аналогично для отношений подмножества и делимости.
+
+Диаграмма в [Equation]\Bbb N_{div}[/Equation] для чисел от нуля до девяти (без транзитивных стрелок):
+
+[img src:"static/nat_div.png" height:500 /]
+
+Стрелка из [Equation]x[/Equation] в [Equation]y[/Equation] соответствует
+делимости [Equation]y[/Equation] на [Equation]x[/Equation] ([Equation]x[/Equation] делит [Equation]y[/Equation]).
+
+Категория называется малой, если её классы объектов и классы стрелок — множества.
+
+### Обратная категория
+
+Пусть у нас есть категория [Equation]\mathsf C[/Equation]. Мы можем построить обратную
+категорию [Equation]\mathsf{C}^\mathsf{op}[/Equation], просто обратив направление всех стрелок.
+При этом, все построения, что у нас были, превращаются в двойственные.
+
+Конкретнее, обратная категория это категория с теми же объектами, где стрелки и композиция определены
+следующим образом:
+
+[Equation display:true]
+\operatorname{hom}_{\mathsf{C}^\mathsf{op}}(A, B) = \operatorname{hom}_\mathsf{C}(B, A)
+[/Equation]
+[Equation display:true]
+f \mathbin\bm;^\mathsf{op} g = g \mathbin\bm; f
+[/Equation]
+
+Этот нехитный трюк имеет фундаментальное значение:
+
+1. У любого категориального понятия есть двойственное понятие
+2. Если утверждение верно для всех категорий, то и двойственное утверждение верно для всех категорий
+
+Примеры двойственных понятий:
+
+- [Equation]\forall[/Equation] и [Equation]\exists[/Equation]
+- [Equation]\mathbin\mathrm{and}[/Equation] и [Equation]\mathbin\mathrm{or}[/Equation]
+- [Equation]\cap[/Equation] и [Equation]\cup[/Equation]
+- `struct` и `enum`
+- `()` и `!`
+- И многое другое
+
+### Виды стрелок
+
+В теории множеств, у нас были инъективные, сюръективные и биективные функции, определённые так
+по тому, как они действуют на элементы. В категориях же у нас никаких элементов нет, и аналогичные
+понятия нужно определять немного иначе.
+
+Проще всего определить аналог биективных функций.
+
+Cтрелка [Equation]f: A \to B[/Equation] называется *изоморфизмом* (также: обратимой), если существует
+такая стрелка [Equation]f^{-1}: B \to A[/Equation], что
+
+[Equation display:true]
+\begin{aligned}
+f \mathbin\bm; f^{-1} &= \mathrm{id}_A \\
+f^{-1} \mathbin\bm; f &= \mathrm{id}_B
+\end{aligned}
+[/Equation]
+
+Два объекта [Equation]A[/Equation] и [Equation]B[/Equation] называются изоморфными
+(пишется [Equation]A \cong B[/Equation]), если между ними существует изоморфизм.
+
+С высоты теории категорий изоморфные объекты не особо отличимы: все свойства, определяемые через
+стрелки у них одни и те же.
+
+Чтобы определить аналог инъекции, достаточно вспомнить, что инъективной функции соответствует
+биекция между областью функции и образом функции.
+
+Стрелка [Equation]f[/Equation] называется *мономорфизмом*, если для любых двух
+стрелок [Equation]g[/Equation] и [Equation]g^\prime[/Equation]:
+
+[Equation display:true]
+g \mathbin\bm; f = g^\prime \mathbin\bm; f \implies g = g^\prime
+[/Equation]
+
+Двойственно, стрелка [Equation]f[/Equation] называется *эпиморфизмом*, если для любых двух
+стрелок [Equation]g[/Equation] и [Equation]g^\prime[/Equation]:
+
+[Equation display:true]
+f \mathbin\bm; g = f \mathbin\bm; g^\prime \implies g = g^\prime
+[/Equation]
+
+На диаграммах, мономорфизмы и эпиморфизмы обозначаются, соответственно,
+как [Equation]A \xhookrightarrow{f} B[/Equation] и [Equation]A \xtwoheadrightarrow{f} B[/Equation].
+
+Ещё стрелки:
+
+- Эндоморфизмы — стрелки, у которых начало и конец совподают
+- Автоморфизмы — обратимые эндоморфизмы
+
+### Начальные и терминальные стрелки
+
+Рассмотрим тип [std::convert::Infallible](https://doc.rust-lang.org/std/convert/enum.Infallible.html)
+
+```rust
+pub enum Infallible {}
+```
+
+Он обладает весьма интересным свойством:
+
+```rust
+use std::convert::Infallible;
+
+/// По-сути, единственная функция из Infallible в A
+fn anything<A>(never: Infallible) -> A {
+    match never {}
+}
+```
+
+Конкретнее:
+
+1. Существует функция из `Infallible` в любой тип
+2. Эта функция по-сути единственная
+
+Начальный объект [Equation]\bm 0[/Equation] категории [Equation]\mathsf C[/Equation] это такой объект,
+что для любого [Equation]Z \in \operatorname{obj}(\mathsf C)[/Equation] существует единственная
+стрелка из [Equation]\bm 0[/Equation] в [Equation]Z[/Equation].
+
+Примеры:
+
+- В [Equation]\mathsf{Type}[/Equation] это любой пустой тип
+- В [Equation]\mathsf{Set}[/Equation] это пустое множество
+- В [Equation]\Bbb N_{div}[/Equation] это число 1
+
+Мы написали [Equation]\bm 0[/Equation] так, будто такой объект единственнен, хотя это вообще говоря
+не так. Однако, на это есть хорошая причина.
+
+**Предложение:** между любыми двумя начальными объектами существует *единственный* изморфизм.
+
+Пусть [Equation]I[/Equation] и [Equation]J[/Equation] — начальные объекты. По определению,
+существуют единственные стрелки [Equation]i_J : I \to J[/Equation] и [Equation]j_I : J \to I[/Equation].
+Их композиция это единственная стрелка из [Equation]I[/Equation] в [Equation]I[/Equation], то
+есть [Equation]\mathrm{id}_{I}[/Equation]. То же самое и в другую сторону.
+
+С высоты теории категорий, объекты с единственным изморфизмом почти неотличимы. Поэтому, мы будем
+смело обозначать начальный объект как [Equation]\bm 0[/Equation].
+
+Для любого понятия есть двойственное, и понятие начального объекта — не исключение.
+
+Терминальный объект [Equation]\bm 1[/Equation] категории [Equation]\mathsf C[/Equation] это
+такой объект, для любого [Equation]Z \in \operatorname{obj}(\mathsf C)[/Equation] существует единственная
+стрелка из [Equation]Z[/Equation] в [Equation]\bm 1[/Equation].
+
+Примеры:
+
+- В [Equation]\mathsf{Type}[/Equation] это любой тип с единственным значением
+- В [Equation]\mathsf{Set}[/Equation] это любое множество с единственным элементом
+- В [Equation]\Bbb N_{div}[/Equation] это число 0
+
+Мы можем выразить начальные и конечные стрелки как трейт:
+
+```rust
+use std::convert::Infallible;
+
+trait Initial {
+    /// Единственная функция из A в self
+    fn never<A>(self) -> A;
+}
+
+trait Terminal {
+    /// Единственно возможная функция из self в A
+    fn unit<A>(_: A) -> Self;
+}
+
+impl Initial for Infallible {
+    fn never<A>(self) -> A {
+        match self {}
+    }
+}
+
+impl Terminal for () {
+    fn unit<A>(_: A) { () }
+}
+```
+
+При этом, компилятор может гарантировать единственность начальной стрелки, а проверять единственность
+терминальной стрелки необходимо программисту.
+
+### Произведение
+
+Рассмотрим тип
+
+```rust
+struct Pair<A, B> {
+    first: A,
+    second: B,
+}
+```
+
+`first` и `second` можно рассматривать как функции из `Pair<A, B>` в `A` и `B` соответственно.
+Если у нас есть функция из какого-то типа `Z` в `Pair<A, B>`, то существуют функции из `Z` в
+`A` и из `Z` в `B`.
+
+Но пусть `f` — функция из `Z` в `A`, а `g` — функция из `Z` в `B`. Тогда существует по-сути
+единственная соответствующая им функция из `Z` в `Pair<A, B>`:
+
+```rust
+fn pair_fg(something: Z) -> Pair<A, B> {
+    Pair {
+        first: f(something),
+        second: g(something),
+    }
+}
+```
+
+[Aside]![](http://www.glide.ru/beginners/Picture/Hagglider_m.jpg)[/Aside]
+Произведение объектов [Equation]A[/Equation] и [Equation]B[/Equation] это
+некий объект [Equation]A \times B[/Equation], снабжённый стрелками [Equation]\pi_1: A \times B \to A[/Equation]
+и [Equation]\pi_2: A \times B \to B[/Equation], что для любых двух
+стрелок [Equation]f: Z \to A[/Equation] и [Equation]g: Z \to B[/Equation] существует *единственная*
+стрелка [Equation]f\times g: Z \to A \times B[/Equation], для которой крыло коммутативно:
+
+[img src:"static/prod.png" height:300 /]
+
+Примеры:
+
+- В [Equation]\mathsf{Type}[/Equation] это структуры и кортежи
+- В [Equation]\mathsf{Set}[/Equation] это декартово произведение множеств
+- В [Equation]\mathsf{Set}_\subseteq[/Equation] это пересечение множеств
+- В [Equation]\Bbb N_{div}[/Equation] это наибольший общий делитель
+
+Последнее следует из того, что [Equation]A \times B[/Equation] это терминальный объект в категории
+объектов, снабжённых проекциями в [Equation]A[/Equation] и [Equation]B[/Equation].
+
+Конкретнее, для категории [Equation]\mathsf C[/Equation] определим
+категорию [Equation]\mathsf C_{AB}[/Equation], где объекты определяем так:
+
+[Equation display:true]
+\operatorname{obj}_{\mathsf C_{AB}} = \{
+(P, p_1, p_2) \mid
+p_1 \in \operatorname{hom}_\mathsf{C}(P, A) \mathbin\mathrm{and}
+p_2 \in \operatorname{hom}_\mathsf{C}(P, B)
+\}
+[/Equation]
+
+Объект как диаграмма:
+
+[img src:"static/pab.png" height:250 /]
+
+Стрелки [Equation]\operatorname{hom}_{\mathsf C_{AB}}(P, Q)[/Equation] же это все стрелки [Equation]f: P \to Q[/Equation],
+для которых диаграмма коммутирует:
+
+[img src:"static/pq.png" height:300 /]
+
+[Aside]Но в реальном коде так делать *не нужно*.[/Aside]
+Наличие функций как первоклассных объектов позволяет выразить произведение как трейт:
+
+```rust
+trait Product<A, B> {
+    fn first(self) -> A;
+    fn second(self) -> B;
+
+    fn times<Z: 'static + Copy>(f: fn(Z) -> A, g: fn(Z) -> B)
+        -> Box<dyn Fn(Z) -> Self>;
+}
+
+struct Pair<A, B> {
+    first: A,
+    second: B,
+}
+
+impl<A: 'static, B: 'static> Product<A, B> for Pair<A, B> {
+    fn first(self) -> A {
+      self.first
+    }
+
+    fn second(self) -> B {
+      self.second
+    }
+
+    fn times<Z: 'static + Copy>(f: fn(Z) -> A, g: fn(Z) -> B)
+        -> Box<dyn Fn(Z) -> Self>
+    {
+        Box::new(move |z| Pair {
+            first: f(z),
+            second: g(z),
+        })
+    }
+}
+```
+
+### Копроизведение
+
+Копроизведение — понятие, двойственное произведению.
+
+Копроизведение объектов объектов [Equation]A[/Equation] и [Equation]B[/Equation] это
+объект [Equation]A + B[/Equation], снабжённый стрелками [Equation]i_1: A \to A + B[/Equation]
+и [Equation]i_2: B \to A + B[/Equation], что для любых двух стрелок [Equation]f: A \to Z[/Equation]
+и [Equation]g: B \to Z[/Equation] существует *единственная* стрелка [Equation]f + g: A + B \to Z[/Equation],
+для которой кокрыло коммутативно:
+
+[img src:"static/sum.png" height:300 /]
+
+Аналогично произведению, копроизведение это начальный объект в категории объектов, снабжённых
+вложениями из [Equation]A[/Equation] и [Equation]B[/Equation].
+
+В [Equation]\mathsf{Type}[/Equation] копроизведение это тип-сумма, например, `Either<A, B>` или `Result<T,  E>`.
+В [Equation]\mathsf{Set}[/Equation] это размеченное объединение:
+
+[Equation display:true]
+A \sqcup B = (\{0\} \times A) \cup (\{1\} \times B)
+[/Equation]
+
+В [Equation]\mathsf{Set}_\subseteq[/Equation] копроизведение это объединение множеств, когда же
+в [Equation]\Bbb N_{div}[/Equation] это наименьшее общее кратное.
+
+(про типы суммы)
+
+### Расслоёное произведение и сумма
+
+Пересечение множеств это произведение в категории [Equation]\mathsf{Set}_\subseteq[/Equation]. Но
+мы можем определить аналог пересечения и в категории [Equation]\mathsf{Set}[/Equation].
+
+Пусть [Equation]A, B \subseteq U[/Equation]. Есть две фунции:
+
+- Вложение [Equation]a_U : A \to U[/Equation]
+- Вложение [Equation]b_U : B \to U[/Equation]
+
+Если мы рассматриваем [Equation]A \cap B[/Equation], то к этим функциям добавляются ещё две:
+
+- Вложение [Equation]\pi_A : A \cap B \to A[/Equation]
+- Вложение [Equation]\pi_B : A \cap B \to B[/Equation]
+
+И все они на коммутативной диаграмме:
+
+[img src:"static/a_cap_b.png" height:250 /]
+
+Расслоёное произведение стрелок [Equation]f : A \to C[/Equation] и [Equation]g : B \to C[/Equation] это:
+
+[ul]
+[li]Объект [Equation]A \times_C B[/Equation]
+[ul][li]Вместе со стрелками [Equation]\pi_1: A \times_C B \to A[/Equation] и [Equation]\pi_2: A \times_C B \to B[/Equation][/li][/ul]
+[/li]
+[li]Такой что для любых двух стрелок [Equation]z_A: Z \to A[/Equation] и [Equation]z_B: Z \to B[/Equation]
+[ul][li]Существует единственная стрелка [Equation]u: Z \to A \times_C B[/Equation] для которой следующая диаграмма коммутирует:[/li][/ul]
+[/li]
+[/ul]
+
+[img src:"static/pullback.png" height:400 /]
+
+В категории множеств, расслоёное произведение это следующее множество:
+
+[Equation display:true]
+A \times_C B = \{(a, b) \in A \times B \mid f(a) = g(b)\}
+[/Equation]
+
+Если мы посмотрим на диаграмму для пересечения множеств с другой стороны, мы получим диаграмму
+для объединения множеств:
+
+[img src:"static/a_cup_b.png" height:250 /]
+
+Расслоённая сумма стрелок [Equation]f : Z \to A[/Equation] и [Equation]g : Z \to B[/Equation]
+это расслоённое произведение в обратной категории.
+
+Не будем расписывать определение подробно: идея в точности та же, что и в случае копроизведения.
+
+В категории множеств, расслоёная сумма это множество [Equation](A \sqcup B)/{\sim}_{f \sqcup g}[/Equation],
+где [Equation]{\sim}_{f \sqcup g}[/Equation] это отношение эквивалентности, порождённое функцией
+
+[Equation display:true]
+\begin{aligned}
+(f \sqcup g)((0, a)) &= f(a) \\
+(f \sqcup g)((1, b)) &= g(b)
+\end{aligned}
+[/Equation]
+
+## Функторы
+
+Функтор это отображение между категориями. Конкретнее, функтор [Equation]F: \mathsf C \to \mathsf D[/Equation]
+это сущность, которая:
+
+- Сопоставляет объекту [Equation]X \in \operatorname{obj}(\mathsf C)[/Equation] объект [Equation]F(X) \in \operatorname{obj}(\mathsf D)[/Equation]
+- Сопоставляет стрелке [Equation]f \in \operatorname{hom}_\mathsf{C}(X, Y)[/Equation] стрелку [Equation]F(f) \in \operatorname{hom}_\mathsf{C}(F(X), F(Y))[/Equation]
+
+Причём сохраняя единичные стрелки и композицию:
+
+[Equation display:true]
+\begin{aligned}
+F(\mathrm{id}_X) &= \mathrm{id}_{F(X)} \\
+F(f \mathbin\bm; g) &= F(f) \mathbin\bm; F(g)
+\end{aligned}
+[/Equation]
+
+Контравариантный функтор из [Equation]\mathsf C[/Equation] в [Equation]\mathsf D[/Equation] это
+функтор [Equation]F: \mathsf C^\mathsf{op} \to \mathsf D[/Equation].
+
+Примеры
+
+[ul]
+[li]`Option<T>`, `Vec<T>`, `Iterator`, `Future`, etc...[/li]
+[li]Все функции, сохраняющие отношение порядка это функторы между соответствующими категориями. В частности:
+[ul]
+    [li]`floor()` и `ceil()`[/li]
+    [li]Топологическая сортировка[/li]
+    [li]Логические часы[/li]
+[/ul]
+[/li]
+[li]Выделение компонент сильной связности (как граф)[/li]
+[li]Направленный граф[/li]
+[li]Диаграмма[/li]
+[/ul]
+
+Понятие фукторы позволяют определить категорию малых категорий [Equation]\mathsf{Cat}[/Equation],
+где объекты — малые категории, а стрелки — функторы между категориями.
+
+- Забывающий функтор
+- Свободный функтор
+
+(категория малых категорий)
+
+### Диаграмма как функтор
+
+### Пределы и копределы
+
+### Естественные преобразования
+
+(естественный изоморфизм)
+
+### Функтор hom
+
+## Сопряжённые функторы
+
+Рассмотрим вложение [Equation]i : \Bbb Z \to \Bbb R[/Equation], отображающее
+каждое целое число в равное ему вещественное число. Эта функция инъективна, но не сюръективна.
+Это означает, что правых обратных функций у неё может быть много:
+
+[Equation display:true]
+\begin{aligned}
+\lfloor r \rfloor &= \operatorname{max}\ \{x \in \Bbb Z \mid x \leqslant r\} \\
+\lceil r \rceil &= \operatorname{min}\ \{x \in \Bbb Z \mid x \geqslant r\} \\
+\lceil r \rfloor &= \begin{cases}
+\lfloor r \rfloor\quad r \geqslant 0 \\
+\lceil r \rceil\quad r < 0
+\end{cases}
+\end{aligned}
+[/Equation]
+
+Но только одна из них обладает следующим свойством:
+
+[Equation display:true]
+i(n) \leqslant r \iff n \leqslant \lfloor r \rfloor
+[/Equation]
+
+У этой идеи есть категориальное обобщение. Пусть [Equation]F : \mathsf C \to \mathsf D[/Equation].
+Функтор [Equation]G : \mathsf D \to \mathsf C[/Equation] называется правым сопряжённым к [Equation]F[/Equation],
+если
+
+[Equation display:true]
+\operatorname{hom}(F(\_), \_) \cong \operatorname{hom}(\_, G(\_)) \qquad
+\operatorname{hom}(F(\_), \_) : \mathsf C^\mathsf{op} \times \mathsf D \to \mathsf{Set}
+[/Equation]
+
+Двойственно, [Equation]G[/Equation] называется левым сопряжённым к [Equation]F[/Equation]. Пара
+сопряжённых функторов обозначается как [Equation]F \vdash G[/Equation].
+
+### Экспоненциальный объект
+
+### Единица и коединица
+
+### Моноид в категории эндофунктороов
