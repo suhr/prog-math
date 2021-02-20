@@ -74,7 +74,7 @@ f \mathbin\bm; \mathrm{id}_{B} &= f \\
 Неформально, категория это класс объектов с функциями между ними. Формально же,
 категория [Equation]\mathsf C[/Equation] это:
 
-1. Класс объектов [Equation]\operatorname{obj}(\mathsf C)[/Equation]
+1. Класс объектов [Equation]\operatorname{ob}(\mathsf C)[/Equation]
 2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\operatorname{hom}(A, B)[/Equation]
 3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \operatorname{hom}(A, A)[/Equation]
 4. Для любой пары стрелок [Equation]f \in \operatorname{hom}(A, B)[/Equation] и [Equation]g \in \operatorname{hom}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \operatorname{hom}(A, C)[/Equation]
@@ -100,12 +100,15 @@ h &\in \operatorname{hom}(C, D)
 При этом, стрелки вовсе не обязаны быть функциями. Они могут быть чем угодно, если выполнены
 соответствующие условия.
 
+Категория называется малой, если её классы объектов и классы стрелок — множества.
+
 Очевидные примеры категорий:
 
 [Aside]Точнее, класс эквивалетности чистых тотальных функций по действию на значения типа.[/Aside]
 
 - Категория типов [Equation]\mathsf{Type}[/Equation], где объекты это типы, а стрелки это чистые тотальные функции
 - Категория множеств [Equation]\mathsf{Set}[/Equation], где объекты — множества, а стрелки — отображения
+- Категория векторных пространств [Equation]\mathsf{Vect}[/Equation], где объекты — векторные пространства, а стрелки — линейные отображения
 
 Менее очевидные примеры:
 
@@ -140,8 +143,6 @@ x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z
 
 Стрелка из [Equation]x[/Equation] в [Equation]y[/Equation] соответствует
 делимости [Equation]y[/Equation] на [Equation]x[/Equation] ([Equation]x[/Equation] делит [Equation]y[/Equation]).
-
-Категория называется малой, если её классы объектов и классы стрелок — множества.
 
 ### Обратная категория
 
@@ -247,7 +248,7 @@ fn anything<A>(never: Infallible) -> A {
 2. Эта функция по-сути единственная
 
 Начальный объект [Equation]\bm 0[/Equation] категории [Equation]\mathsf C[/Equation] это такой объект,
-что для любого [Equation]Z \in \operatorname{obj}(\mathsf C)[/Equation] существует единственная
+что для любого [Equation]Z \in \operatorname{ob}(\mathsf C)[/Equation] существует единственная
 стрелка из [Equation]\bm 0[/Equation] в [Equation]Z[/Equation].
 
 Примеры:
@@ -272,7 +273,7 @@ fn anything<A>(never: Infallible) -> A {
 Для любого понятия есть двойственное, и понятие начального объекта — не исключение.
 
 Терминальный объект [Equation]\bm 1[/Equation] категории [Equation]\mathsf C[/Equation] это
-такой объект, для любого [Equation]Z \in \operatorname{obj}(\mathsf C)[/Equation] существует единственная
+такой объект, для любого [Equation]Z \in \operatorname{ob}(\mathsf C)[/Equation] существует единственная
 стрелка из [Equation]Z[/Equation] в [Equation]\bm 1[/Equation].
 
 Примеры:
@@ -337,7 +338,6 @@ fn pair_fg(something: Z) -> Pair<A, B> {
 }
 ```
 
-[Aside]![](http://www.glide.ru/beginners/Picture/Hagglider_m.jpg)[/Aside]
 Произведение объектов [Equation]A[/Equation] и [Equation]B[/Equation] это
 некий объект [Equation]A \times B[/Equation], снабжённый стрелками [Equation]\pi_1: A \times B \to A[/Equation]
 и [Equation]\pi_2: A \times B \to B[/Equation], что для любых двух
@@ -360,7 +360,7 @@ fn pair_fg(something: Z) -> Pair<A, B> {
 категорию [Equation]\mathsf C_{AB}[/Equation], где объекты определяем так:
 
 [Equation display:true]
-\operatorname{obj}_{\mathsf C_{AB}} = \{
+\operatorname{ob}_{\mathsf C_{AB}} = \{
 (P, p_1, p_2) \mid
 p_1 \in \operatorname{hom}_\mathsf{C}(P, A) \mathbin\mathrm{and}
 p_2 \in \operatorname{hom}_\mathsf{C}(P, B)
@@ -503,7 +503,7 @@ A \times_C B = \{(a, b) \in A \times B \mid f(a) = g(b)\}
 Функтор это отображение между категориями. Конкретнее, функтор [Equation]F: \mathsf C \to \mathsf D[/Equation]
 это сущность, которая:
 
-- Сопоставляет объекту [Equation]X \in \operatorname{obj}(\mathsf C)[/Equation] объект [Equation]F(X) \in \operatorname{obj}(\mathsf D)[/Equation]
+- Сопоставляет объекту [Equation]X \in \operatorname{ob}(\mathsf C)[/Equation] объект [Equation]F(X) \in \operatorname{ob}(\mathsf D)[/Equation]
 - Сопоставляет стрелке [Equation]f \in \operatorname{hom}_\mathsf{C}(X, Y)[/Equation] стрелку [Equation]F(f) \in \operatorname{hom}_\mathsf{C}(F(X), F(Y))[/Equation]
 
 Причём сохраняя единичные стрелки и композицию:
@@ -522,33 +522,331 @@ F(f \mathbin\bm; g) &= F(f) \mathbin\bm; F(g)
 
 [ul]
 [li]`Option<T>`, `Vec<T>`, `Iterator`, `Future`, etc...[/li]
-[li]Все функции, сохраняющие отношение порядка это функторы между соответствующими категориями. В частности:
+[li]Все функции, сохраняющие отношение порядка это функторы между соответствующими категориями.
+В частности:
 [ul]
     [li]`floor()` и `ceil()`[/li]
     [li]Топологическая сортировка[/li]
     [li]Логические часы[/li]
 [/ul]
 [/li]
-[li]Выделение компонент сильной связности (как граф)[/li]
+[li]Выделение компонент сильной связности[/li]
 [li]Направленный граф[/li]
 [li]Диаграмма[/li]
+[li]В линейной алгебре, двойственное отображение [Equation](\_)^*[/Equation][/li]
 [/ul]
 
 Понятие фукторы позволяют определить категорию малых категорий [Equation]\mathsf{Cat}[/Equation],
 где объекты — малые категории, а стрелки — функторы между категориями.
 
-- Забывающий функтор
-- Свободный функтор
+### Диаграммы и графы
 
-(категория малых категорий)
+Идея очень проста: пусть у нас есть некий элемент [Equation]e \in S[/Equation]. Этому элементу
+соответствует единственная функция [Equation]e^\bullet: \bm 1 \to S[/Equation]:
 
-### Диаграмма как функтор
+[Equation display:true]
+e^\bullet(\bullet) = e
+[/Equation]
+
+Продолжая аналогию, объекту [Equation]A \in \operatorname{ob}(\mathsf C)[/Equation] соответствует
+единственный функтор [Equation]A^\bullet : \bm 1 \to \mathsf C[/Equation],
+где [Equation]\bm 1[/Equation] уже не множество с единственным элементом, а категория с единственным
+объектом и единственной стрелкой.
+
+Продолжая аналогию дальше, вот это
+
+[img src:"static/afb.png" height:100 /]
+
+по-сути является функтором из вот этого в [Equation]\mathsf C[/Equation]
+
+[img src:"static/p_p.png" height:100 /]
+
+Обобщая, диаграмма это функтор из некой категории [Equation]\mathsf J[/Equation] (называемой *схемой*
+или категорий индексов) в категорию [Equation]\mathsf C[/Equation].
+
+Этот казалось бы бесполезное построение на самом деле даёт нам абстракцию: мы можем говорить про все
+диаграммы из данной схемы, или даже говорить про все диаграммы вообще. Причём говорить на нативном
+языке теории категории, языке стрелок.
+
+Итак, диаграмма это функтор, а что насчёт направленных графов? А направленный граф это:
+
+- Множество вершин [Equation]V[/Equation]
+- Вместе с множество рёбер [Equation]E[/Equation]
+- И функциями [Equation]src: E \to V[/Equation] и [Equation]tgt: E \to V[/Equation], возвращающими начало и конец ребра
+
+Всё это можно легко изобразить диаграммой:
+
+[img src:"static/e_v.png" height:100 /][br /]
+
+Но диграмма это функтор! И стало быть, направленный граф это тоже всего лишь функтор из схемы
+с двумя объектами и стрелками в категорию множеств.
 
 ### Пределы и копределы
 
+Определения декартова произведения и расслоёного произведения состоят в основном из бойлерплейта:
+мы говорим почти одни и те же слова, разве что диаграммы немного разные. Но зная, что диаграмма
+это функтор, мы можем обобщить обычные и расслоёные произведения до понятия предела диаграммы.
+
+Для этого нам сначала нужно построить категорию, в которой искомый предел является терминальным
+объектом. В случае расслоёного произведения, это категория таких вот конус:
+
+[img src:"static/fibred_cone.png" height:350 /]
+
+Мы присоединили [Equation]A \times_C B[/Equation] ко всем остальным объектам и приказали диаграмме
+коммутировать.
+
+В общем случае, для диаграммы [Equation]F: \mathsf J \to \mathsf C[/Equation] конус это
+объект [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation] вместе с семейством стрелок [Equation]\varphi_X : N \to F(X)[/Equation],
+причём для любых [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation], [Equation]Y \in \operatorname{ob}(\mathsf J)[/Equation] и [Equation]f: X \to Y[/Equation]
+следующая диаграмма коммутирует:
+
+[img src:"static/cone.png" height:250 /]
+
+Стрелка между конусами [Equation](P, \psi_X)[/Equation] и [Equation](N, \varphi_X)[/Equation] это
+стрелка [Equation]u: P \to N[/Equation], такая, что для любого [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation]
+следующая диаграмма коммутирует:
+
+[img src:"static/cone_arr.png" height:175 /]
+
+Предел диаграммы [Equation]F: \mathsf J \to \mathsf C[/Equation] это терминальный объект в категории
+конусов для [Equation]F[/Equation]. Соответствующий объект обозначается [Equation]\operatorname{lim} F[/Equation].
+
+Двойственно, копредел диаграммы это начальный объект в категории коконусов. Коконусы определяются
+так же, как и конусы, только стрелки направлены в противоположную сторону.
+
+(TODO: ещё про пределы)
+
 ### Естественные преобразования
 
-(естественный изоморфизм)
+Если функторы это стрелки между категориями, то естественные преобразования это стрелки между функторами.
+
+Пусть [Equation]F : \mathsf{C} \to \mathsf{D}[/Equation] и [Equation]D : \mathsf{C} \to \mathsf{D}[/Equation] — функторы.
+Естественное преобразование [Equation]\alpha : F \Rightarrow G[/Equation] это сущность, сопоставляющая
+каждому объекту [Equation]X \in \operatorname{ob}(\mathsf C)[/Equation] стрелку [Equation]\alpha_X : F(X) \to G(X)[/Equation],
+причём для любой стрелки [Equation]f : X \to Y[/Equation] следующая диаграмма коммутирует:
+
+[img src:"static/nat.png" height:250 /][br /]
+
+Примеры:
+
+- Полиморфные функции между типами-функторами, если результат не зависит от того, применятся ли `map` перед или после функции. Например `append` или `reverse`.
+- Гомоморфизмы между графами
+- В линейной алгебре, естественный изоморфизм [Equation]\bm 1 \cong (\_)^{**}[/Equation]
+
+Композиция двух естественных преобразований [Equation]\alpha : F \Rightarrow G[/Equation] и [Equation]\beta : G \Rightarrow H[/Equation]
+определяется просто:
+
+[img src:"static/nat_comp.png" height:450 /][br /]
+
+Доказательство естественности:
+
+[Aside]Не нужно пытаться понять это символьно. Смотри на диаграмму, она содержит все ответы.[/Aside]
+[Equation display:true]
+\alpha_X \mathbin\bm; \beta_X \mathbin\bm; H(f) =
+\alpha_X \mathbin\bm; G(f) \mathbin\bm; \beta_Y =
+F(f) \mathbin\bm; \alpha_Y \mathbin\bm; \beta_Y
+[/Equation]
+
+Естественные преобразования позволяют нам определить категорию функторов [Equation][\mathsf C, \mathsf D][/Equation],
+где объекты — функторы между [Equation]\mathsf C[/Equation] и [Equation]\mathsf D[/Equation],
+а стрелки — естественные преобразования между функторами.
+
+Понятие естественного преобразования позволяет ещё более кратко выразить понятие предела. Чтобы
+это сделать, сначала нарисуем диаграмму для конуса чуть иначе:
+
+[img src:"static/lim_sq.png" height:250 /][br /]
+
+Чтобы превратить этот квадрат в определение естественного преобразования, определим для
+каждого [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation]
+функтор [Equation]\Delta_N : \mathsf J \to \mathsf C[/Equation] такой что для любого
+объекта [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation] и любой стрелки [Equation]f : X \to Y[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+\Delta_N(X) &= N \\
+\Delta_N(f) &= \mathrm{id}_N
+\end{aligned}
+[/Equation]
+
+Тогда семейство стрелок [Equation]\varphi_X[/Equation] это ничто иное, как естественное преобразование
+[Equation]\varphi : \Delta_N \Rightarrow F[/Equation].
+
+[Aside]Этот функтор называется диагональным.[/Aside]
+Далее, определим функтор [Equation]\Delta : \mathsf C \to [\mathsf J, \mathsf C][/Equation]
+такой что для любого объекта [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation] и любой
+стрелки [Equation]f : N \to P[/Equation]
+
+[Equation display:true]
+\begin{aligned}
+\Delta(N) &= \Delta_N \\
+\Delta(f) &= f
+\end{aligned}
+[/Equation]
+
+Здесь [Equation]f[/Equation] становится естественным преобразованием из [Equation]\Delta_N[/Equation] в [Equation]\Delta_P[/Equation]:
+
+[img src:"static/del_np.png" height:250 /][br /]
+
+Нам осталось лишь определить категорию, где мы всем этим воспользоваться.
+Пусть [Equation]A \in \operatorname{ob}(\mathsf C)[/Equation] — некий фиксированный объект,
+а [Equation]F : \mathsf D \to \mathsf C[/Equation] — функтор. Категория [Equation]F \downarrow \gray A[/Equation] стрелок
+из [Equation]F[/Equation] в [Equation]A[/Equation] это следующая категория:
+
+[Equation display:true]
+\begin{aligned}
+\operatorname{ob}(F \downarrow \gray A) &= \{
+    (X, h) \mid X \in \operatorname{ob}(\mathsf D) \mathbin\mathrm{and}
+    h \in \operatorname{hom}_\mathsf{C}(F(X), A) \} \\
+\operatorname{hom}_{F \downarrow \gray A}((X, h), (Y, h')) &= \{
+    F(f) \mid f \in \operatorname{hom}_\mathsf{D}(X, Y) \mathbin\mathrm{and}
+    h \mathbin\bm; F(f) = h'\}
+\end{aligned}
+[/Equation]
+
+Стрелка между двумя объектами как диаграмма:
+
+[img src:"static/f_to_a.png" height:250 /][br /]
+
+Теперь мы полностью готовы ещё раз определить предел диаграммы. Итак, предел
+диаграммы [Equation]F : \mathsf J \to \mathsf C[/Equation] это терминальный
+объект в категории [Equation]\Delta \downarrow \gray F[/Equation].
+
+Когда уровень абстракции становится слишком высок, полезно сделать шаг назад. Подставим
+конкретные [Equation]P[/Equation] и [Equation]N[/Equation] в диаграмму для [Equation]\Delta \downarrow \gray F[/Equation]:
+
+[img src:"static/del_p_n.png" height:175 /][br /]
+
+Это уже знакомая нам диаграмма для стрелки между конусами, только в виде функторов и естественных
+преобразований.
+
+### 2-категории
+
+В обычной категории у нас есть объекты и стрелки между ними. В случае же [Equation]\mathsf{Cat}[/Equation]
+у нас есть ещё и стрелки между стрелками (2-стрелки). И хотя стрелки между стрелками и не входят в определение
+категории, ничто не мешает нам показать их на диаграмме:
+
+[img src:"static/fga.png" height:250 /]
+
+Ещё у нас есть вертикальная композиция 2-стрелок:
+
+[img src:"static/vert.png" height:250 /]
+
+Однако, на плоскости есть два направления. И две 2-стрелки могут соприкасаться иначе:
+
+[img src:"static/horiz.png" height:200 /]
+
+Эта ситуация предлагает понятие горизонтальной композиции
+[Equation]\alpha * \beta : (F \mathbin\bm; H) \Rightarrow (G \mathbin\bm; K)[/Equation].
+
+Чтобы опрелелить горизонтальную композицию, заметим, что [Equation]\alpha_X : F(X) \to G(X)[/Equation]
+это обычная 1-стрелка. И так как [Equation]\beta[/Equation] — естественное преобразование,
+следующая диаграмма должна коммутировать:
+
+[img src:"static/horiz_nat.png" height:250 /]
+
+Отсюда у нас есть целых два равных определений горизонтальной композиции естественных преобразований:
+
+[Equation display:true]
+(\alpha * \beta)_X = H(\alpha_X) \mathbin\bm; \beta_{G(X)} = \beta_{F(X)} \mathbin\bm; K(\alpha_X)
+[/Equation]
+
+Символьно эти выражения выглядят несколько мудрёно, но для них есть простая визуальная аналогия.
+В первом случае, мы как-бы переносим [Equation]\alpha[/Equation] вдоль [Equation]H[/Equation],
+ставя его над [Equation]\beta[/Equation]:
+
+[img src:"static/horiz_above.png" height:250 /]
+
+Во втором же случае, мы как-бы переносим [Equation]\alpha[/Equation] вдоль [Equation]K[/Equation],
+ставя его под [Equation]\beta[/Equation].
+
+Мы определили композицию, но ещё не доказали, что результат является естественным преобразованием.
+Чтобы доказать, возьмём [Equation]f : X \to Y[/Equation] и начертим следующую диаграмму:
+
+[img src:"static/horiz_valid.png" height:450 /][br /]
+
+Она коммутирует: верхний квадрат потому, что [Equation]H[/Equation] — функтор,
+а [Equation]\alpha[/Equation] — естественное преобразование, нижний квадрат потому,
+что [Equation]\beta[/Equation] — естественное преобразование, а вся диаграмма — потому, что квадраты.
+
+Хотя у нас есть целых две композиции, этого недостаточно, чтобы свободно чертить 2-диаграммы.
+Например, пусть диаграмма выглядит так:
+
+[img src:"static/hv.png" height:250 /]
+
+Это [Equation](\alpha \mathbin\bm; \beta) * (\gamma \mathbin\bm; \delta)[/Equation]
+или [Equation](\alpha * \gamma) \mathbin\bm; (\beta * \delta)[/Equation]?
+
+К счастью, нам не нужно выбирать какой-то один из вариантов, потому что оба равны. И вот почему:
+
+[img src:"static/hv_eq.png" height:650 /]
+
+Диаграмма коммутирует, ибо [Equation]\gamma[/Equation] — естественное преобразование.
+
+Теперь у нас всё готово, чтобы ввести новый тип категорий — 2-категории.
+
+Строгая 2-категория это:
+
+- Объекты
+- 1-стрелки между объектами
+- 2-стрелки между 1-стрелками
+- Целых три композиции: [Equation]F \mathbin \bm; G[/Equation] для 1-стрелок, [Equation]\alpha \bm; \beta[/Equation] и [Equation]\alpha * \beta[/Equation] для 2-стрелок
+
+При этом:
+
+[ul]
+[li]Различные множества n-стрелок не пересекаются[/li]
+[li]Для каждого объекта [Equation]\mathsf C[/Equation] есть единичная
+1-стрелка [Equation]\mathrm{id}_\mathsf{C}[/Equation], а для каждой 1-стрелки [Equation]F[/Equation]
+есть единичная 2-стрелка [Equation]\mathrm{id}_F[/Equation][/li]
+[Aside]Доказательство ассоциативности [Equation]\bm;[/Equation] и [Equation]*[/Equation] оставлено
+читателю в качестве упражнения.
+
+Четвёртый закон называется 2-ассоциативностью.[/Aside]
+[li]
+Выполняются четыре закона ассоциативности:
+[/li]
+[/ul]
+
+[Equation display:true]
+\begin{aligned}
+(F \mathbin\bm; G) \mathbin\bm; H &= F \mathbin\bm; (G \mathbin\bm; H) \\
+(\alpha \mathbin\bm; \beta) \mathbin\bm; \gamma &= \alpha \mathbin\bm; (\beta \mathbin\bm; \gamma) \\
+(\alpha * \beta) * \gamma &= \alpha * (\beta * \gamma) \\
+(\alpha \mathbin\bm; \beta) * (\gamma \mathbin\bm; \delta) &=
+(\alpha * \gamma) \mathbin\bm; (\beta * \delta)
+\end{aligned}
+[/Equation]
+
+Основной (и для нас — единственный) пример строгой 2-категории это категория [Equation]\mathsf{Cat}[/Equation], ради которой мы всё это и затеяли.
+
+Для 2-категорий есть два типа диаграм. Первый тип мы уже знаем — это обычные диаграммы,
+где объекты это точки, 1-стрелки это стрелки, а 2-стрелки это области. Второй тип диаграмм это
+струнные диаграммы. В них размерности перевёрнуты: объекты это области, 1-стрелки это линии,
+разделяющие области, а 2-стрелки — точки, в которые сходятся линии.
+
+Например, пусть есть такая диаграмма:
+
+[img src:"static/triangle.png" height:250 /]
+
+Соответствующая её струнная диаграмма выглядит так:
+
+[img src:"static/string.png" height:250 /]
+
+На струнной диаграмме единичные стрелки не рисуют. Например, диаграмма
+для естественного преобразования [Equation]\mathrm{id}_F[/Equation] выглядит так:
+
+[img src:"static/nat_id_f.png" height:150 /][br /]
+
+А диаграмма для преобразования [Equation]\eta : F \Rightarrow id_\mathsf{C}[/Equation] — вот так:
+
+[img src:"static/eta.png" height:250 /]
+
+Причина, почему единичные стрелки не рисуют, проста:
+
+[img src:"static/equals.png" height:200 /]
+
+В этом вся магия струнных диаграмм: вместо того, чтобы переставлять символы, мы просто двигаем точки
+вдоль линий. При этом, уравнения по-сути решают себя сами.
 
 ### Функтор hom
 
@@ -579,9 +877,9 @@ i(n) \leqslant r \iff n \leqslant \lfloor r \rfloor
 Функтор [Equation]G : \mathsf D \to \mathsf C[/Equation] называется правым сопряжённым к [Equation]F[/Equation],
 если
 
+[Aside]Изоморфизм функторов [Equation]\mathsf C^\mathsf{op} \times \mathsf D \to \mathsf{Set}[/Equation][/Aside]
 [Equation display:true]
-\operatorname{hom}(F(\_), \_) \cong \operatorname{hom}(\_, G(\_)) \qquad
-\operatorname{hom}(F(\_), \_) : \mathsf C^\mathsf{op} \times \mathsf D \to \mathsf{Set}
+\operatorname{hom}(F(\_), \_) \cong \operatorname{hom}(\_, G(\_))
 [/Equation]
 
 Двойственно, [Equation]G[/Equation] называется левым сопряжённым к [Equation]F[/Equation]. Пара
