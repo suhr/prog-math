@@ -75,11 +75,11 @@ f \mathbin\bm; \mathrm{id}_{B} &= f \\
 категория [Equation]\mathsf C[/Equation] это:
 
 1. Класс объектов [Equation]\operatorname{ob}(\mathsf C)[/Equation]
-2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\operatorname{hom}(A, B)[/Equation]
-3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \operatorname{hom}(A, A)[/Equation]
-4. Для любой пары стрелок [Equation]f \in \operatorname{hom}(A, B)[/Equation] и [Equation]g \in \operatorname{hom}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \operatorname{hom}(A, C)[/Equation]
+2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\mathsf{C}(A, B)[/Equation]
+3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \mathsf{C}(A, A)[/Equation]
+4. Для любой пары стрелок [Equation]f \in \mathsf{C}(A, B)[/Equation] и [Equation]g \in \mathsf{C}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \mathsf{C}(A, C)[/Equation]
 
-[Aside]Мы будем писать [Equation]f: A \to B[/Equation] имея в виду [Equation]f \in \operatorname{hom}(A, B).[/Equation][/Aside]
+[Aside]Мы будем писать [Equation]f: A \to B[/Equation] имея в виду [Equation]f \in \mathsf{C}(A, B).[/Equation][/Aside]
 Неравные классы стрелок не должны пересекаться. Кроме того, композиция стрелок должна вести себя
 как композиция функций:
 
@@ -91,9 +91,9 @@ f \mathbin\bm; \mathrm{id}_{B} &= f \\
 \end{aligned}
 \qquad\quad
 \forall\left(\begin{aligned}
-f &\in \operatorname{hom}(A, B) \\
-g &\in \operatorname{hom}(B, C) \\
-h &\in \operatorname{hom}(C, D)
+f &\in \mathsf{C}(A, B) \\
+g &\in \mathsf{C}(B, C) \\
+h &\in \mathsf{C}(C, D)
 \end{aligned}\right)
 [/Equation]
 
@@ -115,10 +115,10 @@ h &\in \operatorname{hom}(C, D)
 - Категория [Equation]\mathsf{Set}_\subseteq[/Equation], где объекты — множества, а стрелки — отношение подмножества
 - Категория [Equation]\Bbb N_{div}[/Equation], где объекты — натуральные числа, а стрелки — отношение делимости
 
-В случае отношения неравенства, мы можем определить стрелки так:
+В случае отношения неравенства на некотором множестве [Equation]S[/Equation], мы можем определить стрелки так:
 
 [Equation display:true]
-\operatorname{hom}(x, y) = \{(x, y) \mid x \leqslant y\}
+S_{\leqslant}(x, y) = \{(x, y) \mid x \leqslant y\}
 [/Equation]
 
 И из свойств отношения неравенства следуют требования, которым должна соответствовать категория:
@@ -154,7 +154,7 @@ x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z
 следующим образом:
 
 [Equation display:true]
-\operatorname{hom}_{\mathsf{C}^\mathsf{op}}(A, B) = \operatorname{hom}_\mathsf{C}(B, A)
+{\mathsf{C}^\mathsf{op}}(A, B) = \mathsf{C}(B, A)
 [/Equation]
 [Equation display:true]
 f \mathbin\bm;^\mathsf{op} g = g \mathbin\bm; f
@@ -362,8 +362,8 @@ fn pair_fg(something: Z) -> Pair<A, B> {
 [Equation display:true]
 \operatorname{ob}_{\mathsf C_{AB}} = \{
 (P, p_1, p_2) \mid
-p_1 \in \operatorname{hom}_\mathsf{C}(P, A) \mathbin\mathrm{and}
-p_2 \in \operatorname{hom}_\mathsf{C}(P, B)
+p_1 \in \mathsf{C}(P, A) \mathbin\mathrm{and}
+p_2 \in \mathsf{C}(P, B)
 \}
 [/Equation]
 
@@ -371,7 +371,7 @@ p_2 \in \operatorname{hom}_\mathsf{C}(P, B)
 
 [img src:"static/pab.png" height:250 /]
 
-Стрелки [Equation]\operatorname{hom}_{\mathsf C_{AB}}(P, Q)[/Equation] же это все стрелки [Equation]f: P \to Q[/Equation],
+Стрелки [Equation]{\mathsf C_{AB}}(P, Q)[/Equation] же это все стрелки [Equation]f: P \to Q[/Equation],
 для которых диаграмма коммутирует:
 
 [img src:"static/pq.png" height:300 /]
@@ -504,7 +504,7 @@ A \times_C B = \{(a, b) \in A \times B \mid f(a) = g(b)\}
 это сущность, которая:
 
 - Сопоставляет объекту [Equation]X \in \operatorname{ob}(\mathsf C)[/Equation] объект [Equation]F(X) \in \operatorname{ob}(\mathsf D)[/Equation]
-- Сопоставляет стрелке [Equation]f \in \operatorname{hom}_\mathsf{C}(X, Y)[/Equation] стрелку [Equation]F(f) \in \operatorname{hom}_\mathsf{C}(F(X), F(Y))[/Equation]
+- Сопоставляет стрелке [Equation]f \in \mathsf{C}(X, Y)[/Equation] стрелку [Equation]F(f) \in \mathsf{D}(F(X), F(Y))[/Equation]
 
 Причём сохраняя единичные стрелки и композицию:
 
@@ -696,10 +696,10 @@ F(f) \mathbin\bm; \alpha_Y \mathbin\bm; \beta_Y
 \begin{aligned}
 \operatorname{ob}(F \downarrow \gray A) &= \{
     (X, h) \mid X \in \operatorname{ob}(\mathsf D) \mathbin\mathrm{and}
-    h \in \operatorname{hom}_\mathsf{C}(F(X), A) \} \\
-\operatorname{hom}_{F \downarrow \gray A}((X, h), (Y, h')) &= \{
-    F(f) \mid f \in \operatorname{hom}_\mathsf{D}(X, Y) \mathbin\mathrm{and}
-    h \mathbin\bm; F(f) = h'\}
+    h \in \mathsf{C}(F(X), A) \} \\
+(F \downarrow \gray A)\,((X, h), (Y, h')) &= \{
+    F(f) \mid f \in \mathsf{D}(X, Y) \mathbin\mathrm{and}
+    F(f) \mathbin\bm; h' = h\}
 \end{aligned}
 [/Equation]
 
@@ -845,10 +845,51 @@ F(f) \mathbin\bm; \alpha_Y \mathbin\bm; \beta_Y
 
 [img src:"static/equals.png" height:200 /]
 
-В этом вся магия струнных диаграмм: вместо того, чтобы переставлять символы, мы просто двигаем точки
-вдоль линий. При этом, уравнения по-сути решают себя сами.
+В этом магия струнных диаграмм: вместо того, чтобы переставлять символы, мы, например, просто двигаем
+точки вдоль линий. При этом, уравнения по-сути решают себя сами.
 
 ### Функтор hom
+
+Хотя мы определили [Equation]\mathsf{C}(A, B)[/Equation] как множество стрелок
+между [Equation]A[/Equation] и [Equation]B[/Equation], мы можем превратить его в функтор. Для этого
+сначала зафиксируем один из объектов и посмотрим, как
+действует [Equation]\mathsf{C}(\_, \_)[/Equation] на объекты и стрелки.
+
+По определению, [Equation]\mathsf{C}(A, X)[/Equation] это множество всех стрелок
+из [Equation]A[/Equation] в [Equation]X[/Equation]. Стрелке [Equation]f : X \to Y[/Equation]
+функтор [Equation]\mathsf{C}(A, \_)[/Equation] сопоставляет функцию из [Equation]\mathsf{C}(A, X)[/Equation]
+в [Equation]\mathsf{C}(A, Y)[/Equation]. Подходящей функцией является следующая:
+
+[Equation display:true]
+\mathsf{C}(\mathrm{id}_A, f)(u) = u \mathbin\bm; f
+[/Equation]
+
+При этом, очевидно, что [Equation]\mathsf{C}(\mathrm{id}_A, f \mathbin\bm; g) = \mathsf{C}(\mathrm{id}_A, f) \mathbin\bm; \mathsf{C}(\mathrm{id}_A, g)[/Equation].
+
+С функтором [Equation]\mathsf{C}(\_, B)[/Equation] немного хитрее. Имея [Equation]u : X \to A[/Equation]
+и [Equation]f : X \to Y[/Equation], мы не можем построить стрелку из [Equation]Y[/Equation]
+в [Equation]A[/Equation]. Но мы можем её построить из [Equation]g : Y \to X[/Equation].
+
+Поэтому, мы обращаем направление стрелок, и
+задаём [Equation]\mathsf{C}(\_, B) : \mathsf{C}^\mathsf{op} \to \mathsf{Set}[/Equation]
+так:
+
+[Equation display:true]
+\mathsf{C}(f^\mathsf{op}, \mathrm{id}_B)(u) = f \mathbin\bm; u
+[/Equation]
+
+При этом:
+
+[Equation display:true]
+\mathsf{C}(f^\mathsf{op} \mathbin\bm; g^\mathsf{op}, \mathrm{id}_B)(u) =
+g \mathbin\bm; f \mathbin\bm; u
+[/Equation]
+
+Собирая всё вместе, [Equation]\mathsf{C}(\_, \_) : \mathsf{C}^\mathsf{op} \times \mathsf{C} \to \mathsf{Set}[/Equation].
+Функтор, ковариантный по второму аргументу и *контравариантный* по первому.
+
+Из соображений читаемости, мы будем обозначать отображаемые hom-функтором стрелки
+как [Equation]f \mathbin\bm; \_[/Equation] и [Equation]\_ \mathbin\bm; g[/Equation].
 
 ## Сопряжённые функторы
 
@@ -879,7 +920,7 @@ i(n) \leqslant r \iff n \leqslant \lfloor r \rfloor
 
 [Aside]Изоморфизм функторов [Equation]\mathsf C^\mathsf{op} \times \mathsf D \to \mathsf{Set}[/Equation][/Aside]
 [Equation display:true]
-\operatorname{hom}(F(\_), \_) \cong \operatorname{hom}(\_, G(\_))
+\mathsf{D}(F(\_), \_) \cong \mathsf{C}(\_, G(\_))
 [/Equation]
 
 Двойственно, [Equation]G[/Equation] называется левым сопряжённым к [Equation]F[/Equation]. Пара
