@@ -223,7 +223,7 @@ f \mathbin\bm; g = f \mathbin\bm; g^\prime \implies g = g^\prime
 - Эндоморфизмы — стрелки, у которых начало и конец совподают
 - Автоморфизмы — обратимые эндоморфизмы
 
-### Начальные и терминальные стрелки
+### Начальные и терминальные объекты
 
 Рассмотрим тип [std::convert::Infallible](https://doc.rust-lang.org/std/convert/enum.Infallible.html)
 
@@ -885,11 +885,27 @@ F(f) \mathbin\bm; \alpha_Y \mathbin\bm; \beta_Y
 g \mathbin\bm; f \mathbin\bm; u
 [/Equation]
 
-Собирая всё вместе, [Equation]\mathsf{C}(\_, \_) : \mathsf{C}^\mathsf{op} \times \mathsf{C} \to \mathsf{Set}[/Equation].
+Собирая всё вместе, [Equation]\mathsf{C}(\_, \_) : \mathsf{C}^\mathsf{op} \times \mathsf{C} \to \mathsf{Set}[/Equation]
 Функтор, ковариантный по второму аргументу и *контравариантный* по первому.
 
 Из соображений читаемости, мы будем обозначать отображаемые hom-функтором стрелки
 как [Equation]f \mathbin\bm; \_[/Equation] и [Equation]\_ \mathbin\bm; g[/Equation].
+
+TODO, рассмотрим один конкретный пример. Определим категорию [Equation]\Bbb Z^+[/Equation] так:
+
+[Equation display:true]
+\begin{aligned}
+\operatorname{ob}(\Bbb Z^+) &= \{\bullet\} \\
+\Bbb Z^+(\bullet, \bullet) &= \Bbb Z \\
+n \mathbin\bm; m &= n + m
+\end{aligned}
+[/Equation]
+
+Мы просто выразили группу целых чисел по сложению как категорию с единственным объектом. При этом
+сложение чисел становится композицией стрелок:
+
+[Equation display:true]2 + 3 - 5 = 0 \quad \longleftrightarrow\quad  2 \mathbin\bm; 3 \mathbin\bm; -5 = \mathrm{id}_\bullet[/Equation]
+
 
 ## Сопряжённые функторы
 
