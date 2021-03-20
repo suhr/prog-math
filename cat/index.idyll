@@ -891,6 +891,11 @@ g \mathbin\bm; f \mathbin\bm; u
 Из соображений читаемости, мы будем обозначать отображаемые hom-функтором стрелки
 как [Equation]f \mathbin\bm; \_[/Equation] и [Equation]\_ \mathbin\bm; g[/Equation].
 
+[Equation display:true]
+\mathrm{h}^A = \mathsf{C}(A, \_) \qquad
+\mathrm{h}_A = \mathsf{C}(\_, A) 
+[/Equation]
+
 TODO, рассмотрим один конкретный пример. Определим категорию [Equation]\Bbb Z^+[/Equation] так:
 
 [Equation display:true]
@@ -906,6 +911,75 @@ n \mathbin\bm; m &= n + m
 
 [Equation display:true]2 + 3 - 5 = 0 \quad \longleftrightarrow\quad  2 \mathbin\bm; 3 \mathbin\bm; -5 = \mathrm{id}_\bullet[/Equation]
 
+Рассмотрим другую группу — группу вращения треугольника:
+
+[img src:"static/triag_rot.png" /]
+
+Вращение треугольника можно рассматривать как перестановку его вершин:
+
+[Equation display:true]{\circlearrowright} = \{ a \mapsto c, b \mapsto a, c \mapsto b\}[/Equation]
+
+Иначе говоря, группа вращений треугольника это подгруппа автоморфизмов множества [Equation]\triangle = \{a, b, c\}[/Equation].
+
+Действие [Equation]\Bbb Z^+[/Equation] на [Equation]\triangle[/Equation] это функтор [Equation]\Bbb Z^+ \to \mathsf{Set}[/Equation], сопоставляющий
+каждой стрелке [Equation]\Bbb Z^+[/Equation] некий автоморфизм из [Equation]\triangle[/Equation].
+В случае вращений, он выглядит так:
+
+[Equation display:true]
+F(\bullet) = \triangle \qquad
+F(n) = {\circlearrowright}^n
+[/Equation]
+
+Функтор [Equation]F[/Equation] переносит тождества, верные для целых чисел, в тождества, верные для
+вращения треугольника. Так, например:
+
+[Equation display:true]
+2 + 3 - 5 = 0 \quad \longrightarrow\quad 
+{\circlearrowright}^2 \mathbin\bm; {\circlearrowright}^3 \mathbin\bm; {\circlearrowright}^{-5} = \mathrm{id}_\triangle
+[/Equation]
+
+Но что если мы хотим следить за конкретной вершиной треугольника? Например, пусть нас интересует орбита
+элемента [Equation]a[/Equation]:
+
+[Equation display:true]
+a \xmapsto{\circlearrowright} c \xmapsto{\circlearrowright} b \xmapsto{\circlearrowright^4} a
+[/Equation]
+
+Было бы хорошо сопоставить эту орбиту с какой-нибудь другой орбитой. Для этого заметим,
+что [Equation]\Bbb Z^+(\bullet, \_)[/Equation] это ничто иное, как действие [Equation]\Bbb Z^+[/Equation]
+на собственные стрелки. Сопоставив любой стрелке [Equation]a[/Equation], получаем отображение орбит:
+
+[iframe
+src:"https://q.uiver.app/?q=WzAsOCxbMCwwLCIwIl0sWzIsMCwiMSJdLFs0LDAsIjIiXSxbNiwwLCI2Il0sWzAsMiwiYSJdLFsyLDIsImMiXSxbNCwyLCJiIl0sWzYsMiwiYSJdLFswLDEsIlxcXyBcXG1hdGhiaW5cXGJtOyAxIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsxLDIsIlxcXyBcXG1hdGhiaW5cXGJtOyAxIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDMsIlxcXyBcXG1hdGhiaW5cXGJtOyA0IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFs0LDUsIlxcY2lyY2xlYXJyb3dyaWdodCIsMix7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbNSw2LCJcXGNpcmNsZWFycm93cmlnaHQiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzYsNywiXFxjaXJjbGVhcnJvd3JpZ2h0XjQiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzAsNCwiXFxhbHBoYSIsMSx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbMSw1LCJcXGFscGhhIiwxLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDYsIlxcYWxwaGEiLDEseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzMsNywiXFxhbHBoYSIsMSx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XV0=&embed"
+height:275 width:600
+style:`{ "borderRadius": "8px", "border": "none"}`
+][/iframe]
+
+Отображение [Equation]\alpha[/Equation] это ничто иное, как естественное преобразование
+из [Equation]\Bbb Z^+(\bullet, \_)[/Equation] в [Equation]F[/Equation]. И так как 0 это начало всех
+орбит в [Equation]\Bbb Z^+(\bullet, \_)[/Equation], то [Equation]\alpha[/Equation] однозначно
+определяется единственным элементом [Equation]\triangle[/Equation].
+
+Смотря шире, имеем изоморфизм множеств:
+
+[Equation display:true]
+[\Bbb Z^+, \mathsf{Set}](\Bbb Z^+(\bullet, \_), F) \cong F(\bullet)
+[/Equation]
+
+Это выражение имеет весьма широкое обобщение. Пусть [Equation]\mathsf{C}[/Equation] — *любая*
+малая категория, а [Equation]F : \mathsf{C} \to \mathsf{Set}[/Equation] — функтор. Тогда:
+
+[Equation display:true]
+[\mathsf{C}, \mathsf{Set}](\mathsf{h}^A, F) \cong F(A)
+[/Equation]
+
+Причём [Equation]\cong[/Equation] это сразу несколько измоморфизмов:
+
+- Изоморфизм множеств
+- Естественный изоморфизм по [Equation]A[/Equation]
+- Естественный изоморфизм по [Equation]F[/Equation]
+
+https://q.uiver.app/?q=WzAsNCxbMCwwLCJcXG1hdGhybXtpZH1fQSJdLFsyLDAsImYiXSxbMCwyLCJcXHhpIl0sWzIsMiwiXFxldGEiXSxbMCwxLCJcXF8gXFxtYXRoYmluXFxibTsgZiIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbMCwyLCJcXGFscGhhIiwyLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDMsIkYoZikiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzEsMywiXFxhbHBoYSIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XV0=
 
 ## Сопряжённые функторы
 
