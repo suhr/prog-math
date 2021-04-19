@@ -415,7 +415,7 @@ impl Bitmap {
 }
 ```
 
-## Функкции между множествами
+## Функции между множествами
 
 Функция [Equation]f[/Equation] из множества [Equation]A[/Equation] в множество [Equation]B[/Equation]
 (пишется [Equation]f : A \to B[/Equation]) это некоторая сущность, которая соотносит каждому элементу
@@ -444,7 +444,7 @@ impl Bitmap {
 Образ *функции* [Equation]f[/Equation] (пишется [Equation]\operatorname{im} f[/Equation]) это образ
 области [Equation]f[/Equation].
 
-Функция называется *инъективной*, если если из равенства значений следует равенство аргументов.
+Функция называется *инъективной*, если из равенства значений следует равенство аргументов.
 
 [Equation display:true]
 (\forall x_1, x_2 \in \operatorname{dom} f)\enspace f(x_1) = f(x_2) \implies x_1 = x_2
@@ -454,7 +454,7 @@ impl Bitmap {
 
 [img src:"https://mathworld.wolfram.com/images/eps-gif/Injection_1000.gif" /][br /]
 
-Функция называется *сюръективной*, если её образ совпадает с её областью.
+Функция называется *сюръективной*, если её образ совпадает с её кообластью.
 
 Графически, это может выглядеть так:
 
@@ -505,7 +505,7 @@ A \subseteq B \implies f[A] \subseteq f[B]
 Кроме того, образ объединения это объединение образов:
 
 [Equation display:true]
-F[A \cup B] = F[A] \cup F[B]
+f[A \cup B] = f[A] \cup f[B]
 [/Equation]
 
 Если же функция инъективная, то она сохраняет строгое отношение подмножества, а образ пересечения
