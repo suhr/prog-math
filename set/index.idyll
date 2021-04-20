@@ -433,6 +433,34 @@ impl Bitmap {
 
 Две функции равны, если равны их области, кообласти и графики.
 
+Примеры функций из [Equation]\{1, 2, 3\}[/Equation] в [Equation]\{\spadesuit, \heartsuit\}[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+allS(n) &= \spadesuit \\
+someS(n) &= \begin{cases}
+\spadesuit,\ n = 1 \\
+\spadesuit,\ n = 2 \\
+\heartsuit, \ n = 3
+\end{cases}
+\end{aligned}
+[/Equation]
+
+Для этих функций:
+
+[Equation display:true]
+\begin{aligned}
+\operatorname{dom} allS &= \{1, 2, 3\} \\
+\operatorname{cod} allS &= \{\spadesuit, \heartsuit\} \\
+\Gamma_{allS} &= \{(1, \spadesuit), (2, \spadesuit), (3, \spadesuit) \} \\
+\end{aligned}
+\begin{aligned}
+\operatorname{dom} someS &= \{1, 2, 3\} \\
+\operatorname{cod} someS &= \{\spadesuit, \heartsuit\} \\
+\Gamma_{someS} &= \{(1, \spadesuit), (2, \spadesuit), (3, \heartsuit) \} \\
+\end{aligned}
+[/Equation]
+
 Множество всех функций из [Equation]A[/Equation] в [Equation]B[/Equation] обозначается
 как [Equation]A \to B[/Equation] или [Equation]B^A[/Equation].
 
@@ -443,6 +471,13 @@ impl Bitmap {
 
 Образ *функции* [Equation]f[/Equation] (пишется [Equation]\operatorname{im} f[/Equation]) это образ
 области [Equation]f[/Equation].
+
+В случае [Equation]allS[/Equation] и [Equation]someS[/Equation]:
+
+[Equation display:true]
+\operatorname{im} allS = \{\spadesuit\} \qquad
+\operatorname{im} someS = \{\spadesuit, \heartsuit \}
+[/Equation]
 
 Функция называется *инъективной*, если из равенства значений следует равенство аргументов.
 
@@ -535,8 +570,10 @@ X(S) = (e \mapsto [e \in S])
 [/Equation]
 
 Она сюръективна: каждой функции [Equation]\chi \in (A \to \{0, 1\})[/Equation] соответствует
-подмножество [Equation]\{e \in A \mid \chi(e) = 1\}[/Equation]. Она инъективна — это подмножество
-единственно. Следовательно, она является биекцией.
+подмножество [Equation]S = \{e \in A \mid \chi(e) = 1\}[/Equation].
+Равенство [Equation]\chi = X(S)[/Equation] же следует из равенства графиков.
+
+Но она и инъективна — подмножество [Equation]S[/Equation] определено однозначно. Следовательно, она является биекцией.
 
 ## Отношение эквивалентности
 
@@ -615,14 +652,35 @@ X(S) = (e \mapsto [e \in S])
 Это позволяет разложить функцию вот так:
 
 [Equation display:true]
-A \xtwoheadrightarrow{\enspace} A/{\sim_f} \xrightarrow{\tilde f} \operatorname{im} f \xhookrightarrow{\enspace} B
+A \xrightarrow{\enspace} A/{\sim_f} \xrightarrow{\tilde f} \operatorname{im} f \xrightarrow{\enspace} B
 [/Equation]
 
 Причём:
 
 - Отображение каждого элемента множества [Equation]A[/Equation] в соответствующий класс эквивалентности является сюръекцией
 - Функция [Equation]\tilde f[/Equation], сопоставляющая каждому [Equation][a]_{\sim_f}[/Equation] значение [Equation]f(a)[/Equation] является биекцией
-- Тождественное преобразование из [Equation]\operatorname{im} f[/Equation] в [Equation]B[/Equation] является инъекцией
+- Тождественное отображение из [Equation]\operatorname{im} f[/Equation] в [Equation]B[/Equation] является инъекцией
+
+Пример: пусть [Equation]f[/Equation] это функция из [Equation]\{1, 2, 3, 4\}[/Equation] в [Equation]\{♡, ♢, ♣, ♠\}[/Equation],
+определённая следующим образом:
+
+[Equation display:true]
+f(n) = \begin{cases}
+\diamondsuit,\ n = 1 \\
+\diamondsuit,\ n = 2 \\
+\heartsuit,\ n = 3 \\
+\spadesuit,\ n = 4 \\
+\end{cases}
+[/Equation]
+
+Тогда её разложение имеет вид
+
+[Equation display:true]
+\{1, 2, 3, 4\} \xrightarrow{\enspace}
+\{\{1, 2\}, \{3\}, \{4\}\} \xrightarrow{\tilde f}
+\{\diamondsuit, \heartsuit, \spadesuit\} \xrightarrow{\enspace}
+\{\diamondsuit, \heartsuit, \spadesuit, \clubsuit\}
+[/Equation]
 
 ### Мощность
 
@@ -659,7 +717,7 @@ c &\longleftrightarrow 2
 Тогда [Equation]|S| \geqslant |\Bbb N|[/Equation].
 
 [Aside]Утверждение, что такая функция всегда существует, называется *аксиомой выбора*.[/Aside]
-Нам потребуется функция выбора [Equation]\varepsilon[/Equation], сопоставляющее каждому непустому
+Нам потребуется функция выбора [Equation]\varepsilon[/Equation], сопоставляющая каждому непустому
 подмножеству множества [Equation]S[/Equation] единственный элемент этого подмножества:
 
 [Equation display:true]
@@ -716,7 +774,7 @@ S \setminus S_1 \xrightarrow{f} S_1 \setminus S_2 \xrightarrow{f} S_2 \setminus 
 **Предложение:** Для любого непустого множества [Equation]S[/Equation], [Equation]|\mathcal{P}(S)| > |S|[/Equation]
 (строго мощнее).
 
-Нам надо доказать, что не существует биекция из [Equation]S[/Equation] в [Equation]\mathcal{P}(S)[/Equation].
+Нам надо доказать, что не существует биекции из [Equation]S[/Equation] в [Equation]\mathcal{P}(S)[/Equation].
 Предположим, что [Equation]f[/Equation] является такой биекцией. Определим множество
 
 [Equation display:true]
