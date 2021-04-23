@@ -736,7 +736,7 @@ S \xrightarrow{f} S_1 \xrightarrow{f} S_2 \xrightarrow{f} \dots
 Так как применение функции сохраняет отношение подмножества:
 
 [Equation display:true]
-S \subset S_1 \subset S_2 \subset \dots
+S ⊃ S_1 ⊃ S_2 ⊃ \dots
 [/Equation]
 
 Так как функция биективна:
@@ -759,7 +759,7 @@ S \setminus S_1 \xrightarrow{f} S_1 \setminus S_2 \xrightarrow{f} S_2 \setminus 
 Соответствующая этой функции цепь подмножеств:
 
 [Equation display:true]
-\Bbb Z \subset 2 \Bbb Z \subset 4 \Bbb Z \subset \dots
+\Bbb Z ⊃ 2 \Bbb Z ⊃ 4 \Bbb Z ⊃ \dots
 [/Equation]
 
 Выберем число из [Equation]\Bbb Z \setminus 2 \Bbb Z[/Equation], например, 3. Тогда
@@ -774,22 +774,44 @@ S \setminus S_1 \xrightarrow{f} S_1 \setminus S_2 \xrightarrow{f} S_2 \setminus 
 **Предложение:** Для любого непустого множества [Equation]S[/Equation], [Equation]|\mathcal{P}(S)| > |S|[/Equation]
 (строго мощнее).
 
-Нам надо доказать, что не существует биекции из [Equation]S[/Equation] в [Equation]\mathcal{P}(S)[/Equation].
-Предположим, что [Equation]f[/Equation] является такой биекцией. Определим множество
+Чтобы доказать это утверждение, достаточно показать, что не существует сюръекции из [Equation]S[/Equation]
+в [Equation]S \to \{0, 1\}[/Equation]. Для этого докажем следующее утверждение:
+
+[Aside]
+Неподвижная точка функции [Equation]n : \Omega \to \Omega[/Equation] это такое [Equation]x \in \Omega[/Equation],
+что [Equation]n(x) = x[/Equation]
+[/Aside]
+**Теорема о неподвижной точке:** пусть [Equation]f : S \to (S \to \Omega)[/Equation] — сюръекция.
+Тогда любая функция [Equation]n : \Omega \to \Omega[/Equation] имеет неподвижную точку.
+
+Пусть [Equation]d : S \to \Omega[/Equation] — функция, определённая так:
 
 [Equation display:true]
-D = \{s \in S \mid s \notin f(s)\}
+d(x) = n(f(x)(x))
 [/Equation]
 
-Пусть [Equation]d = f^{-1}(D)[/Equation]. Верно ли, что [Equation]d \in D[/Equation]?
+Так как [Equation]f[/Equation] — сюръекция, то существует такое [Equation]c \in S[/Equation], что
+[Equation]f(c) = d[/Equation]. Но применив [Equation]d[/Equation] к [Equation]c[/Equation] получаем:
 
-- Положим, что принадлежит. Но тогда не может принадлежать, по определению [Equation]D[/Equation]
-- Положим, что не принадлежит. Тогда должно принадлежать, по определению [Equation]D[/Equation]
+[Equation display:true]
+d(c) = n(f(c)(c)) = n(d(c))
+[/Equation]
 
-Таким образом, имеем противоречие. А следовательно, такой биекции не существует.
+Отсюда [Equation]d(c)[/Equation] является неподвижной точкой функции [Equation]n[/Equation].
 
-Трюк, использованный в доказательсте этой теоремы называется *диагональным аргументом*. Почти так же
-доказываются многие другие важные результаты, вроде:
+Но в случае [Equation]\Omega = \{0, 1\}[/Equation] можно легко определить функцию, у которой
+нет неподвижной точки:
+
+[Equation display:true]
+not(x) = \begin{cases}
+1,\ x = 0 \\
+0,\ x = 1
+\end{cases}
+[/Equation]
+
+А следовательно, не существует сюръекции из [Equation]S[/Equation] в [Equation]S \to \{0, 1\}[/Equation].
+
+Многие другие важные результаты в математике доказываются почти так же. Например:
 
 - Несчётности вещественных чисел
 - Проблема остановки и теорема Райса
@@ -842,7 +864,7 @@ D = \{s \in S \mid s \notin f(s)\}
 Теоретико-множественная формула это логическая формула, использующая лишь логические символы,
 переменные и отношения [Equation]\in[/Equation] и [Equation]=[/Equation].
 
-**Аксиома построения классов:** для любой теоретико-множественной
+**Схема построения классов:** для любой теоретико-множественной
 формулы [Equation]\varphi(s)[/Equation] существует класс всех множеств [Equation]s[/Equation],
 таких, что [Equation]\varphi(s)[/Equation] истино.
 
@@ -940,7 +962,7 @@ x \notin \bigcap p \mathbin\mathrm{or}
 
 ### Аксиома регулярности
 
-Последняя аксиома позволяет избавится от множеств, содержащих себя как элемент, и прочих бесконечно
+Последняя аксиома позволяет избавиться от множеств, содержащих себя как элемент, и прочих бесконечно
 вложенных множеств.
 
 **Аксиома регулярности:** в непустом множестве [Equation]a[/Equation] найдётся хотя бы один
