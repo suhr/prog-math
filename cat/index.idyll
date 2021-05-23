@@ -15,1049 +15,728 @@
 заданы функции, скрыта от нас.
 
 [Aside]Кроме, пожалуй, C, Go и PHP.[/Aside]
-Мы, программисты, находимся в довольно привелегированном положении. Категориальные понятия *уже*
+Мы, программисты, находимся в довольно привелегированном положении. Категорные понятия *уже*
 даны нам в языках, подходах и культуре, хотя и не осознаются. И несмотря на многочисленные шутки
 про непостижимость монад™, `flat_map` уже есть в каждом языке.
 
-## Диаграммы
+## Алгебраические структуры
+
+Перед тем, как погружаться в категории, рассмотрим базовые алгебраические структуры.
+
+### Функции
+
+Но сначала вспомним функции над множествами. Как мы знаем, функция [Equation]f: A \to B[/Equation] это
+сущность, которая сопоставляет каждому элементу множества [Equation]A[/Equation] некий единственный
+элемент множества [Equation]B[/Equation]. Равенство двух функций определяется равенством их областей,
+кообластей и графиков.
 
 [Aside]
 В математике обычно пишут композицию справо налево, как [Equation]g \circ f[/Equation]. Но мы читаем,
 пишем и рисуем диаграммы слева направо, и потому так записывать композицию не будем.
 [/Aside]
-Но сначала посмотрим на функции между множествами ещё раз. Для начала, определим операцию компоцизии
-функций:
+Композиция функций [Equation]f: A \to B[/Equation] и [Equation]g: B \to C[/Equation] определяется
+следующим образом:
 
 [Equation display:true]
 (f \mathbin\bm; g)(x) = g(f(x))
 [/Equation]
 
-И тождественную функцию из множества [Equation]A[/Equation] в само себя:
+Для любого множества [Equation]A[/Equation] существует единичное отображение из [Equation]A[/Equation] в [Equation]A[/Equation]:
 
 [Equation display:true]
-(\forall x \in A)\enspace \mathrm{id}_A(x) = x
+\mathrm{id}_A(x) = x 
 [/Equation]
 
-Любая функция [Equation]f: A \to B[/Equation] имеет единицу слева и справо относительно композиции:
+Для него верно следующее:
 
 [Equation display:true]
-\begin{aligned}
-\mathrm{id}_{A} \mathbin\bm; f &= f \\
-f \mathbin\bm; \mathrm{id}_{B} &= f \\
-\end{aligned}
+\mathrm{id}_A \mathbin\bm; f = f \mathbin\bm; \mathrm{id}_B = f
 [/Equation]
 
-И для любых трёх функций, их композиция ассоциативна (если определена):
+Кроме того, композиция трёх функций ассоциативна (если определена):
 
 [Equation display:true]
 (f \mathbin\bm; g) \mathbin\bm; h = f \mathbin\bm; (g \mathbin\bm; h)
 [/Equation]
 
-Имея какие-то множества, мы можем рисовать функции как стрелочки между ними. Например:
+Ассоциативность позволяет нарисовать диаграмму для композиции функций:
 
-[img src:"static/rzn.png" height:100 /]
-
-Это называется диаграммой.
-
-Для равенств, касающихся тождественных функций, мы тоже можем нарисовать диаграму:
-
-[img src:"static/id_f.png" height:250 /]
-
-Но чтобы диаграмма определяла равенства, нужно дополнительное условие. А именно: все пути,
-соединяющие любые две вершины, равны. Диаграмма, обладающая подобным свойством,
-называется *коммутативной*.
-
-(правый и левый обратные)
-
-## Категории
-
-Неформально, категория это класс объектов с функциями между ними. Формально же,
-категория [Equation]\mathsf C[/Equation] это:
-
-1. Класс объектов [Equation]\operatorname{ob}(\mathsf C)[/Equation]
-2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\mathsf{C}(A, B)[/Equation]
-3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \mathsf{C}(A, A)[/Equation]
-4. Для любой пары стрелок [Equation]f \in \mathsf{C}(A, B)[/Equation] и [Equation]g \in \mathsf{C}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \mathsf{C}(A, C)[/Equation]
-
-[Aside]Мы будем писать [Equation]f: A \to B[/Equation] имея в виду [Equation]f \in \mathsf{C}(A, B).[/Equation][/Aside]
-Неравные классы стрелок не должны пересекаться. Кроме того, композиция стрелок должна вести себя
-как композиция функций:
-
-[Equation display:true]
-\begin{aligned}
-\mathrm{id}_{A} \mathbin\bm; f &= f \\
-f \mathbin\bm; \mathrm{id}_{B} &= f \\
-(f \mathbin\bm; g) \mathbin\bm; h &= f \mathbin\bm; (g \mathbin\bm; h)\\
-\end{aligned}
-\qquad\quad
-\forall\left(\begin{aligned}
-f &\in \mathsf{C}(A, B) \\
-g &\in \mathsf{C}(B, C) \\
-h &\in \mathsf{C}(C, D)
-\end{aligned}\right)
-[/Equation]
-
-При этом, стрелки вовсе не обязаны быть функциями. Они могут быть чем угодно, если выполнены
-соответствующие условия.
-
-Категория называется малой, если её классы объектов и классы стрелок — множества.
-
-Очевидные примеры категорий:
-
-[Aside]Точнее, класс эквивалетности чистых тотальных функций по действию на значения типа.[/Aside]
-
-- Категория типов [Equation]\mathsf{Type}[/Equation], где объекты это типы, а стрелки это чистые тотальные функции
-- Категория множеств [Equation]\mathsf{Set}[/Equation], где объекты — множества, а стрелки — отображения
-- Категория векторных пространств [Equation]\mathsf{Vect}[/Equation], где объекты — векторные пространства, а стрелки — линейные отображения
-
-Менее очевидные примеры:
-
-- Категория [Equation]\mathsf{Set}_\subseteq[/Equation], где объекты — множества, а стрелки — отношение подмножества
-- Категория [Equation]\Bbb N_{div}[/Equation], где объекты — натуральные числа, а стрелки — отношение делимости
-
-В случае отношения неравенства на некотором множестве [Equation]S[/Equation], мы можем определить стрелки так:
-
-[Equation display:true]
-S_{\leqslant}(x, y) = \{(x, y) \mid x \leqslant y\}
-[/Equation]
-
-И из свойств отношения неравенства следуют требования, которым должна соответствовать категория:
-
-[Equation display:true]
-\begin{aligned}
-x \leqslant x \\
-x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z
-\end{aligned}
-\qquad
-\begin{aligned}
-\operatorname{id}_x &= (x, x) \\
-(x, y) \mathbin\bm; (y, z) &= (x, z)
-\end{aligned}
-[/Equation]
-
-Аналогично для отношений подмножества и делимости.
-
-Диаграмма в [Equation]\Bbb N_{div}[/Equation] для чисел от нуля до девяти (без транзитивных стрелок):
-
-[img src:"static/nat_div.png" height:500 /]
-
-Стрелка из [Equation]x[/Equation] в [Equation]y[/Equation] соответствует
-делимости [Equation]y[/Equation] на [Equation]x[/Equation] ([Equation]x[/Equation] делит [Equation]y[/Equation]).
-
-### Обратная категория
-
-Пусть у нас есть категория [Equation]\mathsf C[/Equation]. Мы можем построить обратную
-категорию [Equation]\mathsf{C}^\mathsf{op}[/Equation], просто обратив направление всех стрелок.
-При этом, все построения, что у нас были, превращаются в двойственные.
-
-Конкретнее, обратная категория это категория с теми же объектами, где стрелки и композиция определены
-следующим образом:
-
-[Equation display:true]
-{\mathsf{C}^\mathsf{op}}(A, B) = \mathsf{C}(B, A)
-[/Equation]
-[Equation display:true]
-f \mathbin\bm;^\mathsf{op} g = g \mathbin\bm; f
-[/Equation]
-
-Этот нехитный трюк имеет фундаментальное значение:
-
-1. У любого категориального понятия есть двойственное понятие
-2. Если утверждение верно для всех категорий, то и двойственное утверждение верно для всех категорий
-
-Примеры двойственных понятий:
-
-- [Equation]\forall[/Equation] и [Equation]\exists[/Equation]
-- [Equation]\mathbin\mathrm{and}[/Equation] и [Equation]\mathbin\mathrm{or}[/Equation]
-- [Equation]\cap[/Equation] и [Equation]\cup[/Equation]
-- `struct` и `enum`
-- `()` и `!`
-- И многое другое
-
-### Виды стрелок
-
-В теории множеств, у нас были инъективные, сюръективные и биективные функции, определённые так
-по тому, как они действуют на элементы. В категориях же у нас никаких элементов нет, и аналогичные
-понятия нужно определять немного иначе.
-
-Проще всего определить аналог биективных функций.
-
-Cтрелка [Equation]f: A \to B[/Equation] называется *изоморфизмом* (также: обратимой), если существует
-такая стрелка [Equation]f^{-1}: B \to A[/Equation], что
-
-[Equation display:true]
-\begin{aligned}
-f \mathbin\bm; f^{-1} &= \mathrm{id}_A \\
-f^{-1} \mathbin\bm; f &= \mathrm{id}_B
-\end{aligned}
-[/Equation]
-
-Два объекта [Equation]A[/Equation] и [Equation]B[/Equation] называются изоморфными
-(пишется [Equation]A \cong B[/Equation]), если между ними существует изоморфизм.
-
-С высоты теории категорий изоморфные объекты не особо отличимы: все свойства, определяемые через
-стрелки у них одни и те же.
-
-Чтобы определить аналог инъекции, достаточно вспомнить, что инъективной функции соответствует
-биекция между областью функции и образом функции.
-
-Стрелка [Equation]f[/Equation] называется *мономорфизмом*, если для любых двух
-стрелок [Equation]g[/Equation] и [Equation]g^\prime[/Equation]:
-
-[Equation display:true]
-g \mathbin\bm; f = g^\prime \mathbin\bm; f \implies g = g^\prime
-[/Equation]
-
-Двойственно, стрелка [Equation]f[/Equation] называется *эпиморфизмом*, если для любых двух
-стрелок [Equation]g[/Equation] и [Equation]g^\prime[/Equation]:
-
-[Equation display:true]
-f \mathbin\bm; g = f \mathbin\bm; g^\prime \implies g = g^\prime
-[/Equation]
-
-На диаграммах, мономорфизмы и эпиморфизмы обозначаются, соответственно,
-как [Equation]A \xhookrightarrow{f} B[/Equation] и [Equation]A \xtwoheadrightarrow{f} B[/Equation].
-
-Ещё стрелки:
-
-- Эндоморфизмы — стрелки, у которых начало и конец совподают
-- Автоморфизмы — обратимые эндоморфизмы
-
-### Начальные и терминальные объекты
-
-Рассмотрим тип [std::convert::Infallible](https://doc.rust-lang.org/std/convert/enum.Infallible.html)
-
-```rust
-pub enum Infallible {}
-```
-
-Он обладает весьма интересным свойством:
-
-```rust
-use std::convert::Infallible;
-
-/// По-сути, единственная функция из Infallible в A
-fn anything<A>(never: Infallible) -> A {
-    match never {}
-}
-```
-
-Конкретнее:
-
-1. Существует функция из `Infallible` в любой тип
-2. Эта функция по-сути единственная
-
-Начальный объект [Equation]\bm 0[/Equation] категории [Equation]\mathsf C[/Equation] это такой объект,
-что для любого [Equation]Z \in \operatorname{ob}(\mathsf C)[/Equation] существует единственная
-стрелка из [Equation]\bm 0[/Equation] в [Equation]Z[/Equation].
-
-Примеры:
-
-- В [Equation]\mathsf{Type}[/Equation] это любой пустой тип
-- В [Equation]\mathsf{Set}[/Equation] это пустое множество
-- В [Equation]\Bbb N_{div}[/Equation] это число 1
-
-Мы написали [Equation]\bm 0[/Equation] так, будто такой объект единственнен, хотя это вообще говоря
-не так. Однако, на это есть хорошая причина.
-
-**Предложение:** между любыми двумя начальными объектами существует *единственный* изморфизм.
-
-Пусть [Equation]I[/Equation] и [Equation]J[/Equation] — начальные объекты. По определению,
-существуют единственные стрелки [Equation]i_J : I \to J[/Equation] и [Equation]j_I : J \to I[/Equation].
-Их композиция это единственная стрелка из [Equation]I[/Equation] в [Equation]I[/Equation], то
-есть [Equation]\mathrm{id}_{I}[/Equation]. То же самое и в другую сторону.
-
-С высоты теории категорий, объекты с единственным изморфизмом почти неотличимы. Поэтому, мы будем
-смело обозначать начальный объект как [Equation]\bm 0[/Equation].
-
-Для любого понятия есть двойственное, и понятие начального объекта — не исключение.
-
-Терминальный объект [Equation]\bm 1[/Equation] категории [Equation]\mathsf C[/Equation] это
-такой объект, для любого [Equation]Z \in \operatorname{ob}(\mathsf C)[/Equation] существует единственная
-стрелка из [Equation]Z[/Equation] в [Equation]\bm 1[/Equation].
-
-Примеры:
-
-- В [Equation]\mathsf{Type}[/Equation] это любой тип с единственным значением
-- В [Equation]\mathsf{Set}[/Equation] это любое множество с единственным элементом
-- В [Equation]\Bbb N_{div}[/Equation] это число 0
-
-Мы можем выразить начальные и конечные стрелки как трейт:
-
-```rust
-use std::convert::Infallible;
-
-trait Initial {
-    /// Единственная функция из A в self
-    fn never<A>(self) -> A;
-}
-
-trait Terminal {
-    /// Единственно возможная функция из self в A
-    fn unit<A>(_: A) -> Self;
-}
-
-impl Initial for Infallible {
-    fn never<A>(self) -> A {
-        match self {}
-    }
-}
-
-impl Terminal for () {
-    fn unit<A>(_: A) { () }
-}
-```
-
-При этом, компилятор может гарантировать единственность начальной стрелки, а проверять единственность
-терминальной стрелки необходимо программисту.
-
-### Произведение
-
-Рассмотрим тип
-
-```rust
-struct Pair<A, B> {
-    first: A,
-    second: B,
-}
-```
-
-`first` и `second` можно рассматривать как функции из `Pair<A, B>` в `A` и `B` соответственно.
-Если у нас есть функция из какого-то типа `Z` в `Pair<A, B>`, то существуют функции из `Z` в
-`A` и из `Z` в `B`.
-
-Но пусть `f` — функция из `Z` в `A`, а `g` — функция из `Z` в `B`. Тогда существует по-сути
-единственная соответствующая им функция из `Z` в `Pair<A, B>`:
-
-```rust
-fn pair_fg(something: Z) -> Pair<A, B> {
-    Pair {
-        first: f(something),
-        second: g(something),
-    }
-}
-```
-
-Произведение объектов [Equation]A[/Equation] и [Equation]B[/Equation] это
-некий объект [Equation]A \times B[/Equation], снабжённый стрелками [Equation]\pi_1: A \times B \to A[/Equation]
-и [Equation]\pi_2: A \times B \to B[/Equation], что для любых двух
-стрелок [Equation]f: Z \to A[/Equation] и [Equation]g: Z \to B[/Equation] существует *единственная*
-стрелка [Equation]f\times g: Z \to A \times B[/Equation], для которой крыло коммутативно:
-
-[img src:"static/prod.png" height:300 /]
-
-Примеры:
-
-- В [Equation]\mathsf{Type}[/Equation] это структуры и кортежи
-- В [Equation]\mathsf{Set}[/Equation] это декартово произведение множеств
-- В [Equation]\mathsf{Set}_\subseteq[/Equation] это пересечение множеств
-- В [Equation]\Bbb N_{div}[/Equation] это наибольший общий делитель
-
-Последнее следует из того, что [Equation]A \times B[/Equation] это терминальный объект в категории
-объектов, снабжённых проекциями в [Equation]A[/Equation] и [Equation]B[/Equation].
-
-Конкретнее, для категории [Equation]\mathsf C[/Equation] определим
-категорию [Equation]\mathsf C_{AB}[/Equation], где объекты определяем так:
-
-[Equation display:true]
-\operatorname{ob}_{\mathsf C_{AB}} = \{
-(P, p_1, p_2) \mid
-p_1 \in \mathsf{C}(P, A) \mathbin\mathrm{and}
-p_2 \in \mathsf{C}(P, B)
-\}
-[/Equation]
-
-Объект как диаграмма:
-
-[img src:"static/pab.png" height:250 /]
-
-Стрелки [Equation]{\mathsf C_{AB}}(P, Q)[/Equation] же это все стрелки [Equation]f: P \to Q[/Equation],
-для которых диаграмма коммутирует:
-
-[img src:"static/pq.png" height:300 /]
-
-[Aside]Но в реальном коде так делать *не нужно*.[/Aside]
-Наличие функций как первоклассных объектов позволяет выразить произведение как трейт:
-
-```rust
-trait Product<A, B> {
-    fn first(self) -> A;
-    fn second(self) -> B;
-
-    fn times<Z: 'static + Copy>(f: fn(Z) -> A, g: fn(Z) -> B)
-        -> Box<dyn Fn(Z) -> Self>;
-}
-
-struct Pair<A, B> {
-    first: A,
-    second: B,
-}
-
-impl<A: 'static, B: 'static> Product<A, B> for Pair<A, B> {
-    fn first(self) -> A {
-      self.first
-    }
-
-    fn second(self) -> B {
-      self.second
-    }
-
-    fn times<Z: 'static + Copy>(f: fn(Z) -> A, g: fn(Z) -> B)
-        -> Box<dyn Fn(Z) -> Self>
-    {
-        Box::new(move |z| Pair {
-            first: f(z),
-            second: g(z),
-        })
-    }
-}
-```
-
-### Копроизведение
-
-Копроизведение — понятие, двойственное произведению.
-
-Копроизведение объектов объектов [Equation]A[/Equation] и [Equation]B[/Equation] это
-объект [Equation]A + B[/Equation], снабжённый стрелками [Equation]i_1: A \to A + B[/Equation]
-и [Equation]i_2: B \to A + B[/Equation], что для любых двух стрелок [Equation]f: A \to Z[/Equation]
-и [Equation]g: B \to Z[/Equation] существует *единственная* стрелка [Equation]f + g: A + B \to Z[/Equation],
-для которой кокрыло коммутативно:
-
-[img src:"static/sum.png" height:300 /]
-
-Аналогично произведению, копроизведение это начальный объект в категории объектов, снабжённых
-вложениями из [Equation]A[/Equation] и [Equation]B[/Equation].
-
-В [Equation]\mathsf{Type}[/Equation] копроизведение это тип-сумма, например, `Either<A, B>` или `Result<T,  E>`.
-В [Equation]\mathsf{Set}[/Equation] это размеченное объединение:
-
-[Equation display:true]
-A \sqcup B = (\{0\} \times A) \cup (\{1\} \times B)
-[/Equation]
-
-В [Equation]\mathsf{Set}_\subseteq[/Equation] копроизведение это объединение множеств, когда же
-в [Equation]\Bbb N_{div}[/Equation] это наименьшее общее кратное.
-
-(про типы суммы)
-
-### Расслоёное произведение и сумма
-
-Пересечение множеств это произведение в категории [Equation]\mathsf{Set}_\subseteq[/Equation]. Но
-мы можем определить аналог пересечения и в категории [Equation]\mathsf{Set}[/Equation].
-
-Пусть [Equation]A, B \subseteq U[/Equation]. Есть две фунции:
-
-- Вложение [Equation]a_U : A \to U[/Equation]
-- Вложение [Equation]b_U : B \to U[/Equation]
-
-Если мы рассматриваем [Equation]A \cap B[/Equation], то к этим функциям добавляются ещё две:
-
-- Вложение [Equation]\pi_A : A \cap B \to A[/Equation]
-- Вложение [Equation]\pi_B : A \cap B \to B[/Equation]
-
-И все они на коммутативной диаграмме:
-
-[img src:"static/a_cap_b.png" height:250 /]
-
-Расслоёное произведение стрелок [Equation]f : A \to C[/Equation] и [Equation]g : B \to C[/Equation] это:
-
-[ul]
-[li]Объект [Equation]A \times_C B[/Equation]
-[ul][li]Вместе со стрелками [Equation]\pi_1: A \times_C B \to A[/Equation] и [Equation]\pi_2: A \times_C B \to B[/Equation][/li][/ul]
-[/li]
-[li]Такой что для любых двух стрелок [Equation]z_A: Z \to A[/Equation] и [Equation]z_B: Z \to B[/Equation]
-[ul][li]Существует единственная стрелка [Equation]u: Z \to A \times_C B[/Equation] для которой следующая диаграмма коммутирует:[/li][/ul]
-[/li]
-[/ul]
-
-[img src:"static/pullback.png" height:400 /]
-
-В категории множеств, расслоёное произведение это следующее множество:
-
-[Equation display:true]
-A \times_C B = \{(a, b) \in A \times B \mid f(a) = g(b)\}
-[/Equation]
-
-Если мы посмотрим на диаграмму для пересечения множеств с другой стороны, мы получим диаграмму
-для объединения множеств:
-
-[img src:"static/a_cup_b.png" height:250 /]
-
-Расслоённая сумма стрелок [Equation]f : Z \to A[/Equation] и [Equation]g : Z \to B[/Equation]
-это расслоённое произведение в обратной категории.
-
-Не будем расписывать определение подробно: идея в точности та же, что и в случае копроизведения.
-
-В категории множеств, расслоёная сумма это множество [Equation](A \sqcup B)/{\sim}_{f \sqcup g}[/Equation],
-где [Equation]{\sim}_{f \sqcup g}[/Equation] это отношение эквивалентности, порождённое функцией
-
-[Equation display:true]
-\begin{aligned}
-(f \sqcup g)((0, a)) &= f(a) \\
-(f \sqcup g)((1, b)) &= g(b)
-\end{aligned}
-[/Equation]
-
-## Функторы
-
-Функтор это отображение между категориями. Конкретнее, функтор [Equation]F: \mathsf C \to \mathsf D[/Equation]
-это сущность, которая:
-
-- Сопоставляет объекту [Equation]X \in \operatorname{ob}(\mathsf C)[/Equation] объект [Equation]F(X) \in \operatorname{ob}(\mathsf D)[/Equation]
-- Сопоставляет стрелке [Equation]f \in \mathsf{C}(X, Y)[/Equation] стрелку [Equation]F(f) \in \mathsf{D}(F(X), F(Y))[/Equation]
-
-Причём сохраняя единичные стрелки и композицию:
-
-[Equation display:true]
-\begin{aligned}
-F(\mathrm{id}_X) &= \mathrm{id}_{F(X)} \\
-F(f \mathbin\bm; g) &= F(f) \mathbin\bm; F(g)
-\end{aligned}
-[/Equation]
-
-Контравариантный функтор из [Equation]\mathsf C[/Equation] в [Equation]\mathsf D[/Equation] это
-функтор [Equation]F: \mathsf C^\mathsf{op} \to \mathsf D[/Equation].
-
-Примеры
-
-[ul]
-[li]`Option<T>`, `Vec<T>`, `Iterator`, `Future`, etc...[/li]
-[li]Все функции, сохраняющие отношение порядка это функторы между соответствующими категориями.
-В частности:
-[ul]
-    [li]`floor()` и `ceil()`[/li]
-    [li]Топологическая сортировка[/li]
-    [li]Логические часы[/li]
-[/ul]
-[/li]
-[li]Выделение компонент сильной связности[/li]
-[li]Направленный граф[/li]
-[li]Диаграмма[/li]
-[li]В линейной алгебре, двойственное отображение [Equation](\_)^*[/Equation][/li]
-[/ul]
-
-Понятие фукторы позволяют определить категорию малых категорий [Equation]\mathsf{Cat}[/Equation],
-где объекты — малые категории, а стрелки — функторы между категориями.
-
-### Диаграммы и графы
-
-Идея очень проста: пусть у нас есть некий элемент [Equation]e \in S[/Equation]. Этому элементу
-соответствует единственная функция [Equation]e^\bullet: \bm 1 \to S[/Equation]:
-
-[Equation display:true]
-e^\bullet(\bullet) = e
-[/Equation]
-
-Продолжая аналогию, объекту [Equation]A \in \operatorname{ob}(\mathsf C)[/Equation] соответствует
-единственный функтор [Equation]A^\bullet : \bm 1 \to \mathsf C[/Equation],
-где [Equation]\bm 1[/Equation] уже не множество с единственным элементом, а категория с единственным
-объектом и единственной стрелкой.
-
-Продолжая аналогию дальше, вот это
-
-[img src:"static/afb.png" height:100 /]
-
-по-сути является функтором из вот этого в [Equation]\mathsf C[/Equation]
-
-[img src:"static/p_p.png" height:100 /]
-
-Обобщая, диаграмма это функтор из некой категории [Equation]\mathsf J[/Equation] (называемой *схемой*
-или категорий индексов) в категорию [Equation]\mathsf C[/Equation].
-
-Этот казалось бы бесполезное построение на самом деле даёт нам абстракцию: мы можем говорить про все
-диаграммы из данной схемы, или даже говорить про все диаграммы вообще. Причём говорить на нативном
-языке теории категории, языке стрелок.
-
-Итак, диаграмма это функтор, а что насчёт направленных графов? А направленный граф это:
-
-- Множество вершин [Equation]V[/Equation]
-- Вместе с множество рёбер [Equation]E[/Equation]
-- И функциями [Equation]src: E \to V[/Equation] и [Equation]tgt: E \to V[/Equation], возвращающими начало и конец ребра
-
-Всё это можно легко изобразить диаграммой:
-
-[img src:"static/e_v.png" height:100 /][br /]
-
-Но диграмма это функтор! И стало быть, направленный граф это тоже всего лишь функтор из схемы
-с двумя объектами и стрелками в категорию множеств.
-
-### Пределы и копределы
-
-Определения декартова произведения и расслоёного произведения состоят в основном из бойлерплейта:
-мы говорим почти одни и те же слова, разве что диаграммы немного разные. Но зная, что диаграмма
-это функтор, мы можем обобщить обычные и расслоёные произведения до понятия предела диаграммы.
-
-Для этого нам сначала нужно построить категорию, в которой искомый предел является терминальным
-объектом. В случае расслоёного произведения, это категория таких вот конус:
-
-[img src:"static/fibred_cone.png" height:350 /]
-
-Мы присоединили [Equation]A \times_C B[/Equation] ко всем остальным объектам и приказали диаграмме
-коммутировать.
-
-В общем случае, для диаграммы [Equation]F: \mathsf J \to \mathsf C[/Equation] конус это
-объект [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation] вместе с семейством стрелок [Equation]\varphi_X : N \to F(X)[/Equation],
-причём для любых [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation], [Equation]Y \in \operatorname{ob}(\mathsf J)[/Equation] и [Equation]f: X \to Y[/Equation]
-следующая диаграмма коммутирует:
-
-[img src:"static/cone.png" height:250 /]
-
-Стрелка между конусами [Equation](P, \psi_X)[/Equation] и [Equation](N, \varphi_X)[/Equation] это
-стрелка [Equation]u: P \to N[/Equation], такая, что для любого [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation]
-следующая диаграмма коммутирует:
-
-[img src:"static/cone_arr.png" height:175 /]
-
-Предел диаграммы [Equation]F: \mathsf J \to \mathsf C[/Equation] это терминальный объект в категории
-конусов для [Equation]F[/Equation]. Соответствующий объект обозначается [Equation]\operatorname{lim} F[/Equation].
-
-Двойственно, копредел диаграммы это начальный объект в категории коконусов. Коконусы определяются
-так же, как и конусы, только стрелки направлены в противоположную сторону.
-
-(TODO: ещё про пределы)
-
-### Естественные преобразования
-
-Если функторы это стрелки между категориями, то естественные преобразования это стрелки между функторами.
-
-Пусть [Equation]F : \mathsf{C} \to \mathsf{D}[/Equation] и [Equation]D : \mathsf{C} \to \mathsf{D}[/Equation] — функторы.
-Естественное преобразование [Equation]\alpha : F \Rightarrow G[/Equation] это сущность, сопоставляющая
-каждому объекту [Equation]X \in \operatorname{ob}(\mathsf C)[/Equation] стрелку [Equation]\alpha_X : F(X) \to G(X)[/Equation],
-причём для любой стрелки [Equation]f : X \to Y[/Equation] следующая диаграмма коммутирует:
-
-[img src:"static/nat.png" height:250 /][br /]
-
-Примеры:
-
-- Полиморфные функции между типами-функторами, если результат не зависит от того, применятся ли `map` перед или после функции. Например `append` или `reverse`.
-- Гомоморфизмы между графами
-- В линейной алгебре, естественный изоморфизм [Equation]\bm 1 \cong (\_)^{**}[/Equation]
-
-Композиция двух естественных преобразований [Equation]\alpha : F \Rightarrow G[/Equation] и [Equation]\beta : G \Rightarrow H[/Equation]
-определяется просто:
-
-[img src:"static/nat_comp.png" height:450 /][br /]
-
-Доказательство естественности:
-
-[Aside]Не нужно пытаться понять это символьно. Смотри на диаграмму, она содержит все ответы.[/Aside]
-[Equation display:true]
-\alpha_X \mathbin\bm; \beta_X \mathbin\bm; H(f) =
-\alpha_X \mathbin\bm; G(f) \mathbin\bm; \beta_Y =
-F(f) \mathbin\bm; \alpha_Y \mathbin\bm; \beta_Y
-[/Equation]
-
-Естественные преобразования позволяют нам определить категорию функторов [Equation][\mathsf C, \mathsf D][/Equation],
-где объекты — функторы между [Equation]\mathsf C[/Equation] и [Equation]\mathsf D[/Equation],
-а стрелки — естественные преобразования между функторами.
-
-Понятие естественного преобразования позволяет ещё более кратко выразить понятие предела. Чтобы
-это сделать, сначала нарисуем диаграмму для конуса чуть иначе:
-
-[img src:"static/lim_sq.png" height:250 /][br /]
-
-Чтобы превратить этот квадрат в определение естественного преобразования, определим для
-каждого [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation]
-функтор [Equation]\Delta_N : \mathsf J \to \mathsf C[/Equation] такой что для любого
-объекта [Equation]X \in \operatorname{ob}(\mathsf J)[/Equation] и любой стрелки [Equation]f : X \to Y[/Equation]:
-
-[Equation display:true]
-\begin{aligned}
-\Delta_N(X) &= N \\
-\Delta_N(f) &= \mathrm{id}_N
-\end{aligned}
-[/Equation]
-
-Тогда семейство стрелок [Equation]\varphi_X[/Equation] это ничто иное, как естественное преобразование
-[Equation]\varphi : \Delta_N \Rightarrow F[/Equation].
-
-[Aside]Этот функтор называется диагональным.[/Aside]
-Далее, определим функтор [Equation]\Delta : \mathsf C \to [\mathsf J, \mathsf C][/Equation]
-такой что для любого объекта [Equation]N \in \operatorname{ob}(\mathsf C)[/Equation] и любой
-стрелки [Equation]f : N \to P[/Equation]
-
-[Equation display:true]
-\begin{aligned}
-\Delta(N) &= \Delta_N \\
-\Delta(f) &= f
-\end{aligned}
-[/Equation]
-
-Здесь [Equation]f[/Equation] становится естественным преобразованием из [Equation]\Delta_N[/Equation] в [Equation]\Delta_P[/Equation]:
-
-[img src:"static/del_np.png" height:250 /][br /]
-
-Нам осталось лишь определить категорию, где мы всем этим воспользоваться.
-Пусть [Equation]A \in \operatorname{ob}(\mathsf C)[/Equation] — некий фиксированный объект,
-а [Equation]F : \mathsf D \to \mathsf C[/Equation] — функтор. Категория [Equation]F \downarrow \gray A[/Equation] стрелок
-из [Equation]F[/Equation] в [Equation]A[/Equation] это следующая категория:
-
-[Equation display:true]
-\begin{aligned}
-\operatorname{ob}(F \downarrow \gray A) &= \{
-    (X, h) \mid X \in \operatorname{ob}(\mathsf D) \mathbin\mathrm{and}
-    h \in \mathsf{C}(F(X), A) \} \\
-(F \downarrow \gray A)\,((X, h), (Y, h')) &= \{
-    F(f) \mid f \in \mathsf{D}(X, Y) \mathbin\mathrm{and}
-    F(f) \mathbin\bm; h' = h\}
-\end{aligned}
-[/Equation]
-
-Стрелка между двумя объектами как диаграмма:
-
-[img src:"static/f_to_a.png" height:250 /][br /]
-
-Теперь мы полностью готовы ещё раз определить предел диаграммы. Итак, предел
-диаграммы [Equation]F : \mathsf J \to \mathsf C[/Equation] это терминальный
-объект в категории [Equation]\Delta \downarrow \gray F[/Equation].
-
-Когда уровень абстракции становится слишком высок, полезно сделать шаг назад. Подставим
-конкретные [Equation]P[/Equation] и [Equation]N[/Equation] в диаграмму для [Equation]\Delta \downarrow \gray F[/Equation]:
-
-[img src:"static/del_p_n.png" height:175 /][br /]
-
-Это уже знакомая нам диаграмма для стрелки между конусами, только в виде функторов и естественных
-преобразований.
-
-### 2-категории
-
-В обычной категории у нас есть объекты и стрелки между ними. В случае же [Equation]\mathsf{Cat}[/Equation]
-у нас есть ещё и стрелки между стрелками (2-стрелки). И хотя стрелки между стрелками и не входят в определение
-категории, ничто не мешает нам показать их на диаграмме:
-
-[img src:"static/fga.png" height:250 /]
-
-Ещё у нас есть вертикальная композиция 2-стрелок:
-
-[img src:"static/vert.png" height:250 /]
-
-Однако, на плоскости есть два направления. И две 2-стрелки могут соприкасаться иначе:
-
-[img src:"static/horiz.png" height:200 /]
-
-Эта ситуация предлагает понятие горизонтальной композиции
-[Equation]\alpha * \beta : (F \mathbin\bm; H) \Rightarrow (G \mathbin\bm; K)[/Equation].
-
-Чтобы опрелелить горизонтальную композицию, заметим, что [Equation]\alpha_X : F(X) \to G(X)[/Equation]
-это обычная 1-стрелка. И так как [Equation]\beta[/Equation] — естественное преобразование,
-следующая диаграмма должна коммутировать:
-
-[img src:"static/horiz_nat.png" height:250 /]
-
-Отсюда у нас есть целых два равных определений горизонтальной композиции естественных преобразований:
-
-[Equation display:true]
-(\alpha * \beta)_X = H(\alpha_X) \mathbin\bm; \beta_{G(X)} = \beta_{F(X)} \mathbin\bm; K(\alpha_X)
-[/Equation]
-
-Символьно эти выражения выглядят несколько мудрёно, но для них есть простая визуальная аналогия.
-В первом случае, мы как-бы переносим [Equation]\alpha[/Equation] вдоль [Equation]H[/Equation],
-ставя его над [Equation]\beta[/Equation]:
-
-[img src:"static/horiz_above.png" height:250 /]
-
-Во втором же случае, мы как-бы переносим [Equation]\alpha[/Equation] вдоль [Equation]K[/Equation],
-ставя его под [Equation]\beta[/Equation].
-
-Мы определили композицию, но ещё не доказали, что результат является естественным преобразованием.
-Чтобы доказать, возьмём [Equation]f : X \to Y[/Equation] и начертим следующую диаграмму:
-
-[img src:"static/horiz_valid.png" height:450 /][br /]
-
-Она коммутирует: верхний квадрат потому, что [Equation]H[/Equation] — функтор,
-а [Equation]\alpha[/Equation] — естественное преобразование, нижний квадрат потому,
-что [Equation]\beta[/Equation] — естественное преобразование, а вся диаграмма — потому, что квадраты.
-
-Хотя у нас есть целых две композиции, этого недостаточно, чтобы свободно чертить 2-диаграммы.
-Например, пусть диаграмма выглядит так:
-
-[img src:"static/hv.png" height:250 /]
-
-Это [Equation](\alpha \mathbin\bm; \beta) * (\gamma \mathbin\bm; \delta)[/Equation]
-или [Equation](\alpha * \gamma) \mathbin\bm; (\beta * \delta)[/Equation]?
-
-К счастью, нам не нужно выбирать какой-то один из вариантов, потому что оба равны. И вот почему:
-
-[img src:"static/hv_eq.png" height:650 /]
-
-Диаграмма коммутирует, ибо [Equation]\gamma[/Equation] — естественное преобразование.
-
-Теперь у нас всё готово, чтобы ввести новый тип категорий — 2-категории.
-
-Строгая 2-категория это:
-
-- Объекты
-- 1-стрелки между объектами
-- 2-стрелки между 1-стрелками
-- Целых три композиции: [Equation]F \mathbin \bm; G[/Equation] для 1-стрелок, [Equation]\alpha \bm; \beta[/Equation] и [Equation]\alpha * \beta[/Equation] для 2-стрелок
-
-При этом:
-
-[ul]
-[li]Различные множества n-стрелок не пересекаются[/li]
-[li]Для каждого объекта [Equation]\mathsf C[/Equation] есть единичная
-1-стрелка [Equation]\mathrm{id}_\mathsf{C}[/Equation], а для каждой 1-стрелки [Equation]F[/Equation]
-есть единичная 2-стрелка [Equation]\mathrm{id}_F[/Equation][/li]
-[Aside]Доказательство ассоциативности [Equation]\bm;[/Equation] и [Equation]*[/Equation] оставлено
-читателю в качестве упражнения.
-
-Четвёртый закон называется 2-ассоциативностью.[/Aside]
-[li]
-Выполняются четыре закона ассоциативности:
-[/li]
-[/ul]
-
-[Equation display:true]
-\begin{aligned}
-(F \mathbin\bm; G) \mathbin\bm; H &= F \mathbin\bm; (G \mathbin\bm; H) \\
-(\alpha \mathbin\bm; \beta) \mathbin\bm; \gamma &= \alpha \mathbin\bm; (\beta \mathbin\bm; \gamma) \\
-(\alpha * \beta) * \gamma &= \alpha * (\beta * \gamma) \\
-(\alpha \mathbin\bm; \beta) * (\gamma \mathbin\bm; \delta) &=
-(\alpha * \gamma) \mathbin\bm; (\beta * \delta)
-\end{aligned}
-[/Equation]
-
-Основной (и для нас — единственный) пример строгой 2-категории это категория [Equation]\mathsf{Cat}[/Equation], ради которой мы всё это и затеяли.
-
-Для 2-категорий есть два типа диаграм. Первый тип мы уже знаем — это обычные диаграммы,
-где объекты это точки, 1-стрелки это стрелки, а 2-стрелки это области. Второй тип диаграмм это
-струнные диаграммы. В них размерности перевёрнуты: объекты это области, 1-стрелки это линии,
-разделяющие области, а 2-стрелки — точки, в которые сходятся линии.
-
-Например, пусть есть такая диаграмма:
-
-[img src:"static/triangle.png" height:250 /]
-
-Соответствующая её струнная диаграмма выглядит так:
-
-[img src:"static/string.png" height:250 /]
-
-На струнной диаграмме единичные стрелки не рисуют. Например, диаграмма
-для естественного преобразования [Equation]\mathrm{id}_F[/Equation] выглядит так:
-
-[img src:"static/nat_id_f.png" height:150 /][br /]
-
-А диаграмма для преобразования [Equation]\eta : F \Rightarrow id_\mathsf{C}[/Equation] — вот так:
-
-[img src:"static/eta.png" height:250 /]
-
-Причина, почему единичные стрелки не рисуют, проста:
-
-[img src:"static/equals.png" height:200 /]
-
-В этом магия струнных диаграмм: вместо того, чтобы переставлять символы, мы, например, просто двигаем
-точки вдоль линий. При этом, уравнения по-сути решают себя сами.
-
-### Функтор hom
-
-Хотя мы определили [Equation]\mathsf{C}(A, B)[/Equation] как множество стрелок
-между [Equation]A[/Equation] и [Equation]B[/Equation], мы можем превратить его в функтор. Для этого
-сначала зафиксируем один из объектов и посмотрим, как
-действует [Equation]\mathsf{C}(\_, \_)[/Equation] на объекты и стрелки.
-
-По определению, [Equation]\mathsf{C}(A, X)[/Equation] это множество всех стрелок
-из [Equation]A[/Equation] в [Equation]X[/Equation]. Стрелке [Equation]f : X \to Y[/Equation]
-функтор [Equation]\mathsf{C}(A, \_)[/Equation] сопоставляет функцию из [Equation]\mathsf{C}(A, X)[/Equation]
-в [Equation]\mathsf{C}(A, Y)[/Equation]. Подходящей функцией является следующая:
-
-[Equation display:true]
-\mathsf{C}(\mathrm{id}_A, f)(u) = u \mathbin\bm; f
-[/Equation]
-
-При этом, очевидно, что [Equation]\mathsf{C}(\mathrm{id}_A, f \mathbin\bm; g) = \mathsf{C}(\mathrm{id}_A, f) \mathbin\bm; \mathsf{C}(\mathrm{id}_A, g)[/Equation].
-
-С функтором [Equation]\mathsf{C}(\_, B)[/Equation] немного хитрее. Имея [Equation]u : X \to A[/Equation]
-и [Equation]f : X \to Y[/Equation], мы не можем построить стрелку из [Equation]Y[/Equation]
-в [Equation]A[/Equation]. Но мы можем её построить из [Equation]g : Y \to X[/Equation].
-
-Поэтому, мы обращаем направление стрелок, и
-задаём [Equation]\mathsf{C}(\_, B) : \mathsf{C}^\mathsf{op} \to \mathsf{Set}[/Equation]
-так:
-
-[Equation display:true]
-\mathsf{C}(f^\mathsf{op}, \mathrm{id}_B)(u) = f \mathbin\bm; u
-[/Equation]
-
-При этом:
-
-[Equation display:true]
-\mathsf{C}(f^\mathsf{op} \mathbin\bm; g^\mathsf{op}, \mathrm{id}_B)(u) =
-g \mathbin\bm; f \mathbin\bm; u
-[/Equation]
-
-Собирая всё вместе, [Equation]\mathsf{C}(\_, \_) : \mathsf{C}^\mathsf{op} \times \mathsf{C} \to \mathsf{Set}[/Equation]
-Функтор, ковариантный по второму аргументу и *контравариантный* по первому.
-
-Из соображений читаемости, мы будем обозначать отображаемые hom-функтором стрелки
-как [Equation]f \mathbin\bm; \_[/Equation] и [Equation]\_ \mathbin\bm; g[/Equation].
-
-[Equation display:true]
-\mathrm{h}^A = \mathsf{C}(A, \_) \qquad
-\mathrm{h}_A = \mathsf{C}(\_, A) 
-[/Equation]
-
-TODO, рассмотрим один конкретный пример. Определим категорию [Equation]\Bbb Z^+[/Equation] так:
-
-[Equation display:true]
-\begin{aligned}
-\operatorname{ob}(\Bbb Z^+) &= \{\bullet\} \\
-\Bbb Z^+(\bullet, \bullet) &= \Bbb Z \\
-n \mathbin\bm; m &= n + m
-\end{aligned}
-[/Equation]
-
-Мы просто выразили группу целых чисел по сложению как категорию с единственным объектом. При этом
-сложение чисел становится композицией стрелок:
-
-[Equation display:true]2 + 3 - 5 = 0 \quad \longleftrightarrow\quad  2 \mathbin\bm; 3 \mathbin\bm; -5 = \mathrm{id}_\bullet[/Equation]
-
-Рассмотрим другую группу — группу вращения треугольника:
-
-[img src:"static/triag_rot.png" /]
-
-Вращение треугольника можно рассматривать как перестановку его вершин:
-
-[Equation display:true]{\circlearrowright} = \{ a \mapsto c, b \mapsto a, c \mapsto b\}[/Equation]
-
-Иначе говоря, группа вращений треугольника это подгруппа автоморфизмов множества [Equation]\triangle = \{a, b, c\}[/Equation].
-
-Действие [Equation]\Bbb Z^+[/Equation] на [Equation]\triangle[/Equation] это функтор [Equation]\Bbb Z^+ \to \mathsf{Set}[/Equation], сопоставляющий
-каждой стрелке [Equation]\Bbb Z^+[/Equation] некий автоморфизм из [Equation]\triangle[/Equation].
-В случае вращений, он выглядит так:
-
-[Equation display:true]
-F(\bullet) = \triangle \qquad
-F(n) = {\circlearrowright}^n
-[/Equation]
-
-Функтор [Equation]F[/Equation] переносит тождества, верные для целых чисел, в тождества, верные для
-вращения треугольника. Так, например:
-
-[Equation display:true]
-2 + 3 - 5 = 0 \quad \longrightarrow\quad 
-{\circlearrowright}^2 \mathbin\bm; {\circlearrowright}^3 \mathbin\bm; {\circlearrowright}^{-5} = \mathrm{id}_\triangle
-[/Equation]
-
-Но что если мы хотим следить за конкретной вершиной треугольника? Например, пусть нас интересует орбита
-элемента [Equation]a[/Equation]:
-
-[Equation display:true]
-a \xmapsto{\circlearrowright} c \xmapsto{\circlearrowright} b \xmapsto{\circlearrowright^4} a
-[/Equation]
-
-Было бы хорошо сопоставить эту орбиту с какой-нибудь другой орбитой. Для этого заметим,
-что [Equation]\Bbb Z^+(\bullet, \_)[/Equation] это ничто иное, как действие [Equation]\Bbb Z^+[/Equation]
-на собственные стрелки. Сопоставив любой стрелке [Equation]a[/Equation], получаем отображение орбит:
-
+[div style:`{ "width": "80%", "marginLeft": "auto", "marginRight": "auto" }`]
 [iframe
-src:"https://q.uiver.app/?q=WzAsOCxbMCwwLCIwIl0sWzIsMCwiMSJdLFs0LDAsIjIiXSxbNiwwLCI2Il0sWzAsMiwiYSJdLFsyLDIsImMiXSxbNCwyLCJiIl0sWzYsMiwiYSJdLFswLDEsIlxcXyBcXG1hdGhiaW5cXGJtOyAxIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsxLDIsIlxcXyBcXG1hdGhiaW5cXGJtOyAxIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDMsIlxcXyBcXG1hdGhiaW5cXGJtOyA0IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFs0LDUsIlxcY2lyY2xlYXJyb3dyaWdodCIsMix7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbNSw2LCJcXGNpcmNsZWFycm93cmlnaHQiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzYsNywiXFxjaXJjbGVhcnJvd3JpZ2h0XjQiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzAsNCwiXFxhbHBoYSIsMSx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbMSw1LCJcXGFscGhhIiwxLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDYsIlxcYWxwaGEiLDEseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzMsNywiXFxhbHBoYSIsMSx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XV0=&embed"
-height:275 width:600
-style:`{ "borderRadius": "8px", "border": "none"}`
-][/iframe]
-
-Отображение [Equation]\alpha[/Equation] это ничто иное, как естественное преобразование
-из [Equation]\Bbb Z^+(\bullet, \_)[/Equation] в [Equation]F[/Equation]. И так как 0 это начало всех
-орбит в [Equation]\Bbb Z^+(\bullet, \_)[/Equation], то [Equation]\alpha[/Equation] однозначно
-определяется единственным элементом [Equation]\triangle[/Equation].
-
-Смотря шире, имеем изоморфизм множеств:
-
-[Equation display:true]
-[\Bbb Z^+, \mathsf{Set}](\Bbb Z^+(\bullet, \_), F) \cong F(\bullet)
-[/Equation]
-
-[Aside]Это утверждение называется леммой Йонеды.[/Aside]
-Это выражение имеет весьма широкое обобщение. Пусть [Equation]\mathsf{C}[/Equation] — *любая*
-малая категория, а [Equation]F : \mathsf{C} \to \mathsf{Set}[/Equation] — функтор. Тогда:
-
-[Equation display:true]
-[\mathsf{C}, \mathsf{Set}](\mathsf{h}^A, F) \cong F(A)
-[/Equation]
-
-Причём [Equation]\cong[/Equation] это сразу несколько измоморфизмов:
-
-- Изоморфизм множеств
-- Естественный изоморфизм по [Equation]A[/Equation]
-- Естественный изоморфизм по [Equation]F[/Equation]
-
-Биекция доказывается прямолинейно:
-
-[div style:`{ "width": "50%", "marginLeft": "auto", "marginRight": "auto" }`]
-[iframe
-src:"https://q.uiver.app/?q=WzAsNCxbMCwwLCJcXG1hdGhybXtpZH1fQSJdLFsyLDAsImYiXSxbMCwyLCJcXHhpIl0sWzIsMiwiXFxldGEiXSxbMCwxLCJcXF8gXFxtYXRoYmluXFxibTsgZiIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbMCwyLCJcXGFscGhhIiwyLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFsyLDMsIkYoZikiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzEsMywiXFxhbHBoYSIsMCx7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XV0=&embed"
-height:300 width:300
+src:"https://q.uiver.app/?q=WzAsNCxbMSwwLCJCIl0sWzAsMCwiQSJdLFsyLDAsIkMiXSxbMywwLCJEIl0sWzEsMCwiZiJdLFswLDIsImciXSxbMiwzLCJoIl1d&embed"
+height:150 width:500
 style:`{ "borderRadius": "8px", "border": "none" }`
 ][/iframe]
 [/div]
 
-Имеем [Equation]\alpha(f) = F(f)(\xi)[/Equation], то есть [Equation]\alpha[/Equation] определяется
-единственным элеметном [Equation]\xi[/Equation]. Соответствующую биекцию можем определить как:
+Но мы можем использовать диаграммы не только чтобы выразить существование функции между двумя множествами.
+Равенства функций тоже можно выразить как диаграмму. Например, [Equation]f \mathbin\bm; \mathrm{id}_B = f[/Equation] можно нарисовать так:
 
-[Equation display:true]
-\varphi(\alpha) = \alpha(\mathbin{id}_A) \qquad \varphi^{-1}(\xi) = f \mapsto F(f)(\xi)
-[/Equation]
-
-Чтобы [Equation]\varphi[/Equation] было естественным преобразованием по [Equation]A[/Equation],
-нужно чтобы следующая диаграмма коммутировала:
-
+[div style:`{ "width": "70%", "marginLeft": "auto", "marginRight": "auto" }`]
 [iframe
-src:"https://q.uiver.app/?q=WzAsNCxbMCwwLCJbXFxtYXRoc2Z7Q30sIFxcbWF0aHNme1NldH1dKFxcbWF0aHNme0N9KEEsIEIpLCBGKSJdLFsyLDAsIltcXG1hdGhzZntDfSwgXFxtYXRoc2Z7U2V0fV0oXFxtYXRoc2Z7Q30oQScsIEIpLCBGKSJdLFswLDIsIkYoQSkiXSxbMiwyLCJGKEEnKSJdLFswLDEsIihmIFxcbWF0aGJpblxcYm07IFxcXykgXFxtYXRoYmluXFxibTsgXFxfIl0sWzAsMiwiXFx2YXJwaGlfQSIsMl0sWzEsMywiXFx2YXJwaGlfe0EnfSJdLFsyLDMsIkYoZikiLDJdXQ==&embed"
-height:300 width:600
-style:`{ "borderRadius": "8px", "border": "none" }`
-][/iframe]
-
-Спустимся к элементам, подставив [Equation]\alpha[/Equation]:
-
-[div style:`{ "width": "50%", "marginLeft": "auto", "marginRight": "auto" }`]
-[iframe
-src:"https://q.uiver.app/?q=WzAsNCxbMCwwLCJcXGFscGhhIl0sWzIsMCwiKGYgXFxtYXRoYmluXFxibTtcXF8pIFxcbWF0aGJpblxcYm07IFxcYWxwaGEiXSxbMCwyLCJcXHhpIl0sWzIsMiwiXFxldGEiXSxbMCwxLCIoZiBcXG1hdGhiaW5cXGJtO1xcXykgXFxtYXRoYmluXFxibTsgXFxfIiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dLFswLDIsIlxcdmFycGhpX0EiLDIseyJzdHlsZSI6eyJ0YWlsIjp7Im5hbWUiOiJtYXBzIHRvIn19fV0sWzIsMywiRihmKSIsMix7InN0eWxlIjp7InRhaWwiOnsibmFtZSI6Im1hcHMgdG8ifX19XSxbMSwzLCJcXHZhcnBoaV97QSd9IiwwLHsic3R5bGUiOnsidGFpbCI6eyJuYW1lIjoibWFwcyB0byJ9fX1dXQ==&embed"
-height:300 width:300
+src:"https://q.uiver.app/?q=WzAsMyxbMCwxLCJBIl0sWzIsMSwiQiJdLFsyLDAsIkIiXSxbMCwxLCJmIiwyXSxbMCwyLCJmIl0sWzIsMSwiXFxtYXRocm17aWR9X0IiXV0=&embed"
+height:300 width:400
 style:`{ "borderRadius": "8px", "border": "none" }`
 ][/iframe]
 [/div]
 
-Получаем: [Equation]F(f)(\xi) = \alpha (f \mathbin\bm; \mathrm{id}_{A'}) = \alpha(f)[/Equation],
-что совпадает с тождеством, полученным выше.
+Диаграмма, в которой равны все функции, соответствующие направленным путям между любыми двумя заданными вершинами,
+называется коммутативной. Также говорят, что диаграмма коммутирует.
 
-Схожим способом доказывается естественность по [Equation]F[/Equation].
+Функция [Equation]f^{-1}[/Equation] называется обратной к [Equation]f: A \to B[/Equation],
+если [Equation]f \mathbin\bm; f^{-1} = \mathrm{id}_A[/Equation] и [Equation]f^{-1} \mathbin\bm; f = \mathrm{id}_B[/Equation].
+Как мы знаем, функция имеет обратную тогда и только тогда, когда она биективна.
 
-## Сопряжённые функторы
+Но для инъективных и сюръективных функцих есть более слабый вариант понятия обратной функции. Пусть
+следующая диаграмма коммутирует:
 
-Рассмотрим вложение [Equation]i : \Bbb Z \to \Bbb R[/Equation], отображающее
-каждое целое число в равное ему вещественное число. Эта функция инъективна, но не сюръективна.
-Это означает, что правых обратных функций у неё может быть много:
+[div style:`{ "width": "65%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsMyxbMiwwLCJBIl0sWzEsMCwiQiJdLFswLDAsIkEiXSxbMSwwLCJnIl0sWzIsMSwiZiJdLFsyLDAsIlxcbWF0aHJte2lkfV9BIiwyLHsiY3VydmUiOjJ9XV0=&embed"
+height:150 width:400
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Тогда функция [Equation]f[/Equation] называется левой обратной к функции [Equation]g[/Equation], а
+функция [Equation]g[/Equation] называется правой обратной к функции [Equation]f[/Equation].
+
+**Утверждение:** в этом случае [Equation]f[/Equation] инъективна, а [Equation]g[/Equation] — сюръективна.
+
+Действительно, пусть [Equation]a \in A[/Equation]. Тогда имеем:
+
+[Equation display:true]
+a \xmapsto{f} b \xmapsto{g} a
+[/Equation]
+
+Так как [Equation]a[/Equation] произвольно, [Equation]g[/Equation] должна быть сюръекцией. Так
+как [Equation]b[/Equation] соответствует единственное [Equation]a[/Equation], то [Equation]f[/Equation] инъективна.
+
+Пусть [Equation]\bm 0 = \varnothing[/Equation], а [Equation]\bm 1 = \{\varnothing\}[/Equation].
+Каждому множеству [Equation]A[/Equation] соответствует функция из [Equation]\bm 0[/Equation] в [Equation]A[/Equation],
+и единственная функция из [Equation]A[/Equation] в [Equation]\bm 1[/Equation]. Каждому же [Equation]x \in A[/Equation]
+соответствует единственная функция [Equation]\underline{x}: \bm 1 \to A[/Equation].
+
+Это позволяет выразить применение функции как композицию:
+
+[Equation display:true]
+\underline 2 \mathbin\bm; sq = \underline 4 \qquad sq(x) = x^2
+[/Equation]
+
+Каждой функции [Equation]f: A \times B \to C[/Equation] соответствуют единственная функция
+[Equation]g: A \to (B \to C)[/Equation]:
+
+[Equation display:true]
+g(x) = y \mapsto f(x, y)
+[/Equation]
+
+Мы будем писать [Equation]f(x, \_)[/Equation] имея в виду [Equation]y \mapsto f(x, y)[/Equation].
+При этом [Equation]f(\_, \_)[/Equation] это то же, что и [Equation](x, y) \mapsto f(x, y)[/Equation].
+
+### Отношение порядка
+
+Отношение [Equation](\leqslant) : S \times S \to \bm 2[/Equation] называется отношением предпорядка,
+если оно удволетворяет следующим аксиомам:
+
+- Рефлексивность: [Equation](\forall x \in S)\enspace s \leqslant s[/Equation]
+- Транзитивность: [Equation](\forall x, y, z \in S)\enspace x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z[/Equation]
+
+Отношение предпорядка называется отношением порядка, если дополнительно выполняется
+
+- [Equation](\forall x, y \in S)\enspace x \leqslant y \mathbin\mathrm{and} y \leqslant x \implies x = y[/Equation] (антисимметричность)
+
+Отношение порядка называется линейным, если к тому же [Equation](\forall x, y \in S)\enspace x \leqslant y \mathbin\mathrm{or} y \leqslant x[/Equation] (иначе говоря, любые два элемента сравнимы).
+
+Примеры отношения предпорядка:
+
+- Существование пути в направленном графе между двумя узлами
+
+Примеры отношения порядка:
+
+- Обычное отношение порядка на числах
+- Отношение подмножества
+- Мощность множеств
+
+Упорядоченное множество это множество с заданым на нём отношением порядка. Формально это пара [Equation](S, \leqslant)[/Equation].
+Для этой пары определим проекции:
 
 [Equation display:true]
 \begin{aligned}
-\lfloor r \rfloor &= \operatorname{max}\ \{x \in \Bbb Z \mid x \leqslant r\} \\
-\lceil r \rceil &= \operatorname{min}\ \{x \in \Bbb Z \mid x \geqslant r\} \\
-\lceil r \rfloor &= \begin{cases}
-\lfloor r \rfloor\quad r \geqslant 0 \\
-\lceil r \rceil\quad r < 0
+set((S, \_)) &= S \\
+rel((\_, \leqslant)) &= (\leqslant)
+\end{aligned}
+[/Equation]
+
+Мы будем писать [Equation]x \in S_{\leqslant}[/Equation] имея в виду [Equation]x \in set(S_{\leqslant})[/Equation].
+
+Если посмотреть внимательнее на аксиомы отношения предпорядка, можно заметить сходство со свойствами
+композиции. Сходство не случайное: отношение порядка можно представить как множество функций.
+
+Конкретнее, определим множество
+
+[Equation display:true]
+\mathrm{arr}(x, y) = \{f : \{x\} \to \{y\} \mid x \leqslant y \}
+[/Equation]
+
+Посмотрим на элементы [Equation]\mathrm{arr}(x, x)[/Equation] как на абстракные стрелки из [Equation]x[/Equation] в [Equation]y[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+\exists id_x &\in \mathrm{arr}(x, x) \qquad (\forall x \in S) \\
+\exists f_{xy} \mathbin\bm; f_{yz} &\in \mathrm{arr}(x, z) \qquad (\forall f_{xy} \in \mathrm{arr}(x, y), f_{yz} \in \mathrm{arr}(y, z))
+\end{aligned}
+[/Equation]
+
+Тождественная стрелка соответствует рефлексивности, когда же композиция соответствует транзитивности.
+
+[Aside]Такие диаграммы называются диаграммами Хассе, и их рисуют так, чтобы все стрелки были направленны вверх.
+При этом наконечник стрелки зачастую опускают.[/Aside]
+Как и для функций, для стрелок можно рисовать диаграммы. Например, вот диаграмма для [Equation](\mathcal{P}(\{a, b, c\}), \subseteq)[/Equation]:
+
+[div style:`{ "width": "60%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsOCxbMSwzLCJcXHtcXH0iXSxbMCwyLCJcXHthXFx9Il0sWzEsMiwiXFx7YlxcfSJdLFsyLDIsIlxce2NcXH0iXSxbMCwxLCJcXHthLGJcXH0iXSxbMSwxLCJcXHthLCBjXFx9Il0sWzIsMSwiXFx7YiwgY1xcfSJdLFsxLDAsIlxce2EsIGIsY1xcfSJdLFswLDFdLFswLDJdLFswLDNdLFsxLDRdLFsxLDVdLFsyLDRdLFsyLDZdLFszLDZdLFszLDVdLFs0LDddLFs1LDddLFs2LDddXQ==&embed"
+height:400 width:400
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Пусть [Equation]S_\leqslant[/Equation] и [Equation]T_\sqsubseteq[/Equation] — упорядоченные множества.
+Функция [Equation]f : S \to T[/Equation] называется монотонной, если
+
+[Equation display:true]
+(\forall x, y \in S)\enspace x \leqslant y \implies f(x) \sqsubseteq f(y)
+[/Equation]
+
+Отображения, сохраняющие структуру, в алгебре обычно называются гомоморфизмами. В случае множеств,
+в определение функции входят множества, соответствующие области и кообласти функции. В случае же упорядоченных
+множеств нам бы хотелось, чтобы область и кооблась были также упорядоченными множествами. Поэтому мы
+определяем гомоморфизм из [Equation]S_\leqslant[/Equation] в [Equation]T_\sqsubseteq[/Equation] как
+тройку [Equation](S_\leqslant, T_\sqsubseteq, f)[/Equation].
+
+Кроме того, для этой тройки определим проекции
+
+[Equation display:true]
+\begin{aligned}
+dom((S_\leqslant, \_, \_)) &= S_\leqslant \\
+cod((\_, T_\sqsubseteq, \_)) &= T_\sqsubseteq \\
+set((\_, \_, f)) &= f
+\end{aligned}
+[/Equation]
+
+Аналогично отношению принадлежности, если [Equation]f : S_\leqslant \to T_\sqsubseteq[/Equation], то
+[Equation]f(x)[/Equation] означает [Equation]set(f)(x)[/Equation].
+
+[Aside]
+Из того, что [Equation]set(f)[/Equation] — биекция, вовсе не следует, что [Equation]f[/Equation] — изоморфизм.
+Например, гомоморфизм из [Equation]Free(\{\varnothing, \{\varnothing\}\})[/Equation] в [Equation](\mathcal{P}(\{\varnothing\}), \subseteq)[/Equation] не является
+изоморфизмом, так как обратная функция не является монотонной.
+[/Aside]
+Гомоморфизм [Equation]f : S_\leqslant \to T_\sqsubseteq[/Equation] называется изоморфизмом, если
+существует такой гомоморфизм [Equation]f^{-1} : T_\sqsubseteq \to S_\leqslant[/Equation], что
+[Equation]f \mathbin\bm; f^{-1} = \mathrm{id}_{S_\leqslant}[/Equation] и [Equation]f^{-1} \mathbin\bm; f = \mathrm{id}_{T_\sqsubseteq}[/Equation].
+Соответствующие упорядоченные множества называются изоморфными (пишется [Equation]S_\leqslant \cong T_\sqsubseteq[/Equation]).
+
+Любое множество можно превратить в упорядоченное с помощью дискретного (свободного) отношения порядка:
+
+[Equation display:true]
+Free(S) = (S, (x, y) \mapsto x = y)
+[/Equation]
+
+В частности, мы можем определить [Equation]\bm 0[/Equation] и [Equation]\bm 1[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+\bm 0 &= Free(\{\}) \\
+\bm 1 &= Free(\{\varnothing\})
+\end{aligned}
+[/Equation]
+
+И как и в случае с обычными множествами, для любого упорядоченного множества [Equation]S[/Equation] существует
+единственный гомоморфизм из [Equation]\bm 0[/Equation] в [Equation]S[/Equation], и единственный гомоморфизм из [Equation]S[/Equation] в [Equation]\bm 1[/Equation].
+
+**Предложение:** пусть [Equation]S[/Equation] — множество, [Equation]P[/Equation] — упорядоченное множество,
+а [Equation]f : S \to set(P)[/Equation]. Тогда существует единственный гомоморфизм [Equation]u : Free(S) \to P[/Equation],
+такой, что следующая диаграмма коммутирует:
+
+[div style:`{ "width": "70%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwic2V0KEZyZWUoUykpIl0sWzIsMiwic2V0KFApIl0sWzEsMiwic2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaWRfUyJdLFswLDIsImYiLDJdXQ==&embed"
+height:300 width:400
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Действительно, [Equation]u = (Free(S), P, f)[/Equation].
+
+Таким образом, [Equation]Free(S)[/Equation] является наиболее общим упорядоченным множеством, порождённым
+множеством [Equation]S[/Equation].
+
+Свободные объекты бывают и у других алгебраических структур, но,
+как правило, определяются куда менее прямолинейно, хотя и удволетворяют тому же универсальному
+свойству, только лишь [Equation]id_S[/Equation] заменяется на некое каноническое вложение [Equation]i : S \to Free(S)[/Equation].
+
+Пусть [Equation]S[/Equation] и [Equation]T[/Equation] — упорядоченные множества. Прямое произведение [Equation]S \times T[/Equation] это
+следующее упорядоченное множество:
+
+[Equation display:true]
+\begin{aligned}
+S \times T = (
+&set(S) \times set(T), \\
+&((a, x), (b, y)) \mapsto rel(S)(a, b) \mathbin\mathrm{and} rel(T)(x, y))
+\end{aligned}
+[/Equation]
+
+Как и у свободного упорядоченного множества, у прямого произведения есть универсальное свойство.
+
+**Предложение:** пусть [Equation]S[/Equation] и [Equation]T[/Equation] — упорядоченные множества.
+Пусть также даны гомоморфизмы [Equation]f : X \to S[/Equation] и [Equation]g : X \to T[/Equation].
+Тогда существует единственный гомоморфизм [Equation]u : X \to S \times T[/Equation], такой, что
+следующаяя диаграмма коммутирует:
+
+[div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsNCxbMywwLCJYIl0sWzMsMiwiU1xcdGltZXMgVCJdLFswLDMsIlMiXSxbNiwzLCJUIl0sWzAsMSwidSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxLDIsIlxccGlfMSJdLFsxLDMsIlxccGlfMiIsMl0sWzAsMywiZyJdLFswLDIsImYiLDJdXQ==&embed"
+height:350 width:600
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Здесь [Equation]\pi_1[/Equation] и [Equation]\pi_2[/Equation] это проекции из [Equation]S \times T[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+\pi_1((x, \_)) &= x \\
+\pi_2((\_, y)) &= y
+\end{aligned}
+[/Equation]
+
+В самом деле, единственным таким гомоморфизмом является следующий:
+
+[Equation display:true]
+\begin{aligned}
+u = (&X, \\
+&S \times T, \\
+&x \mapsto (f(x), g(x)))
+\end{aligned}
+[/Equation]
+
+Как и произведение множеств, прямое произведение удволетворяет следующим свойствам:
+
+[Equation display:true]
+\begin{aligned}
+S \times \bm 0 &\cong \bm 0 \\
+S \times \bm 1 &\cong \bm S \\
+S \times T &\cong T \times S \\
+(S \times T) \times R &\cong S \times (T \times R)
+\end{aligned}
+[/Equation]
+
+Пусть [Equation]S[/Equation] — упорядоченное множество. Элемент [Equation]a \in S[/Equation] называется минимальным,
+если не существует такого [Equation]b \in S[/Equation], что [Equation]a > b[/Equation] ([Equation]a[/Equation] и [Equation]b[/Equation] могут быть несравнимы).
+Элемент [Equation]a \in S[/Equation] называется наименьшим, если [Equation](\forall b \in S)\enspace a \leqslant b[/Equation].
+
+Аналогично определяются максимальный и наименьший элементы. Наибольший и наименьший элементы обозначаются,
+соответственно, как [Equation]\operatorname{max} S[/Equation] и [Equation]\operatorname{min} S [/Equation].
+
+Кроме того, для [Equation]x, y \in S[/Equation] можно определить операции пересечения и объединения:
+
+[Equation display:true]
+\begin{aligned}
+x \wedge y &= \operatorname{max}\ \{s \in S \mid s \leqslant x \mathbin\mathrm{and} s \leqslant y\} \\
+x \vee y &= \operatorname{min}\ \{s \in S \mid x \leqslant s \mathbin\mathrm{and} y \leqslant s\} \\
+\end{aligned}
+[/Equation]
+
+В случае, когда [Equation]x[/Equation] и [Equation]y[/Equation] сравнимы, [Equation]x \wedge y = \operatorname{min}\ \{x, y\}[/Equation], а [Equation]x \vee y = \operatorname{max}\ \{x, y\}[/Equation].
+
+[Aside]Слова «единственная» и «коммутирует» в данном контексте могут показаться избыточными, но в случае элементов упорядоченного множества они и в самом деле избыточны.[/Aside]
+Если мы выразим выражение для пересечения элементов как диаграмму стрелок, то обнаружим, что пересечение
+также обладает универсальным свойством. А именно, пусть [Equation]s \leqslant x[/Equation] и [Equation]s \leqslant y[/Equation].
+Тогда существует единственная стрелка [Equation]s \leqslant x \wedge y[/Equation], такая, что следующая
+диаграмма коммутирует:
+
+[div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsNCxbMywxLCJ4IFxcd2VkZ2UgeSJdLFszLDMsInMiXSxbMCwwLCJ4Il0sWzYsMCwieSJdLFsxLDAsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFswLDNdLFswLDJdLFsxLDJdLFsxLDNdXQ==&embed"
+height:350 width:600
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Обращение всех стрелок даёт универсальное свойство для объединения элементов.
+
+Линейно упорядоченное множество называется вполне упорядоченным, если любое непустое его подмножество
+содержит наименьший элемент этого подмножества. Соответствующее отношение порядка называется фундированным.
+
+Вполне упорядоченные множества тесно связаны с рекурсией и математической индукцией. Чтобы это показать,
+введём один важный математический принцип.
+
+[Aside]Вообще, это утверждение является теоремой, которая в теории множеств доказывается достаточно
+извращённым образом. Мы её доказывать не будем, тем более, что в некоторых аксиоматиках теории множеств
+это утверждение является аксиомой (например, в ETCS).[/Aside]
+**Принцип итерации:** пусть [Equation]f : A \to A[/Equation]. Тогда, для любого [Equation]a \in A[/Equation] существует
+функция [Equation]g : \Bbb N \to A[/Equation], такая, что [Equation]g(0) = a[/Equation] и [Equation]g(n + 1) = f(g(n))[/Equation].
+
+Иначе говоря, [Equation]f^{n}(a)[/Equation] существует и является функцией от [Equation]n[/Equation].
+
+Для элемента [Equation]a[/Equation] можно определить элемент, следующий за ним:
+
+[Equation display:true]succ(a) = \operatorname{min}\ \{s \mid s > a \}[/Equation]
+
+Элемент вполне упорядоченного множества называется предельным, если он не следует ни за каким элементом.
+
+**Предложение:** пусть [Equation]S[/Equation] — линейно упорядоченное множеств, в котором не существует бесконечной
+цепи вида [Equation]\dots < a_1 < a_0[/Equation]. Тогда [Equation]S[/Equation] является вполне упорядоченным множеством.
+
+От противного. Пусть [Equation]S[/Equation] не является вполне упорядоченным. Это означает, что
+существует непустое множество [Equation]A \subseteq S[/Equation], не имеющее наименьшего элемента.
+
+Введём функцию:
+
+[Equation display:true]
+p(x) = \varepsilon(\{a \in A \mid a < x\})
+[/Equation]
+
+Эта функция определена на всех элементах множества [Equation]A[/Equation]: в самом деле, если
+множество [Equation]\{a \in A \mid a < m\}[/Equation] пусто для какого-то [Equation]m \in A[/Equation],
+то [Equation]m[/Equation] является наименьшим элементом множества [Equation]A[/Equation].
+
+Но в таком случае [Equation]p^n(\varepsilon(A))[/Equation] определяет бесконечную нисходящую цепь,
+что противоречит тому, что подобной цепи не существует.
+
+Из доказанного следует, что любой элемент вполне упорядоченного множества представим
+в виде [Equation]succ^n(l)[/Equation], где [Equation]n \in \Bbb N[/Equation], а [Equation]l[/Equation] — некий
+предельный элемент.
+
+(трансфинитная индукция)
+
+(трансфинитная рекурсия)
+
+### Рекурсивные определения
+
+В программировании у нас есть такие волшебные вещи, как рекурсивные типы и функции. В математике же подобные
+вещи являются экзотикой. Но многие вещи намного проще и естественне выражать рекурсивно, так что имеет смысл
+перенести эти понятия из программирования в математику.
+
+Для начала, нам потребуются типы-суммы. Их аналогом в математике является размеченное объединение:
+
+[Aside]
+Чаще его обозначают как [Equation]A \sqcup B[/Equation]. Но мы пишем [Equation]+[/Equation]
+чтобы подчеркнуть связь с [Equation]\times[/Equation].
+[/Aside]
+[Equation display:true]
+S_1 + \dots + S_n = \hspace{-0.7em}\bigcup_{i \in \{0, \dots, n\}} \hspace{-0.7em}(\{i\} \times A)
+[/Equation]
+
+Размеченными объединениями неудобно пользоваться без имён, так что стоит заимстововать искусство
+давать вещам имена из программирования.
+
+Запись [Equation]S = (left: A) + (right: B)[/Equation] означает, что [Equation]S = A + B[/Equation]
+и при этом определены следующие функции в [Equation]S[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+left(a) &= (0, a) \\
+right(b) &= (1, b)
+\end{aligned}
+[/Equation]
+
+Аналогично, запись [Equation]S = (first: A) \times (second: B)[/Equation] означает,
+что [Equation]S = A \times B[/Equation] и при этом определены следующие функции из [Equation]S[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+first((x, y)) &= x \\
+second((x, y)) &= y
+\end{aligned}
+[/Equation]
+
+Элемент сооветствующего множества мы будем обозначать или как [Equation](first = a, second = b)[/Equation],
+или просто как [Equation](a, b)[/Equation].
+
+Размеченные объединения в том виде как мы их определили не могут быть рекурсивными, так как схема построения
+классов не допускает рекурсии. Но мы можем выразить такие рекурсивные множества итеративно.
+
+Например, рассмотрим формальное выражение [Equation]L = (nil: \bm 1) + (cons: A \times L)[/Equation]. Сначала,
+мы строим множество, содержащее только нерекурсивные части этого выражения:
+
+[Equation display:true]
+L_0 = \{0\} \times \bm 1
+[/Equation]
+
+Затем мы определяем функцию, подставляющую данное множество в формальное определение [Equation]L[/Equation]:
+
+[Equation display:true]
+\ell(L) = (\{0\} \times \bm 1) \cup (\{1\} \times (A \times L))
+[/Equation]
+
+И определяем [Equation]L[/Equation] как:
+
+[Equation display:true]
+L = \bigcup_{n \in \Bbb N} L_n \qquad L_n = \ell^{n} (L_0)
+[/Equation]
+
+Уровень элемента [Equation]l \in L[/Equation] определим как
+
+[Equation display:true]
+lvl(l) = \min\,\{n \in \Bbb N \mid l \in L_n\}
+[/Equation]
+
+Мы можем сформулировать принцип математической индукции для рекурсивно определённых множеств:
+
+- Пусть [Equation]\psi(x)[/Equation] верно для всех [Equation]x \in L_0[/Equation]
+- Пусть также из того, что [Equation](\forall x \in L_n)\enspace \psi(x)[/Equation] следует [Equation](\forall x \in L_{n + 1})\enspace \psi(x)[/Equation]
+- Тогда [Equation]\psi(x)[/Equation] верно для всех [Equation]x \in L[/Equation]
+
+Теперь определим рекурсивные функции из [Equation]L \to S[/Equation]. Рассмотрим следующее определение:
+
+[Equation display:true]
+f = \begin{cases}
+nil(\_) &\mapsto s_0 \\
+cons(a, l) &\mapsto g(a, f(l))
+\end{cases}
+[/Equation]
+
+Этому определению соответствуют следующие функции:
+
+[Equation display:true]
+\begin{aligned}
+f_0(nil(\_)) &= s_0 \\
+f(\varphi, l) &= \begin{cases}
+nil(\_) &\mapsto s_0 \\
+cons(a, l) &\mapsto g(a, \varphi(l))
 \end{cases}
 \end{aligned}
 [/Equation]
 
-Но только одна из них обладает следующим свойством:
+Теперь рассмотрим графики:
+
+### Моноиды
+
+Наша первая алгебраическая структура это моноид. Моноид это тройка [Equation](M, {\cdot}, e)[/Equation],
+где [Equation]M[/Equation] — множество, [Equation](\cdot): M \times M \to M[/Equation], а [Equation]e \in M[/Equation].
+При этом должны выполняться следующие аксиомы:
 
 [Equation display:true]
-i(n) \leqslant r \iff n \leqslant \lfloor r \rfloor
+\begin{aligned}
+(\forall m \in M)\enspace &e \cdot m = m \cdot e = m \\
+(\forall m, n, p \in M)\enspace (&m \cdot n) \cdot p = m \cdot (n \cdot p)
+\end{aligned}
 [/Equation]
 
-У этой идеи есть категориальное обобщение. Пусть [Equation]F : \mathsf C \to \mathsf D[/Equation].
-Функтор [Equation]G : \mathsf D \to \mathsf C[/Equation] называется правым сопряжённым к [Equation]F[/Equation],
-если
+Первая аксиома это аксиома единицы, когда же вторая — ассоциативность.
 
-[Aside]Изоморфизм функторов [Equation]\mathsf C^\mathsf{op} \times \mathsf D \to \mathsf{Set}[/Equation][/Aside]
+Примеры моноидов:
+
+- Сложение и умножение чисел
+- Конкатенация строк
+- Объединение и пересечение множеств
+- Умножение матриц n × n
+- Композиция функций [Equation]S \to S[/Equation]
+- И многое, многое другое
+
+На классе всех моноидов определено забывающее отображение:
+
 [Equation display:true]
-\mathsf{D}(F(\_), \_) \cong \mathsf{C}(\_, G(\_))
+Forget((M, {\cdot}, e)) = M
 [/Equation]
 
-Двойственно, [Equation]G[/Equation] называется левым сопряжённым к [Equation]F[/Equation]. Пара
-сопряжённых функторов обозначается как [Equation]F \vdash G[/Equation].
+Мы будем писать [Equation]m \in M^{(\cdot)}[/Equation] имея в виду [Equation]m \in Forget(M^{(\cdot)})[/Equation].
 
-### Экспоненциальный объект
+Элемент [Equation]m^{-1} \in M^{(\cdot)}[/Equation] называется обратным к [Equation]m[/Equation] если [Equation]m \cdot m^{-1} = m^{-1} \cdot m = e[/Equation].
+Моноид, каждый элемент которого обратим, называется группой.
 
-### Единица и коединица
+Аксиомы моноида не просто так похожи на свойства композиции функций: каждому [Equation]m \in M^{(\cdot)}[/Equation]
+можно сопоставить соответствующую функцию из [Equation]M[/Equation] в [Equation]M[/Equation]:
 
-### Моноид в категории эндофунктороов
+[Equation display:true]
+f_m(x) = x \cdot m
+[/Equation]
+
+Умножению элементов [Equation]m \cdot n[/Equation] соответствует композиция функций [Equation]f_m \mathbin{\bm;} f_n[/Equation].
+
+В случае алгебраических структур, нас интересуют не просто отображения между множествами, а отображения,
+сохраняющие стуктуру. Такие отображения называются гомоморфизмами.
+
+Гомоморфизм из моноида [Equation]M^{(\cdot)} = (M, {\cdot}, e_M)[/Equation] в моноид [Equation]N^{*} = (N, {*}, e_N)[/Equation] это
+тройка [Equation](M^{(\cdot)}, N^{*}, \tilde f)[/Equation], где [Equation]\tilde f : M \to N[/Equation], для которой верно следующее:
+
+[Equation display:true]
+\begin{aligned}
+f(e_M) &= e_N \\
+f(x \cdot y) &= f(x) * f(y) \qquad (\forall x, y \in M)
+\end{aligned}
+[/Equation]
+
+Для гомоморфизмов также определено забывающее отображение:
+
+[Equation display:true]
+Forget((M^{(\cdot)}, N^{*}, \tilde f)) = \tilde f
+[/Equation]
+
+И аналогично отношению принадлежности, мы пишем [Equation]f(m)[/Equation] имея в ввиду [Equation]Forget(f)(m)[/Equation].
+
+Гомоморфизм переносит равенства из одного моноида в другой.
+Например, в случае [Equation](\_ \bmod 12) : \Bbb Z^{+} \to \Bbb Z/12[/Equation]:
+
+[Equation display:true]
+6 + 13 - 16 = 3 \implies 6 +_{12} 1 +_{12} 8 = 3
+[/Equation]
+
+**Предложение:** пусть [Equation]f[/Equation] — биекция, соответствующая гомоморфизму из [Equation](M, {\cdot}, e_M)[/Equation] в [Equation](N, {*}, e_N)[/Equation].
+Тогда [Equation]f^{-1}[/Equation] это функция, соответствующая гомоморфизму из [Equation](N, {*}, e_N)[/Equation] в [Equation](M, {\cdot}, e_M)[/Equation].
+
+В самом деле:
+
+[Equation display:true]
+\begin{aligned}
+f^{-1}(e_N) &= e_M \\
+f^{-1}(f(x \cdot y)) &= x \cdot y \\
+&= f^{-1}(f(x) * f(y))
+\end{aligned}
+[/Equation]
+
+Подставив [Equation]x = f^{-1}(\xi)[/Equation] и [Equation]y = f^{-1}(\eta)[/Equation] во второе
+уравнение, получаем:
+
+[Equation display:true]
+f^{-1}(\xi * \eta) = f^{-1}(\xi) \cdot f^{-1}(\eta)
+[/Equation]
+
+Гомоморфизм, функция которого биективна, называется изморфизмом. Моноиды [Equation]M[/Equation] и [Equation]N[/Equation]
+называются изоморфными (пишется [Equation]M \cong N[/Equation]), если между ними существует изоморфизм.
+
+Тривиальный моноид это моноид, содержащий только лишь нейтральный элемент:
+[Equation display:true]\bm 1 = (\{e\}, {\cdot}, e)[/Equation]
+
+Как и в случае со множествами, каждому моноиду [Equation]M[/Equation] соответствует единственный
+гомоморфизм из [Equation]M[/Equation] в [Equation]\bm 1[/Equation]. Однако, гомоморфизм из [Equation]\bm 1[/Equation]
+в [Equation]M[/Equation] также единственнен.
+
+Прямое произведение моноидов [Equation]M^{(\cdot)} = (M, {\cdot}, e_M)[/Equation] и [Equation]N^{*} = (N, {*}, e_N)[/Equation] это
+моноид [Equation]M^{(\cdot)} \times N^{*}[/Equation], определённый следующим образом:
+
+[Equation display:true]
+\begin{aligned}
+M^{(\cdot)} \times N^{*} = (
+  &M \times N, \\
+  &((a, x), (b, y)) \mapsto (a \cdot b, x * y), \\
+  &(e_M, e_N)
+)
+\end{aligned}
+[/Equation]
+
+Для прямого произведения [Equation]M\times N[/Equation] определены проекции в [Equation]M[/Equation]
+и [Equation]N[/Equation]:
+
+[Equation display:true]
+\begin{aligned}
+\pi_1((a, x)) = a \\
+\pi_2((a, x)) = x
+\end{aligned}
+[/Equation]
+
+Для любых моноидов [Equation]M[/Equation], [Equation]N[/Equation] и [Equation]P[/Equation] верно:
+
+[Equation display:true]
+\begin{aligned}
+M \times \bm 1 &\cong M \\
+M \times N &\cong N \times M \\
+(M \times N) \times P &\cong M \times (N \times P)
+\end{aligned}
+[/Equation]
+
+Пусть [Equation]M[/Equation], [Equation]N[/Equation] и [Equation]X[/Equation] — моноиды. Пусть также даны
+гомоморфизмы [Equation]f: X \to M[/Equation] и [Equation]f: X \to N[/Equation]. Тогда существует
+единственный гомоморфизм [Equation]u : X \to M \times N[/Equation], такой, что следующая диаграмма
+коммутирует:
+
+[div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsNCxbMywwLCJYIl0sWzMsMiwiTVxcdGltZXMgTiJdLFswLDMsIk0iXSxbNiwzLCJOIl0sWzAsMSwidSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxLDIsIlxccGlfMSJdLFsxLDMsIlxccGlfMiIsMl0sWzAsMywiZyJdLFswLDIsImYiLDJdXQ==&embed"
+height:350 width:600
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+В самом деле, есть лишь один способ построить такой гомоморфизм:
+[Equation display:true]
+u(x) = (f(x), g(x))
+[/Equation]
+
+[Aside]Сами деревья конечны, в отличие от грамматики ([Equation]S[/Equation] может быть бесконечным и даже несчётным).[/Aside]
+Пусть [Equation]S[/Equation] — какое-то множество. Определим множество синтаксических деревьев [Equation]E[/Equation]
+следующим образом:
+
+[Equation display:true]
+\begin{aligned}
+E \Coloneqq\ &\mathsf{e} \\
+\mid\enspace\, &s \qquad (s \in S) \\
+\mid\enspace\, &E \cdot E
+\end{aligned}
+[/Equation]
+
+Также определим отношение эквивалентности, соответствующее аксиомам моноида:
+
+[Equation display:true]
+\begin{aligned}
+\mathsf e \cdot x &\sim x \\
+x \cdot \mathsf e &\sim x \\
+(x \cdot y) \cdot z &\sim x \cdot (y \cdot z)
+\end{aligned}
+[/Equation]
+
+Синтаксические деревья вместе с отношением эквивалентности позволяют определить моноид:
+
+[Equation display:true]
+\begin{aligned}
+Free(S) = (
+  &E/{\sim},\\
+  &([a]_\sim, [b]_\sim) \mapsto [a \cdot b]_\sim,\\
+  &\mathsf e
+)
+\end{aligned}
+[/Equation]
+
+Моноид, изоморфный [Equation]Free(S)[/Equation], называется свободным.
+
+Примеры свободных моноидов:
+
+- (`List[T]`, `concat`, `[]`)
+- (`String`, `concat`, `""`)
+- [Equation]\Bbb N^{+}[/Equation]
+
+Свободный моноид это наиболее общий моноид, порождённый данным множеством. Формально, это можно
+выразить следующим универсальным свойством: пусть [Equation]S[/Equation] — множество, [Equation]M[/Equation] — моноид,
+а [Equation]f: S \to Forget(M)[/Equation]. Тогда существует единственный гомоморфизм [Equation]u : Free(S) \to M[/Equation],
+такой, что следующая диаграмма коммутирует:
+
+[div style:`{ "width": "70%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwiRm9yZ2V0KEZyZWUoUykpIl0sWzIsMiwiRm9yZ2V0KE0pIl0sWzEsMiwiRm9yZ2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaSJdLFswLDIsImYiLDJdXQ==&embed"
+height:300 width:400
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Здесь [Equation]i[/Equation] это естественное вложение [Equation]S[/Equation] в [Equation]Forget(Free(S))[/Equation]:
+
+[Equation display:true]
+i(s) = s
+[/Equation]
+
+Мы можем определить гомоморфизм [Equation]u[/Equation] рекурсивно:
+
+[Equation display:true]
+u(m) = \begin{cases}
+f(s), &s \in S, \\
+e_M, &m = \mathsf e,\\
+u(x) * u(y), &m = x \cdot y
+\end{cases}
+[/Equation]
+
+Из этого определения следует, что [Equation]u[/Equation] в самом деле единственнен: первое равенство следует из
+коммутативности диаграммы, когда же остальные — из определения гомоморфизма.
+
+## Категории
