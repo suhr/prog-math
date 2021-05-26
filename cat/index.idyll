@@ -406,18 +406,100 @@ p(x) = \varepsilon(\{a \in A \mid a < x\})
 что противоречит тому, что подобной цепи не существует.
 
 Из доказанного следует, что любой элемент вполне упорядоченного множества представим
-в виде [Equation]succ^n(l)[/Equation], где [Equation]n \in \Bbb N[/Equation], а [Equation]l[/Equation] — некий
+в виде [Equation]succ^n(\lambda)[/Equation], где [Equation]n \in \Bbb N[/Equation], а [Equation]\lambda[/Equation] — некий
 предельный элемент.
 
-(трансфинитная индукция)
+Принцип математической индукции можно обобщить на произвольные вполне упорядоченные множества.
 
-(трансфинитная рекурсия)
+[Aside]Формально, первый пункт избыточен, так как наименьший элемент вполне упорядоченного множества является
+и предельным элементом. Однако, с ним теорема выглядит *естественнее*.[/Aside]
+**Предложение (трансфинитная индукция):** пусть [Equation]S[/Equation] — вполне упорядоченное множество,
+а [Equation]\varphi : set(S) \to \bm 2[/Equation]. Кроме того, пусть верно следующее:
 
-### Рекурсивные определения
+1. [Equation]\varphi(\operatorname{min} A)[/Equation]
+2. [Equation](\forall s \in S)\enspace \varphi(s) \implies \varphi(succ(s))[/Equation]
+3. [Equation]((\forall s < \lambda)\enspace \varphi(s)) \implies \varphi(\lambda)[/Equation] для всех предельных [Equation]\lambda \in S[/Equation]
 
-В программировании у нас есть такие волшебные вещи, как рекурсивные типы и функции. В математике же подобные
-вещи являются экзотикой. Но многие вещи намного проще и естественне выражать рекурсивно, так что имеет смысл
-перенести эти понятия из программирования в математику.
+Тогда [Equation]\varphi(s)[/Equation] истино для всех [Equation]s \in S[/Equation].
+
+Пусть это не так, тогда множество [Equation]C = \{s \in S \mid \operatorname{not} \varphi(s)\}[/Equation] непусто.
+Так как [Equation]S[/Equation] это вполне упорядоченное множество, то существует [Equation]c = \operatorname{min} C[/Equation].
+
+Однако:
+
+1. [Equation]c \ne \operatorname{min} A[/Equation]
+2. [Equation](\forall s \in S)\enspace c \ne succ(s)[/Equation], потому что иначе [Equation]c \ne \operatorname{min} C[/Equation]
+3. [Equation]c[/Equation] не является предельным элементом, потому что иначе опять [Equation]c \ne \operatorname{min} C[/Equation]
+
+Мы исчерпали все возможные [Equation]c[/Equation]. Следовательно, такого элемента не существует, и [Equation]\varphi(s)[/Equation] истино для всех [Equation]s \in S[/Equation].
+
+Индукция это схема *доказательства* для вполне упорядоченных множеств. Кроме этого, нам нужна схема построения
+функция из элементов вполне упорядоченного множества.
+
+**Предложение (трансфинитная рекурсия):** для вполне упорядоченного множества [Equation]S[/Equation],
+существует единственная функция [Equation]f : set(S) \to Z[/Equation], такая, что
+
+[Equation display:true]f(s) = g(s)(f|_{< s})[/Equation]
+
+Здесь [Equation]g : (s \in S) \to (S_{<s} \to B) \to B[/Equation] , где [Equation]S_{<s} = \{x \in S \mid x < s\}[/Equation],
+а [Equation]f|_{< s}[/Equation] это ограничение функции [Equation]f[/Equation]:
+
+[Equation display:true]
+f|_{< s} : S_{<s} \to B
+\qquad
+f|_{< s}(x) = f(x)
+[/Equation]
+
+Чтобы построить такую функцию, определим множество
+
+[Equation display:true]
+U = \left\{(s, f) \ \Bigg|\ 
+\begin{aligned}
+  s \in S \ &\mathrm{and}\ f : S_{<s} \cup \{s\} \to Z \\
+  &\mathrm{and}\ f(s) = g(s)(f|_{< s})
+\end{aligned}\right\}
+[/Equation]
+
+Докажем индуктивно, что [Equation](\forall s \in S)\ (\exists f)\enspace (s, f) \in U[/Equation].
+
+[ol]
+[li]Если [Equation]s = \operatorname{min} S[/Equation], то [Equation]f|_{< s} : \bm 0 \to B[/Equation],
+и выражение [Equation]g(s)(f|_{< s})[/Equation] определено однозначно[/li]
+[li]Если [Equation](s, f) \in U[/Equation], то [Equation](succ(s), f_+) \in U[/Equation], где
+[Equation display:true]
+f_+(x) = \begin{cases}
+f(x) &x < s \\
+g(s)(f) &x = s
+\end{cases}
+[/Equation][/li]
+[li]Пусть [Equation](\forall s < \lambda)\ (\exists f_s)\enspace (s, f_s) \in U[/Equation].
+Определим функцию [Equation]f_{<\lambda} : S_{<\lambda} \to Z[/Equation] следующим образом:
+
+[Equation display:true]
+f_{<\lambda}(s) = f_s(s) \qquad (s, f_s) \in U
+[/Equation]
+
+Тогда [Equation](\lambda, f_\lambda) \in U[/Equation], где
+[Equation display:true]
+f_\lambda(s) = \begin{cases}
+f_{<\lambda}(s) &s < \lambda  \\
+g(s)(f_{<\lambda}) &s = \lambda
+\end{cases}
+[/Equation][/li]
+[/ol]
+
+Доказав, что множество [Equation]U[/Equation] содержит все частично определённые функции,
+мы можем определить искомую функцию [Equation]f[/Equation] как
+
+[Equation display:true]
+f(s) = f_s(s) \qquad (s, f_s) \in U
+[/Equation]
+
+### Индуктивные типы
+
+В программировании у нас есть такая замечательная вещь, как алгебраические типы данных. В математике
+же так не принято, однако многие вещи проще и естественнее выражать рекурсивно, так что имеет смысл
+ввести аналог алгебраических типов в математике.
 
 Для начала, нам потребуются типы-суммы. Их аналогом в математике является размеченное объединение:
 
@@ -455,66 +537,79 @@ second((x, y)) &= y
 Элемент сооветствующего множества мы будем обозначать или как [Equation](first = a, second = b)[/Equation],
 или просто как [Equation](a, b)[/Equation].
 
-Размеченные объединения в том виде как мы их определили не могут быть рекурсивными, так как схема построения
-классов не допускает рекурсии. Но мы можем выразить такие рекурсивные множества итеративно.
+Как и произведения, размеченные объединения обладают универсальным свойством.
 
-Например, рассмотрим формальное выражение [Equation]L = (nil: \bm 1) + (cons: A \times L)[/Equation]. Сначала,
-мы строим множество, содержащее только нерекурсивные части этого выражения:
+**Предложение:** пусть [Equation]f : A \to Z[/Equation] и [Equation]g : B \to Z[/Equation]. Тогда существует
+единственная стрелка [Equation]u : (i_1: A) + (i_2: B) \to Z[/Equation], такая, что следующая диаграмма коммутирует:
 
-[Equation display:true]
-L_0 = \{0\} \times \bm 1
-[/Equation]
+[div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsNCxbMywxLCJBK0IiXSxbMywzLCJaIl0sWzAsMCwiQSJdLFs2LDAsIkIiXSxbMiwwLCJpXzEiXSxbMywwLCJpXzIiLDJdLFsyLDEsImYiLDJdLFszLDEsImciXSxbMCwxLCJ1IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d&embed"
+height:350 width:600
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
 
-Затем мы определяем функцию, подставляющую данное множество в формальное определение [Equation]L[/Equation]:
-
-[Equation display:true]
-\ell(L) = (\{0\} \times \bm 1) \cup (\{1\} \times (A \times L))
-[/Equation]
-
-И определяем [Equation]L[/Equation] как:
+Действительно, единственной такой функция является следующая:
 
 [Equation display:true]
-L = \bigcup_{n \in \Bbb N} L_n \qquad L_n = \ell^{n} (L_0)
-[/Equation]
-
-Уровень элемента [Equation]l \in L[/Equation] определим как
-
-[Equation display:true]
-lvl(l) = \min\,\{n \in \Bbb N \mid l \in L_n\}
-[/Equation]
-
-Мы можем сформулировать принцип математической индукции для рекурсивно определённых множеств:
-
-- Пусть [Equation]\psi(x)[/Equation] верно для всех [Equation]x \in L_0[/Equation]
-- Пусть также из того, что [Equation](\forall x \in L_n)\enspace \psi(x)[/Equation] следует [Equation](\forall x \in L_{n + 1})\enspace \psi(x)[/Equation]
-- Тогда [Equation]\psi(x)[/Equation] верно для всех [Equation]x \in L[/Equation]
-
-Теперь определим рекурсивные функции из [Equation]L \to S[/Equation]. Рассмотрим следующее определение:
-
-[Equation display:true]
-f = \begin{cases}
-nil(\_) &\mapsto s_0 \\
-cons(a, l) &\mapsto g(a, f(l))
+u(s) = \begin{cases}
+f(a) &s = (0, a) \\
+g(b) &s = (1, b)
 \end{cases}
 [/Equation]
 
-Этому определению соответствуют следующие функции:
+Мы не можем выразить рекурсивные суммы прямо, так как схема построения классов не допускает рекурсии.
+Но мы можем построить их итеративно.
+
+Например, рассмотрим выражение
+
+[Equation display:true]T(A) = (leaf: A) + (node: T(A) \times T(A))[/Equation]
+
+Сначала мы строим множество, содержащее только нерекурсивные части этого выражения:
 
 [Equation display:true]
-\begin{aligned}
-f_0(nil(\_)) &= s_0 \\
-f(\varphi, l) &= \begin{cases}
-nil(\_) &\mapsto s_0 \\
-cons(a, l) &\mapsto g(a, \varphi(l))
-\end{cases}
-\end{aligned}
+T_0(A) = \{0\} \times A
 [/Equation]
 
-Теперь рассмотрим графики:
+Затем мы определяем функцию, подставляющую данное множество в формальное определение [Equation]T[/Equation]:
+
+[Equation display:true]
+\tau(A)(T) = (\{0\} \times A) \cup (\{1\} \times (T(A) \times T(A)))
+[/Equation]
+
+И определяем [Equation]T[/Equation] как:
+
+[Equation display:true]
+T(A) = \bigcup_{n \in \Bbb N} T_n(A) \qquad T_n(A) = \tau(A)^{n} (T_0(A))
+[/Equation]
+
+Уровень элемента [Equation]t \in T[/Equation] определим как
+
+[Equation display:true]
+lvl(t) = \min\,\{n \in \Bbb N \mid t \in T_n(\_)\}
+[/Equation]
+
+Уровень элемента позволяет определять рекурсивные функции на рекурсивно определённом множестве. Например,
+пусть мы хотим определить функцию [Equation]sum: T(\Bbb Z) \to \Bbb Z[/Equation], складывающую все листья
+дерева. Для этого мы сначала определяем функцию [Equation]s: (n \in \Bbb N) \to T_n(\Bbb Z) \to \Bbb Z[/Equation] следующим образом:
+
+[Equation display:true]
+s(n) = \begin{cases}
+leaf(l) &\mapsto l \\
+node(x, y) &\mapsto s(n - 1)(x) + s(n - 1)(y) 
+\end{cases}
+[/Equation]
+
+И затем определяем искомую функцию как
+
+[Equation display:true]
+sum(t) = s(lvl(t))(t)
+[/Equation]
 
 ### Моноиды
 
-Наша первая алгебраическая структура это моноид. Моноид это тройка [Equation](M, {\cdot}, e)[/Equation],
+Моноид это тройка [Equation](set = M, mul = (\cdot), unit = e)[/Equation],
 где [Equation]M[/Equation] — множество, [Equation](\cdot): M \times M \to M[/Equation], а [Equation]e \in M[/Equation].
 При этом должны выполняться следующие аксиомы:
 
@@ -536,13 +631,7 @@ cons(a, l) &\mapsto g(a, \varphi(l))
 - Композиция функций [Equation]S \to S[/Equation]
 - И многое, многое другое
 
-На классе всех моноидов определено забывающее отображение:
-
-[Equation display:true]
-Forget((M, {\cdot}, e)) = M
-[/Equation]
-
-Мы будем писать [Equation]m \in M^{(\cdot)}[/Equation] имея в виду [Equation]m \in Forget(M^{(\cdot)})[/Equation].
+Как и для упорядоченных множеств, мы будем писать [Equation]m \in M^{(\cdot)}[/Equation] имея в виду [Equation]m \in set(M^{(\cdot)})[/Equation].
 
 Элемент [Equation]m^{-1} \in M^{(\cdot)}[/Equation] называется обратным к [Equation]m[/Equation] если [Equation]m \cdot m^{-1} = m^{-1} \cdot m = e[/Equation].
 Моноид, каждый элемент которого обратим, называется группой.
@@ -560,19 +649,13 @@ f_m(x) = x \cdot m
 сохраняющие стуктуру. Такие отображения называются гомоморфизмами.
 
 Гомоморфизм из моноида [Equation]M^{(\cdot)} = (M, {\cdot}, e_M)[/Equation] в моноид [Equation]N^{*} = (N, {*}, e_N)[/Equation] это
-тройка [Equation](M^{(\cdot)}, N^{*}, \tilde f)[/Equation], где [Equation]\tilde f : M \to N[/Equation], для которой верно следующее:
+тройка [Equation](dom = M^{(\cdot)}, cod = N^{*}, set = \tilde f)[/Equation], где [Equation]\tilde f : M \to N[/Equation], для которой верно следующее:
 
 [Equation display:true]
 \begin{aligned}
 f(e_M) &= e_N \\
 f(x \cdot y) &= f(x) * f(y) \qquad (\forall x, y \in M)
 \end{aligned}
-[/Equation]
-
-Для гомоморфизмов также определено забывающее отображение:
-
-[Equation display:true]
-Forget((M^{(\cdot)}, N^{*}, \tilde f)) = \tilde f
 [/Equation]
 
 И аналогично отношению принадлежности, мы пишем [Equation]f(m)[/Equation] имея в ввиду [Equation]Forget(f)(m)[/Equation].
@@ -670,20 +753,22 @@ u(x) = (f(x), g(x))
 следующим образом:
 
 [Equation display:true]
-\begin{aligned}
-E \Coloneqq\ &\mathsf{e} \\
-\mid\enspace\, &s \qquad (s \in S) \\
-\mid\enspace\, &E \cdot E
-\end{aligned}
+F = (e: \bm 1) + (val: S) + ((\cdot): F \times F)
 [/Equation]
 
-Также определим отношение эквивалентности, соответствующее аксиомам моноида:
+Также определим отношение эквивалентности как наименьшее отношение, соответствующее аксиомам моноида:
 
 [Equation display:true]
 \begin{aligned}
-\mathsf e \cdot x &\sim x \\
-x \cdot \mathsf e &\sim x \\
-(x \cdot y) \cdot z &\sim x \cdot (y \cdot z)
+e \cdot x &\sim x \\
+x \cdot e &\sim x \\
+(x \cdot y) \cdot z &\sim x \cdot (y \cdot z) \\
+\end{aligned}
+\qquad
+\begin{aligned}
+x \sim y &\implies x \cdot z \sim y \cdot z \\
+y \sim z &\implies x \cdot y \sim x \cdot z \\
+\,
 \end{aligned}
 [/Equation]
 
@@ -692,9 +777,9 @@ x \cdot \mathsf e &\sim x \\
 [Equation display:true]
 \begin{aligned}
 Free(S) = (
-  &E/{\sim},\\
+  &F/{\sim},\\
   &([a]_\sim, [b]_\sim) \mapsto [a \cdot b]_\sim,\\
-  &\mathsf e
+  &e
 )
 \end{aligned}
 [/Equation]
@@ -723,7 +808,7 @@ style:`{ "borderRadius": "8px", "border": "none" }`
 Здесь [Equation]i[/Equation] это естественное вложение [Equation]S[/Equation] в [Equation]Forget(Free(S))[/Equation]:
 
 [Equation display:true]
-i(s) = s
+i(s) = [val(s)]_\sim
 [/Equation]
 
 Мы можем определить гомоморфизм [Equation]u[/Equation] рекурсивно:
