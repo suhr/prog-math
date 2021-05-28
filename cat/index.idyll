@@ -631,50 +631,49 @@ sum(t) = s(lvl(t))(t)
 - Композиция функций [Equation]S \to S[/Equation]
 - И многое, многое другое
 
-Как и для упорядоченных множеств, мы будем писать [Equation]m \in M^{(\cdot)}[/Equation] имея в виду [Equation]m \in set(M^{(\cdot)})[/Equation].
+Как и для упорядоченных множеств, мы будем писать [Equation]m \in M[/Equation] имея в виду [Equation]m \in set(M)[/Equation].
 
-Элемент [Equation]m^{-1} \in M^{(\cdot)}[/Equation] называется обратным к [Equation]m[/Equation] если [Equation]m \cdot m^{-1} = m^{-1} \cdot m = e[/Equation].
+Элемент [Equation]m^{-1} \in M[/Equation] называется обратным к [Equation]m[/Equation] если [Equation]m \cdot m^{-1} = m^{-1} \cdot m = e[/Equation].
 Моноид, каждый элемент которого обратим, называется группой.
 
-Аксиомы моноида не просто так похожи на свойства композиции функций: каждому [Equation]m \in M^{(\cdot)}[/Equation]
-можно сопоставить соответствующую функцию из [Equation]M[/Equation] в [Equation]M[/Equation]:
+Аксиомы моноида не просто так похожи на свойства композиции функций: каждому [Equation]m \in M[/Equation]
+можно сопоставить соответствующую функцию из [Equation]set(M)[/Equation] в [Equation]set(M)[/Equation]:
 
 [Equation display:true]
-f_m(x) = x \cdot m
+f_m = \_ \cdot m
 [/Equation]
 
 Умножению элементов [Equation]m \cdot n[/Equation] соответствует композиция функций [Equation]f_m \mathbin{\bm;} f_n[/Equation].
 
-В случае алгебраических структур, нас интересуют не просто отображения между множествами, а отображения,
-сохраняющие стуктуру. Такие отображения называются гомоморфизмами.
-
-Гомоморфизм из моноида [Equation]M^{(\cdot)} = (M, {\cdot}, e_M)[/Equation] в моноид [Equation]N^{*} = (N, {*}, e_N)[/Equation] это
-тройка [Equation](dom = M^{(\cdot)}, cod = N^{*}, set = \tilde f)[/Equation], где [Equation]\tilde f : M \to N[/Equation], для которой верно следующее:
+Гомоморфизм из моноида [Equation]M^{(\cdot)}[/Equation] в моноид [Equation]N^{(*)}[/Equation] это
+тройка [Equation](dom = M^{(\cdot)}, cod = N^{(*)}, set = f)[/Equation], где [Equation]f : M \to N[/Equation], для которой верно следующее:
 
 [Equation display:true]
 \begin{aligned}
-f(e_M) &= e_N \\
+f(unit(M^{(\cdot)})) &= unit(N^{(*)}) \\
 f(x \cdot y) &= f(x) * f(y) \qquad (\forall x, y \in M)
 \end{aligned}
 [/Equation]
 
-И аналогично отношению принадлежности, мы пишем [Equation]f(m)[/Equation] имея в ввиду [Equation]Forget(f)(m)[/Equation].
+Как и для отношения принадлежности, мы пишем [Equation]f(m)[/Equation] имея в ввиду [Equation]set(f)(m)[/Equation].
 
 Гомоморфизм переносит равенства из одного моноида в другой.
-Например, в случае [Equation](\_ \bmod 12) : \Bbb Z^{+} \to \Bbb Z/12[/Equation]:
+Например, в случае [Equation](\_ \bmod 12) : \Bbb Z^{+} \to \Bbb Z^{+}/12[/Equation]:
 
 [Equation display:true]
 6 + 13 - 16 = 3 \implies 6 +_{12} 1 +_{12} 8 = 3
 [/Equation]
 
-**Предложение:** пусть [Equation]f[/Equation] — биекция, соответствующая гомоморфизму из [Equation](M, {\cdot}, e_M)[/Equation] в [Equation](N, {*}, e_N)[/Equation].
-Тогда [Equation]f^{-1}[/Equation] это функция, соответствующая гомоморфизму из [Equation](N, {*}, e_N)[/Equation] в [Equation](M, {\cdot}, e_M)[/Equation].
+В отличие от упорядоченных множеств, биективный гомоморфизм моноидов обратим.
+
+**Предложение:** пусть [Equation]f : M^{(\cdot)} \to N^{(*)}[/Equation] — гомоморфизм, такой, что [Equation]set(f)[/Equation] — биекция.
+Тогда [Equation](N^{(*)}, M^{(\cdot)}, set(f)^{-1})[/Equation] также является гомоморфизмом.
 
 В самом деле:
 
 [Equation display:true]
 \begin{aligned}
-f^{-1}(e_N) &= e_M \\
+f^{-1}(unit(N^{(*)})) &= unit(M^{(\cdot)}) \\
 f^{-1}(f(x \cdot y)) &= x \cdot y \\
 &= f^{-1}(f(x) * f(y))
 \end{aligned}
@@ -687,9 +686,6 @@ f^{-1}(f(x \cdot y)) &= x \cdot y \\
 f^{-1}(\xi * \eta) = f^{-1}(\xi) \cdot f^{-1}(\eta)
 [/Equation]
 
-Гомоморфизм, функция которого биективна, называется изморфизмом. Моноиды [Equation]M[/Equation] и [Equation]N[/Equation]
-называются изоморфными (пишется [Equation]M \cong N[/Equation]), если между ними существует изоморфизм.
-
 Тривиальный моноид это моноид, содержащий только лишь нейтральный элемент:
 [Equation display:true]\bm 1 = (\{e\}, {\cdot}, e)[/Equation]
 
@@ -697,15 +693,15 @@ f^{-1}(\xi * \eta) = f^{-1}(\xi) \cdot f^{-1}(\eta)
 гомоморфизм из [Equation]M[/Equation] в [Equation]\bm 1[/Equation]. Однако, гомоморфизм из [Equation]\bm 1[/Equation]
 в [Equation]M[/Equation] также единственнен.
 
-Прямое произведение моноидов [Equation]M^{(\cdot)} = (M, {\cdot}, e_M)[/Equation] и [Equation]N^{*} = (N, {*}, e_N)[/Equation] это
-моноид [Equation]M^{(\cdot)} \times N^{*}[/Equation], определённый следующим образом:
+Прямое произведение моноидов [Equation]M^{(\cdot)}[/Equation] и [Equation]N^{(*)}[/Equation] это
+моноид [Equation]M^{(\cdot)} \times N^{(*)}[/Equation], определённый следующим образом:
 
 [Equation display:true]
 \begin{aligned}
-M^{(\cdot)} \times N^{*} = (
+M^{(\cdot)} \times N^{(*)} = (
   &M \times N, \\
   &((a, x), (b, y)) \mapsto (a \cdot b, x * y), \\
-  &(e_M, e_N)
+  &(unit(M), unit(N))
 )
 \end{aligned}
 [/Equation]
@@ -730,10 +726,7 @@ M \times N &\cong N \times M \\
 \end{aligned}
 [/Equation]
 
-Пусть [Equation]M[/Equation], [Equation]N[/Equation] и [Equation]X[/Equation] — моноиды. Пусть также даны
-гомоморфизмы [Equation]f: X \to M[/Equation] и [Equation]f: X \to N[/Equation]. Тогда существует
-единственный гомоморфизм [Equation]u : X \to M \times N[/Equation], такой, что следующая диаграмма
-коммутирует:
+Произведение моноидов обладает тем же универсальным свойством, что и произведение упорядоченных множеств:
 
 [div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
 [iframe
@@ -743,20 +736,27 @@ style:`{ "borderRadius": "8px", "border": "none" }`
 ][/iframe]
 [/div]
 
-В самом деле, есть лишь один способ построить такой гомоморфизм:
+Действительно, есть лишь один способ построить такой гомоморфизм:
 [Equation display:true]
 u(x) = (f(x), g(x))
 [/Equation]
 
-[Aside]Сами деревья конечны, в отличие от грамматики ([Equation]S[/Equation] может быть бесконечным и даже несчётным).[/Aside]
-Пусть [Equation]S[/Equation] — какое-то множество. Определим множество синтаксических деревьев [Equation]E[/Equation]
-следующим образом:
+Как и среди упорядоченных множеств, среди моноидов есть свободные. Однако, свободный моноид определяется
+уже не столь тривиально.
+
+Основная идея проста: если мы не знаем, что такое [Equation]x \cdot y[/Equation], так пусть *само
+выражение* и будет элементом! Конкретно, пусть [Equation]S[/Equation] — множество. Определим
+множество [Equation]F[/Equation] следующим образом:
 
 [Equation display:true]
 F = (e: \bm 1) + (val: S) + ((\cdot): F \times F)
 [/Equation]
 
-Также определим отношение эквивалентности как наименьшее отношение, соответствующее аксиомам моноида:
+Это множество можно рассматривать как своего рода синтаксическое дерево, в листьях которого либо
+нейтральный элемент, либо элементы множества [Equation]S[/Equation].
+
+Чтобы превратить [Equation]F[/Equation] в моноид, определим отношение эквивалентности как наименьшее отношение,
+соответствующее следующим условиям:
 
 [Equation display:true]
 \begin{aligned}
@@ -772,7 +772,7 @@ y \sim z &\implies x \cdot y \sim x \cdot z \\
 \end{aligned}
 [/Equation]
 
-Синтаксические деревья вместе с отношением эквивалентности позволяют определить моноид:
+Взяв фактор-множество, получаем свободный моноид:
 
 [Equation display:true]
 \begin{aligned}
@@ -784,44 +784,127 @@ Free(S) = (
 \end{aligned}
 [/Equation]
 
-Моноид, изоморфный [Equation]Free(S)[/Equation], называется свободным.
-
-Примеры свободных моноидов:
+Моноиды, изоморфные [Equation]Free(S)[/Equation], также называются называется свободными. Примеры:
 
 - (`List[T]`, `concat`, `[]`)
 - (`String`, `concat`, `""`)
 - [Equation]\Bbb N^{+}[/Equation]
 
-Свободный моноид это наиболее общий моноид, порождённый данным множеством. Формально, это можно
-выразить следующим универсальным свойством: пусть [Equation]S[/Equation] — множество, [Equation]M[/Equation] — моноид,
-а [Equation]f: S \to Forget(M)[/Equation]. Тогда существует единственный гомоморфизм [Equation]u : Free(S) \to M[/Equation],
-такой, что следующая диаграмма коммутирует:
+Но чтобы по праву называть [Equation]Free(S)[/Equation] свободным моноидом, нужно доказать, что
+выполняется соответствующее универсальное свойство:
 
 [div style:`{ "width": "70%", "marginLeft": "auto", "marginRight": "auto" }`]
 [iframe
-src:"https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwiRm9yZ2V0KEZyZWUoUykpIl0sWzIsMiwiRm9yZ2V0KE0pIl0sWzEsMiwiRm9yZ2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaSJdLFswLDIsImYiLDJdXQ==&embed"
+src:"https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwic2V0KEZyZWUoUykpIl0sWzIsMiwic2V0KE0pIl0sWzEsMiwic2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaSJdLFswLDIsImYiLDJdXQ==&embed"
 height:300 width:400
 style:`{ "borderRadius": "8px", "border": "none" }`
 ][/iframe]
 [/div]
 
-Здесь [Equation]i[/Equation] это естественное вложение [Equation]S[/Equation] в [Equation]Forget(Free(S))[/Equation]:
+Здесь [Equation]i[/Equation] это естественное вложение [Equation]S[/Equation] в [Equation]set(Free(S))[/Equation]:
 
 [Equation display:true]
 i(s) = [val(s)]_\sim
 [/Equation]
 
-Мы можем определить гомоморфизм [Equation]u[/Equation] рекурсивно:
+Гомоморфизм [Equation]u[/Equation] можно определить рекурсивно:
 
 [Equation display:true]
-u(m) = \begin{cases}
-f(s), &s \in S, \\
-e_M, &m = \mathsf e,\\
-u(x) * u(y), &m = x \cdot y
+u = \begin{cases}
+e &\mapsto unit(M) \\
+val(s) &\mapsto f(s) \\
+x \cdot y &\mapsto mul(M)(u(x), u(y))
 \end{cases}
 [/Equation]
 
-Из этого определения следует, что [Equation]u[/Equation] в самом деле единственнен: первое равенство следует из
+Из этого определения следует, что [Equation]u[/Equation] в самом деле единственнен: второе равенство следует из
 коммутативности диаграммы, когда же остальные — из определения гомоморфизма.
+
+Добавляя к отношению эквивалентности свободного моноида дополнительные условия, мы можем получать
+другие моноиды. Например, пусть [Equation]Z = \{s, p\}[/Equation] и пусть [Equation]\sim_Z[/Equation]
+удволетворяет и условиям свободного моноида, и следующим условиям:
+
+[Equation display:true]
+\begin{aligned}
+val(s) \cdot val(p) \sim_Z e \\
+val(p) \cdot val(s) \sim_Z e
+\end{aligned}
+[/Equation]
+
+Тогда соответствующий моноид [Equation]F/{\sim_Z}[/Equation] изоморфен моноиду целых чисел по сложению.
+Соответствующий изоморфизм нетрудно определить:
+
+[Equation display:true]
+f = \begin{cases}
+[e]_{\sim_Z} &\mapsto 0 \\
+[\underbrace{val(s) \cdot val(s) \cdot \dots}_n]_{\sim_Z} &\mapsto n \\
+[\underbrace{val(p) \cdot val(p) \cdot \dots}_n]_{\sim_Z} &\mapsto -n \\
+\end{cases}
+[/Equation]
+
+Других классов эквивалентности [Equation]F/{\sim_Z}[/Equation] не содержит,
+так как [Equation]s[/Equation] и [Equation]p[/Equation] взаимно уничтожают друг друга.
+
+Подобное построение называется заданием моноида и записывается так:
+
+[Equation display:true]\langle s, p \mid s \cdot p = p \cdot s = e \rangle[/Equation]
+
+Кроме произведений и свободного моноида, мы можем определить аналог размеченного объединения для моноидов.
+Пусть [Equation]M[/Equation] и [Equation]N[/Equation] — моноиды. Определим множество [Equation]P[/Equation]
+следующим образом:
+
+[Equation display:true]
+\begin{aligned}
+P &= (e : \bm 1) \\
+{} &+ (i_1 : set(M) \setminus \{ unit(M)\}) \\
+{} &+ (i_2 : set(N) \setminus \{ unit(N)\}) \\
+{} &+ ((\cdot) : P \times P)
+\end{aligned}
+[/Equation]
+
+Затем определим отношение эквивалентности [Equation]\sim[/Equation], как наименьшее отношение,
+удволетворяющее условиям свободного моноида вместе со следующими условиями:
+
+[Equation display:true]
+\begin{aligned}
+i_1(x) \cdot i_1(y) &\sim i_1(mul(M)(x, y)) \\
+i_2(x) \cdot i_2(y) &\sim i_2(mul(N)(x, y)) \\
+\end{aligned}
+[/Equation]
+
+И затем определяем искомый моноид как
+
+[Equation display:true]
+\begin{aligned}
+M * N = (
+  &P/{\sim},\\
+  &([a]_\sim, [b]_\sim) \mapsto [a \cdot b]_\sim,\\
+  &e
+)
+\end{aligned}
+[/Equation]
+
+Этот моноид называется *свободным произведением* моноидов [Equation]M[/Equation] и [Equation]N[/Equation]. Покажем, что он соответствует универсальному свойству для суммы:
+
+[div style:`{ "width": "95%", "marginLeft": "auto", "marginRight": "auto" }`]
+[iframe
+src:"https://q.uiver.app/?q=WzAsNCxbMywxLCJNKk4iXSxbMywzLCJaIl0sWzAsMCwiTSJdLFs2LDAsIk4iXSxbMiwwLCJpXzEiXSxbMywwLCJpXzIiLDJdLFsyLDEsImYiLDJdLFszLDEsImciXSxbMCwxLCJ1IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d&embed"
+height:350 width:600
+style:`{ "borderRadius": "8px", "border": "none" }`
+][/iframe]
+[/div]
+
+Действительно:
+
+[Equation display:true]
+u = \begin{cases}
+e &\mapsto unit(Z) \\
+i_1(x) &\mapsto f(x) \\
+i_2(x) &\mapsto g(x) \\
+x \cdot y &\mapsto mul(Z)(u(x), u(y))
+\end{cases}
+[/Equation]
+
+И снова единственность [Equation]u[/Equation] следует из коммутативности диаграммы и определения гомоморфизма.
 
 ## Категории
