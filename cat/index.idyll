@@ -453,7 +453,7 @@ f|_{< s}(x) = f(x)
 Чтобы построить такую функцию, определим множество
 
 [Equation display:true]
-U = \left\{(s, f) \ \Bigg|\ 
+U = \left\{(s, f) {\ \Bigg|\ }
 \begin{aligned}
   s \in S \ &\mathrm{and}\ f : S_{<s} \cup \{s\} \to Z \\
   &\mathrm{and}\ f(s) = g(s)(f|_{< s})
@@ -463,7 +463,7 @@ U = \left\{(s, f) \ \Bigg|\
 Докажем индуктивно, что [Equation](\forall s \in S)\ (\exists f)\enspace (s, f) \in U[/Equation].
 
 [ol]
-[li]Если [Equation]s = \operatorname{min} S[/Equation], то [Equation]f|_{< s} : \bm 0 \to B[/Equation],
+[li]Если [Equation]s = \operatorname{min} S[/Equation], то [Equation]f|_{< s} : \varnothing \to B[/Equation],
 и выражение [Equation]g(s)(f|_{< s})[/Equation] определено однозначно[/li]
 [li]Если [Equation](s, f) \in U[/Equation], то [Equation](succ(s), f_+) \in U[/Equation], где
 [Equation display:true]
@@ -606,6 +606,39 @@ node(x, y) &\mapsto s(n - 1)(x) + s(n - 1)(y)
 [Equation display:true]
 sum(t) = s(lvl(t))(t)
 [/Equation]
+
+Кроме функций, мы можем также рекурсивно определять отношения, рассматривая их как
+функции [Equation]S \times S \to \bm 2[/Equation]. При этом уровень
+элемента [Equation](a, b) \in S \times S[/Equation] равен [Equation]lvl(a) + lvl(b)[/Equation].
+
+[Aside]Здесь мы переключаемся с «отношение как функция» на «отношение как подмножество произведения».
+Хотя формально подмножества и функции в [Equation]\bm 2[/Equation] это различные вещи, между
+ними существует взаимно однозначное соответствие.
+[/Aside]
+Пусть [Equation]R : S \times S \to \bm 2[/Equation] — некоторое отношение на множестве [Equation]S[/Equation].
+Мы можем определить соответствующее отношение эквивалентности [Equation]\sim_R[/Equation] следующим образом:
+
+[Equation display:true]
+\begin{aligned}
+R_{sim} &= R \cup R^{\mathrm T} \cup (=) \\
+\sim_R &= \left\{(x, y) \in S \times S \mid
+(\exists z \in S)\enspace R_{sim}(x, z) \mathbin\mathrm{and} R_{sim}(z, y)
+\right\}
+\end{aligned}
+[/Equation]
+
+Здесь [Equation]R^{\mathrm T} = \{(y, x) \mid (x, y) \in R\}[/Equation].
+
+**Предложение:** [Equation]\sim_R[/Equation] это наименьшее отношение эквивалентности, такое, что
+[Equation](\forall x, y \in S)\enspace R(x, y) \implies x \sim_R y[/Equation].
+
+Пусть [Equation]\approx[/Equation] — некоторое другое отношение эквивалентности,
+такое что [Equation](\forall x, y \in S)\enspace R(x, y) \implies x \approx y[/Equation]. Покажем,
+что [Equation](\sim_R) \subseteq (\approx)[/Equation].
+
+1. [Equation]x \approx x[/Equation], так как это отношение эквивалентности
+2. [Equation]R(x, y) \implies x \approx y \mathbin\mathrm{and} y \approx x[/Equation]
+3. [Equation]x \approx z \mathbin\mathrm{and} z \approx y \implies x \approx y[/Equation]
 
 ### Моноиды
 
@@ -755,8 +788,7 @@ F = (e: \bm 1) + (val: S) + ((\cdot): F \times F)
 Это множество можно рассматривать как своего рода синтаксическое дерево, в листьях которого либо
 нейтральный элемент, либо элементы множества [Equation]S[/Equation].
 
-Чтобы превратить [Equation]F[/Equation] в моноид, определим отношение эквивалентности как наименьшее отношение,
-соответствующее следующим условиям:
+Чтобы превратить [Equation]F[/Equation] в моноид, определим наименьшее отношение эквивалентности, соответствующее следующим условиям:
 
 [Equation display:true]
 \begin{aligned}
@@ -807,18 +839,22 @@ style:`{ "borderRadius": "8px", "border": "none" }`
 i(s) = [val(s)]_\sim
 [/Equation]
 
-Гомоморфизм [Equation]u[/Equation] можно определить рекурсивно:
+Каждой функции [Equation]u : F/{\sim} \to set(M)[/Equation] взаимно однозначно соответствует
+функция [Equation]\tilde u : F \to set(M)[/Equation], такая, что [Equation](\forall x \in F)\enspace \tilde u(x) = u([x]_\sim)[/Equation].
+При этом если [Equation]x \sim y[/Equation], то [Equation]\tilde u(x) = \tilde u(y)[/Equation].
+
+Но существует лишь одна такая функция [Equation]\tilde u[/Equation], удволетворяющая одновременно и
+условиям коммутативности диаграммы, и определению гомоморфизма:
 
 [Equation display:true]
-u = \begin{cases}
+\tilde u = \begin{cases}
 e &\mapsto unit(M) \\
 val(s) &\mapsto f(s) \\
-x \cdot y &\mapsto mul(M)(u(x), u(y))
+x \cdot y &\mapsto mul(M)(\tilde u(x), \tilde u(y))
 \end{cases}
 [/Equation]
 
-Из этого определения следует, что [Equation]u[/Equation] в самом деле единственнен: второе равенство следует из
-коммутативности диаграммы, когда же остальные — из определения гомоморфизма.
+Можно легко проверить, что в самом деле [Equation]x \sim y \implies \tilde u(x) = \tilde u(y)[/Equation].
 
 Добавляя к отношению эквивалентности свободного моноида дополнительные условия, мы можем получать
 другие моноиды. Например, пусть [Equation]Z = \{s, p\}[/Equation] и пусть [Equation]\sim_Z[/Equation]
@@ -898,13 +934,112 @@ style:`{ "borderRadius": "8px", "border": "none" }`
 
 [Equation display:true]
 u = \begin{cases}
-e &\mapsto unit(Z) \\
-i_1(x) &\mapsto f(x) \\
-i_2(x) &\mapsto g(x) \\
-x \cdot y &\mapsto mul(Z)(u(x), u(y))
+[e]_\sim &\mapsto unit(Z) \\
+[i_1(x)]_\sim &\mapsto f(x) \\
+[i_2(x)]_\sim &\mapsto g(x) \\
+[x \cdot y]_\sim &\mapsto mul(Z)(u(x), u(y))
 \end{cases}
 [/Equation]
 
 И снова единственность [Equation]u[/Equation] следует из коммутативности диаграммы и определения гомоморфизма.
 
 ## Категории
+
+Категория это класс объектов со стрелками между ними и композицией стрелок.
+Конкретно, категория [Equation]\mathsf C[/Equation] это:
+
+1. Класс объектов [Equation]\operatorname{ob}(\mathsf C)[/Equation]
+2. Для любой пары объектов [Equation]A[/Equation] и [Equation]B[/Equation], класс стрелок (морфизмов) [Equation]\mathsf{C}(A, B)[/Equation] (также обозначаемый как [Equation]\operatorname{hom}_\mathsf{C}(A, B)[/Equation])
+3. Для каждого объекта, единичная стрелка [Equation]\mathrm{id}_A \in \mathsf{C}(A, A)[/Equation]
+4. Для любой пары стрелок [Equation]f \in \mathsf{C}(A, B)[/Equation] и [Equation]g \in \mathsf{C}(B, C)[/Equation], стрелка [Equation]f \mathbin\bm; g \in \mathsf{C}(A, C)[/Equation]
+
+[Aside]Мы будем писать [Equation]f: A \to B[/Equation] имея в виду [Equation]f \in \mathsf{C}(A, B).[/Equation][/Aside]
+Неравные классы стрелок не должны пересекаться. Кроме того, композиция стрелок должна вести себя
+как композиция функций:
+
+[Equation display:true]
+\begin{aligned}
+\mathrm{id}_{A} \mathbin\bm; f &= f \\
+f \mathbin\bm; \mathrm{id}_{B} &= f \\
+(f \mathbin\bm; g) \mathbin\bm; h &= f \mathbin\bm; (g \mathbin\bm; h)\\
+\end{aligned}
+\qquad\quad
+\forall\left(\begin{aligned}
+f &\in \mathsf{C}(A, B) \\
+g &\in \mathsf{C}(B, C) \\
+h &\in \mathsf{C}(C, D)
+\end{aligned}\right)
+[/Equation]
+
+Примеры:
+
+[ul]
+[li]Упорядоченное множество [Equation]S[/Equation] это категория:
+[Equation display:true]
+\begin{aligned}
+\operatorname{ob}(S) &= set(S) \\
+S(x, y) &= \{(x, y) \mid rel(S)(x, y)\} \\
+id_x &= (x, x) \\
+(x, y) \mathbin\bm; (y, z) &= (x, z)
+\end{aligned}
+[/Equation]
+[/li]
+[li]
+Моноид [Equation]M[/Equation] это тоже категория:
+[Equation display:true]
+\begin{aligned}
+\operatorname{ob}(M) &= \{\varnothing\} \\
+M(\varnothing, \varnothing) &= set(M) \\
+id_\varnothing &= unit(M) \\
+m \mathbin\bm; n &= mul(M)(m, n)
+\end{aligned}
+[/Equation]
+[/li]
+[li]Категория множеств [Equation]\mathsf{Set}[/Equation], где объекты — множества, а стрелки — отображения[/li]
+[li]
+[Aside]Точнее, класс эквивалетности чистых тотальных функций по действию на значения типа.[/Aside]
+Категория типов [Equation]\mathsf{Type}[/Equation], где объекты это типы, а стрелки это чистые тотальные функции[/li]
+[li]Категория упорядоченных множеств [Equation]\mathsf{Ord}[/Equation], где объекты — упорядоченные множества, а стрелки — гомоморфизмы[/li]
+[li]Категория моноидов [Equation]\mathsf{Mon}[/Equation], где объекты — моноиды, а стрелки — гомоморфизмы[/li]
+[li]Категория векторных пространств [Equation]\mathsf{Vect}[/Equation], где объекты — векторные пространства, а стрелки — линейные отображения[/li]
+[/ul]
+
+Категория называется малой, если её классы объектов и классы стрелок — множества.
+
+Пусть у нас есть категория [Equation]\mathsf C[/Equation]. Мы можем построить обратную
+категорию [Equation]\mathsf{C}^\mathsf{op}[/Equation], просто обратив направление всех стрелок.
+При этом, все построения, что у нас были, превращаются в двойственные.
+
+Конкретнее, обратная категория это категория с теми же объектами, где стрелки и композиция определены
+следующим образом:
+
+[Equation display:true]
+{\mathsf{C}^\mathsf{op}}(A, B) = \mathsf{C}(B, A)
+[/Equation]
+[Equation display:true]
+f \mathbin\bm;^\mathsf{op} g = g \mathbin\bm; f
+[/Equation]
+
+Этот нехитный трюк имеет фундаментальное значение:
+
+1. У любого категорного понятия есть двойственное понятие
+2. Если утверждение верно для всех категорий, то и двойственное утверждение верно для всех категорий
+
+Примеры двойственных понятий:
+
+- [Equation]\bm 1[/Equation] и [Equation]\bm 0[/Equation]
+- [Equation]\times[/Equation] и [Equation]+[/Equation]
+- [Equation]\wedge[/Equation] и [Equation]\vee[/Equation]
+- `struct` и `enum`
+- `()` и `!`
+- И многое другое
+
+## Пределы
+
+## Естественные преобразования
+
+## Функтор hom
+
+## Сопряжённые функторы
+
+## Монады
