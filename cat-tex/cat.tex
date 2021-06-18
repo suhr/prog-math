@@ -1,0 +1,1081 @@
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[
+  left=2cm,
+  top=2.0cm,
+  right=6cm,
+  bottom=2.7cm,
+  marginparwidth=4cm,
+  marginparsep=0.7cm,
+]{geometry}
+
+\usepackage{xltxtra}
+\usepackage{polyglossia}
+\usepackage{marginnote}
+\usepackage{bm}
+\usepackage{quiver}
+\usepackage{quotes}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{ragged2e}
+
+\setmainlanguage{russian}
+\setotherlanguage{english}
+\setkeys{russian}{babelshorthands=true}
+
+\setmainfont{PT Serif}
+\setromanfont{PT Serif}
+\setsansfont{PT Sans}
+\setmonofont{PT Mono}
+
+\newfontfamily{\cyrillicfont}{PT Serif}
+\newfontfamily{\cyrillicfontrm}{PT Serif}
+\newfontfamily{\cyrillicfonttt}{PT Mono}
+\newfontfamily{\cyrillicfontsf}{PT Sans}
+
+\addto\captionsrussian{%
+  \renewcommand{\figurename}{Рис.}
+  \renewcommand{\tablename}{Табл.}
+}
+
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily}
+
+\usepackage{setspace}
+\setstretch{1.05}
+\setlength{\parskip}{0.07em}
+
+\renewcommand\labelitemi{–}
+
+\title{Теория категорий}
+\date{\vspace{-5ex}}
+
+\newcommand{\fcomp}{\mathbin{\bm{;}}}
+\newcommand{\marg}[1]{\leavevmode\marginpar{\small\RaggedRight #1}\ignorespaces}
+\newcommand{\margnote}[1]{\marginnote{\small\RaggedRight #1}[0em]}
+
+\newtheoremstyle{colon}%
+{}
+{}
+{\itshape}%bodyfont
+{}%indent
+{\bfseries}%headfont
+{:}%head punctuation
+{ }%space after head
+{}
+
+\theoremstyle{colon}
+\newtheorem*{prop*}{Предложение}
+\newtheorem*{iterPrinciple}{Принцип итерации}
+
+\begin{document}
+\maketitle
+
+Теория категорий была создана как скромный инструмент для нужд алгебраической топологии. Теперь же
+она захватила всю математику, успешно завоёвывает информатику и совершает регулярные набеги на
+естественные науки.
+
+Причина столь впечатляющей мощи проста и описывается одним словом: \emph{абстракция}. Так же, как в
+программировании мы описываем интерфейсы с помощью методов, в теории категорий мы описываем
+алгебраические структуры с помощью функций. При этом, внутренняя стуктура объектов, между которыми
+заданы функции, скрыта от нас.
+
+\marg{Кроме, пожалуй, C, Go и PHP.}
+Мы, программисты, находимся в довольно привелегированном положении. Категорные понятия \emph{уже}
+даны нам в языках, подходах и культуре, хотя и не осознаются. И несмотря на многочисленные шутки
+про непостижимость монад™, \lstinline{flat_map} уже есть в каждом языке.
+
+\section{Алгебраические структуры}
+
+Перед тем, как погружаться в категории, рассмотрим базовые алгебраические структуры.
+
+\subsection{Функции}
+
+Но сначала вспомним функции над множествами. Как мы знаем, функция \( f: A \to B \) это
+сущность, которая сопоставляет каждому элементу множества \( A \) некий единственный
+элемент множества \( B \). Равенство двух функций определяется равенством их областей,
+кообластей и графиков.
+
+\marg{В математике обычно пишут композицию справо налево, как \( g \circ f \). Но мы читаем,
+пишем и рисуем диаграммы слева направо, и потому так записывать композицию не будем.}
+Композиция функций \( f: A \to B \) и \( g: B \to C \) определяется
+следующим образом:
+
+\[
+(f \fcomp g)(x) = g(f(x))
+\]
+
+Для любого множества \( A \) существует единичное отображение из \( A \) в \( A \):
+
+\[
+\mathrm{id}_A(x) = x 
+\]
+
+Для него верно следующее:
+
+\[
+\mathrm{id}_A \fcomp f = f \fcomp \mathrm{id}_B = f
+\]
+
+Кроме того, композиция трёх функций ассоциативна (если определена):
+
+\[
+(f \fcomp g) \fcomp h = f \fcomp (g \fcomp h)
+\]
+
+Ассоциативность позволяет нарисовать диаграмму для композиции функций:
+
+% https://q.uiver.app/?q=WzAsNCxbMSwwLCJCIl0sWzAsMCwiQSJdLFsyLDAsIkMiXSxbMywwLCJEIl0sWzEsMCwiZiJdLFswLDIsImciXSxbMiwzLCJoIl1d
+\[\begin{tikzcd}
+	A & B & C & D
+	\arrow["f", from=1-1, to=1-2]
+	\arrow["g", from=1-2, to=1-3]
+	\arrow["h", from=1-3, to=1-4]
+\end{tikzcd}\]
+
+Но мы можем использовать диаграммы не только чтобы выразить существование функции между двумя множествами.
+Равенства функций тоже можно выразить как диаграмму. Например, \(f \fcomp \mathrm{id}_B = f\) можно нарисовать так:
+
+% https://q.uiver.app/?q=WzAsMyxbMCwxLCJBIl0sWzIsMSwiQiJdLFsyLDAsIkIiXSxbMCwxLCJmIiwyXSxbMCwyLCJmIl0sWzIsMSwiXFxtYXRocm17aWR9X0IiXV0=
+\[\begin{tikzcd}
+	&& B \\
+	A && B
+	\arrow["f"', from=2-1, to=2-3]
+	\arrow["f", from=2-1, to=1-3]
+	\arrow["{\mathrm{id}_B}", from=1-3, to=2-3]
+\end{tikzcd}\]
+
+Диаграмма, в которой равны все функции, соответствующие направленным путям между любыми двумя заданными вершинами,
+называется коммутативной. Также говорят, что диаграмма коммутирует.
+
+Функция \(f^{-1}\) называется обратной к \(f: A \to B\),
+если \(f \fcomp f^{-1} = \mathrm{id}_A\) и \(f^{-1} \fcomp f = \mathrm{id}_B\).
+Как мы знаем, функция имеет обратную тогда и только тогда, когда она биективна.
+
+Но для инъективных и сюръективных функцих есть более слабый вариант понятия обратной функции. Пусть
+следующая диаграмма коммутирует:
+
+% https://q.uiver.app/?q=WzAsMyxbMiwwLCJBIl0sWzEsMCwiQiJdLFswLDAsIkEiXSxbMSwwLCJnIl0sWzIsMSwiZiJdLFsyLDAsIlxcbWF0aHJte2lkfV9BIiwyLHsiY3VydmUiOjJ9XV0=
+\[\begin{tikzcd}
+	A & B & A
+	\arrow["g", from=1-2, to=1-3]
+	\arrow["f", from=1-1, to=1-2]
+	\arrow["{\mathrm{id}_A}"', curve={height=12pt}, from=1-1, to=1-3]
+\end{tikzcd}\]
+
+Тогда функция \(f\) называется левой обратной к функции \(g\), а
+функция \(g\) называется правой обратной к функции \(f\).
+
+\begin{prop*}
+в этом случае \(f\) инъективна, а \(g\) — сюръективна.
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Действительно, пусть \(a \in A\). Тогда имеем:
+  
+\[
+  a \xmapsto{f} b \xmapsto{g} a
+\]
+
+Так как \(a\) произвольно, \(g\) должна быть сюръекцией. Так
+как \(b\) соответствует единственное \(a\), то \(f\) инъективна.
+\end{proof}
+
+Пусть \(\bm{0} = \varnothing\), а \(\bm{1} = \{\varnothing\}\).
+Каждому множеству \(A\) соответствует функция из \(\bm{0}\) в \(A\),
+и единственная функция из \(A\) в \(\bm{1}\). Каждому же \(x \in A\)
+соответствует единственная функция \(\underline{x}: \bm{1} \to A\).
+
+Это позволяет выразить применение функции как композицию:
+
+\[
+\underline 2 \fcomp sq = \underline 4 \qquad sq(x) = x^2
+\]
+
+Каждой функции \(f: A \times B \to C\) соответствуют единственная функция
+\(g: A \to (B \to C)\):
+
+\[
+g(x) = y \mapsto f(x, y)
+\]
+
+Мы будем писать \(f(x, \_)\) имея в виду \(y \mapsto f(x, y)\).
+При этом \(f(\_, \_)\) это то же, что и \((x, y) \mapsto f(x, y)\).
+
+\subsection{Отношение порядка}
+
+Отношение \( (\leqslant) : S \times S \to \bm 2 \) называется отношением предпорядка,
+если оно удволетворяет следующим аксиомам:
+
+\begin{itemize}
+\item Рефлексивность: \( (\forall x \in S)\enspace s \leqslant s \)
+\item Транзитивность: \( (\forall x, y, z \in S)\enspace x \leqslant y \mathbin\mathrm{and} y \leqslant z \implies x \leqslant z \)
+\end{itemize}
+
+Отношение предпорядка называется отношением порядка, если дополнительно выполняется
+
+\begin{itemize}
+\item \( (\forall x, y \in S)\enspace x \leqslant y \mathbin\mathrm{and} y \leqslant x \implies x = y \) (антисимметричность)
+\end{itemize}
+
+Отношение порядка называется линейным, если к тому же \( (\forall x, y \in S)\enspace x \leqslant y \mathbin\mathrm{or} y \leqslant x \) (иначе говоря, любые два элемента сравнимы).
+
+Примеры отношения предпорядка:
+
+\begin{itemize}
+\item Существование пути в направленном графе между двумя узлами
+\end{itemize}
+
+Примеры отношения порядка:
+
+\begin{itemize}
+\item Обычное отношение порядка на числах
+\item Отношение подмножества
+\item Мощность множеств
+\end{itemize}
+
+Упорядоченное множество это множество с заданым на нём отношением порядка. Формально это пара \( (S, \leqslant) \).
+Для этой пары определим проекции:
+
+\begin{align*}
+set((S, \_)) &= S \\
+rel((\_, \leqslant)) &= (\leqslant)
+\end{align*}
+
+Мы будем писать \( x \in S_{\leqslant} \) имея в виду \( x \in set(S_{\leqslant}) \).
+
+Если посмотреть внимательнее на аксиомы отношения предпорядка, можно заметить сходство со свойствами
+композиции. Сходство не случайное: отношение порядка можно представить как множество функций.
+
+Конкретнее, определим множество
+
+\[
+\mathrm{arr}(x, y) = \{f : \{x\} \to \{y\} \mid x \leqslant y \}
+\]
+
+Посмотрим на элементы \( \mathrm{arr}(x, x) \) как на абстракные стрелки из \( x \) в \( y \):
+
+\begin{align*}
+\exists id_x &\in \mathrm{arr}(x, x) \qquad (\forall x \in S) \\
+\exists f_{xy} \fcomp f_{yz} &\in \mathrm{arr}(x, z) \qquad (\forall f_{xy} \in \mathrm{arr}(x, y), f_{yz} \in \mathrm{arr}(y, z))
+\end{align*}
+
+Тождественная стрелка соответствует рефлексивности, когда же композиция соответствует транзитивности.
+
+\marg{Такие диаграммы называются диаграммами Хассе, и их рисуют так, чтобы все стрелки были направленны вверх.
+При этом наконечник стрелки зачастую опускают.}
+Как и для функций, для стрелок можно рисовать диаграммы. Например, вот диаграмма для \( (\mathcal{P}(\{a, b, c\}), \subseteq) \):
+
+% https://q.uiver.app/?q=WzAsOCxbMSwzLCJcXHtcXH0iXSxbMCwyLCJcXHthXFx9Il0sWzEsMiwiXFx7YlxcfSJdLFsyLDIsIlxce2NcXH0iXSxbMCwxLCJcXHthLGJcXH0iXSxbMSwxLCJcXHthLCBjXFx9Il0sWzIsMSwiXFx7YiwgY1xcfSJdLFsxLDAsIlxce2EsIGIsY1xcfSJdLFswLDFdLFswLDJdLFswLDNdLFsxLDRdLFsxLDVdLFsyLDRdLFsyLDZdLFszLDZdLFszLDVdLFs0LDddLFs1LDddLFs2LDddXQ==
+\[\begin{tikzcd}
+	& {\{a, b,c\}} \\
+	{\{a,b\}} & {\{a, c\}} & {\{b, c\}} \\
+	{\{a\}} & {\{b\}} & {\{c\}} \\
+	& {\{\}}
+	\arrow[from=4-2, to=3-1]
+	\arrow[from=4-2, to=3-2]
+	\arrow[from=4-2, to=3-3]
+	\arrow[from=3-1, to=2-1]
+	\arrow[from=3-1, to=2-2]
+	\arrow[from=3-2, to=2-1]
+	\arrow[from=3-2, to=2-3]
+	\arrow[from=3-3, to=2-3]
+	\arrow[from=3-3, to=2-2]
+	\arrow[from=2-1, to=1-2]
+	\arrow[from=2-2, to=1-2]
+	\arrow[from=2-3, to=1-2]
+\end{tikzcd}\]
+
+Пусть \( S_\leqslant \) и \( T_\sqsubseteq \) — упорядоченные множества.
+Функция \( f : S \to T \) называется монотонной, если
+
+\[
+(\forall x, y \in S)\enspace x \leqslant y \implies f(x) \sqsubseteq f(y)
+\]
+
+Отображения, сохраняющие структуру, в алгебре обычно называются гомоморфизмами. В случае множеств,
+в определение функции входят множества, соответствующие области и кообласти функции. В случае же упорядоченных
+множеств нам бы хотелось, чтобы область и кооблась были также упорядоченными множествами. Поэтому мы
+определяем гомоморфизм из \( S_\leqslant \) в \( T_\sqsubseteq \) как
+тройку \( (S_\leqslant, T_\sqsubseteq, f) \).
+
+Кроме того, для этой тройки определим проекции
+
+\begin{align*}
+dom((S_\leqslant, \_, \_)) &= S_\leqslant \\
+cod((\_, T_\sqsubseteq, \_)) &= T_\sqsubseteq \\
+set((\_, \_, f)) &= f
+\end{align*}
+
+Аналогично отношению принадлежности, если \( f : S_\leqslant \to T_\sqsubseteq \), то
+\( f(x) \) означает \( set(f)(x) \).
+
+\marg{
+Из того, что \( set(f) \) — биекция, вовсе не следует, что \( f \) — изоморфизм.
+Например, гомоморфизм из \( Free(\{\varnothing, \{\varnothing\}\}) \) в \( (\mathcal{P}(\{\varnothing\}), \subseteq) \) не является
+изоморфизмом, так как обратная функция не является монотонной.
+}
+Гомоморфизм \( f : S_\leqslant \to T_\sqsubseteq \) называется изоморфизмом, если
+существует такой гомоморфизм \( f^{-1} : T_\sqsubseteq \to S_\leqslant \), что
+\( f \fcomp f^{-1} = \mathrm{id}_{S_\leqslant} \) и \( f^{-1} \fcomp f = \mathrm{id}_{T_\sqsubseteq} \).
+Соответствующие упорядоченные множества называются изоморфными (пишется \( S_\leqslant \cong T_\sqsubseteq \)).
+
+Любое множество можно превратить в упорядоченное с помощью дискретного (свободного) отношения порядка:
+
+\[
+Free(S) = (S, (x, y) \mapsto x = y)
+\]
+
+В частности, мы можем определить \( \bm{0} \) и \( \bm{1} \):
+
+\begin{align*}
+\bm{0} &= Free(\{\}) \\
+\bm{1} &= Free(\{\varnothing\})
+\end{align*}
+
+И как и в случае с обычными множествами, для любого упорядоченного множества \( S \) существует
+единственный гомоморфизм из \( \bm{0} \) в \( S \), и единственный гомоморфизм из \( S \) в \( \bm{1} \).
+
+\begin{prop*}
+пусть \( S \) — множество, \( P \) — упорядоченное множество,
+а \( f : S \to set(P) \). Тогда существует единственный гомоморфизм \( u : Free(S) \to P \),
+такой, что следующая диаграмма коммутирует:
+
+% https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwic2V0KEZyZWUoUykpIl0sWzIsMiwic2V0KFApIl0sWzEsMiwic2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaWRfUyJdLFswLDIsImYiLDJdXQ==
+\[\begin{tikzcd}
+	S && {set(Free(S))} \\
+	\\
+	&& {set(P)}
+	\arrow["{set(u)}", dashed, from=1-3, to=3-3]
+	\arrow["{id_S}", from=1-1, to=1-3]
+	\arrow["f"', from=1-1, to=3-3]
+\end{tikzcd}\]
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Действительно, \( u = (Free(S), P, f) \).
+\end{proof}
+
+Таким образом, \( Free(S) \) является наиболее общим упорядоченным множеством, порождённым
+множеством \( S \).
+
+Свободные объекты бывают и у других алгебраических структур, но,
+как правило, определяются куда менее прямолинейно, хотя и удволетворяют тому же универсальному
+свойству, только лишь \( id_S \) заменяется на некое каноническое вложение \( i : S \to Free(S) \).
+
+Пусть \( S \) и \( T \) — упорядоченные множества. Прямое произведение \( S \times T \) это
+следующее упорядоченное множество:
+
+\begin{align*}
+S \times T = (
+&set(S) \times set(T), \\
+&((a, x), (b, y)) \mapsto rel(S)(a, b) \mathbin\mathrm{and} rel(T)(x, y))
+\end{align*}
+
+Как и у свободного упорядоченного множества, у прямого произведения есть универсальное свойство.
+
+\begin{prop*}
+пусть \( S \) и \( T \) — упорядоченные множества.
+Пусть также даны гомоморфизмы \( f : X \to S \) и \( g : X \to T \).
+Тогда существует единственный гомоморфизм \( u : X \to S \times T \), такой, что
+следующаяя диаграмма коммутирует:
+
+% https://q.uiver.app/?q=WzAsNCxbMywwLCJYIl0sWzMsMiwiU1xcdGltZXMgVCJdLFswLDMsIlMiXSxbNiwzLCJUIl0sWzAsMSwidSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxLDIsIlxccGlfMSJdLFsxLDMsIlxccGlfMiIsMl0sWzAsMywiZyJdLFswLDIsImYiLDJdXQ==
+\[\begin{tikzcd}
+	&&& X \\
+	\\
+	&&& {S\times T} \\
+	S &&&&&& T
+	\arrow["u", dashed, from=1-4, to=3-4]
+	\arrow["{\pi_1}", from=3-4, to=4-1]
+	\arrow["{\pi_2}"', from=3-4, to=4-7]
+	\arrow["g", from=1-4, to=4-7]
+	\arrow["f"', from=1-4, to=4-1]
+\end{tikzcd}\]
+
+Здесь \( \pi_1 \) и \( \pi_2 \) это проекции из \( S \times T \):
+
+\begin{align*}
+\pi_1((x, \_)) &= x \\
+\pi_2((\_, y)) &= y
+\end{align*}
+
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+В самом деле, единственным таким гомоморфизмом является следующий:
+
+\begin{align*}
+u = (&X, \\
+&S \times T, \\
+&x \mapsto (f(x), g(x)))
+\end{align*}
+\end{proof}
+
+Как и произведение множеств, прямое произведение удволетворяет следующим свойствам:
+
+\begin{align*}
+S \times \bm{0} &\cong \bm{0} \\
+S \times \bm{1} &\cong \bm S \\
+S \times T &\cong T \times S \\
+(S \times T) \times R &\cong S \times (T \times R)
+\end{align*}
+
+Пусть \( S \) — упорядоченное множество. Элемент \( a \in S \) называется минимальным,
+если не существует такого \( b \in S \), что \( a > b \) (\( a \) и \( b \) могут быть несравнимы).
+Элемент \( a \in S \) называется наименьшим, если \( (\forall b \in S)\enspace a \leqslant b \).
+
+Аналогично определяются максимальный и наименьший элементы. Наибольший и наименьший элементы обозначаются,
+соответственно, как \( \operatorname{max} S \) и \( \operatorname{min} S  \).
+
+Кроме того, для \( x, y \in S \) можно определить операции пересечения и объединения:
+
+\begin{align*}
+x \wedge y &= \operatorname{max}\ \{s \in S \mid s \leqslant x \mathbin\mathrm{and} s \leqslant y\} \\
+x \vee y &= \operatorname{min}\ \{s \in S \mid x \leqslant s \mathbin\mathrm{and} y \leqslant s\} \\
+\end{align*}
+
+В случае, когда \( x \) и \( y \) сравнимы, \( x \wedge y = \operatorname{min}\ \{x, y\} \), а \( x \vee y = \operatorname{max}\ \{x, y\} \).
+
+\marg{Слова «единственная» и «коммутирует» в данном контексте могут показаться избыточными, но в случае элементов упорядоченного множества они и в самом деле избыточны.}
+Если мы выразим выражение для пересечения элементов как диаграмму стрелок, то обнаружим, что пересечение
+также обладает универсальным свойством. А именно, пусть \( s \leqslant x \) и \( s \leqslant y \).
+Тогда существует единственная стрелка \( s \leqslant x \wedge y \), такая, что следующая
+диаграмма коммутирует:
+
+% https://q.uiver.app/?q=WzAsNCxbMywxLCJ4IFxcd2VkZ2UgeSJdLFszLDMsInMiXSxbMCwwLCJ4Il0sWzYsMCwieSJdLFsxLDAsIiIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFswLDNdLFswLDJdLFsxLDJdLFsxLDNdXQ==
+\[\begin{tikzcd}
+	x &&&&&& y \\
+	&&& {x \wedge y} \\
+	\\
+	&&& s
+	\arrow[dashed, from=4-4, to=2-4]
+	\arrow[from=2-4, to=1-7]
+	\arrow[from=2-4, to=1-1]
+	\arrow[from=4-4, to=1-1]
+	\arrow[from=4-4, to=1-7]
+\end{tikzcd}\]
+
+Обращение всех стрелок даёт универсальное свойство для объединения элементов.
+
+Линейно упорядоченное множество называется вполне упорядоченным, если любое непустое его подмножество
+содержит наименьший элемент этого подмножества. Соответствующее отношение порядка называется фундированным.
+
+Вполне упорядоченные множества тесно связаны с рекурсией и математической индукцией. Чтобы это показать,
+введём один важный математический принцип.
+
+\begin{iterPrinciple}
+\marg{Вообще, это утверждение является теоремой, которая в теории множеств доказывается достаточно
+извращённым образом. Мы её доказывать не будем, тем более, что в некоторых аксиоматиках теории множеств
+это утверждение является аксиомой (например, в ETCS).}
+пусть \( f : A \to A \). Тогда, для любого \( a \in A \) существует
+функция \( g : \Bbb N \to A \), такая, что \( g(0) = a \) и \( g(n + 1) = f(g(n)) \).
+\end{iterPrinciple}
+
+Иначе говоря, \( f^{n}(a) \) существует и является функцией от \( n \).
+
+Для элемента \( a \) можно определить элемент, следующий за ним:
+
+\[succ(a) = \operatorname{min}\ \{s \mid s > a \}\]
+
+Элемент вполне упорядоченного множества называется предельным, если он не следует ни за каким элементом.
+
+\begin{prop*}
+пусть \( S \) — линейно упорядоченное множеств, в котором не существует бесконечной
+цепи вида \( \dots < a_1 < a_0 \). Тогда \( S \) является вполне упорядоченным множеством.
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+От противного. Пусть \( S \) не является вполне упорядоченным. Это означает, что
+существует непустое множество \( A \subseteq S \), не имеющее наименьшего элемента.
+
+Введём функцию:
+
+\[
+p(x) = \varepsilon(\{a \in A \mid a < x\})
+\]
+
+Эта функция определена на всех элементах множества \( A \): в самом деле, если
+множество \( \{a \in A \mid a < m\} \) пусто для какого-то \( m \in A \),
+то \( m \) является наименьшим элементом множества \( A \).
+
+Но в таком случае \( p^n(\varepsilon(A)) \) определяет бесконечную нисходящую цепь,
+что противоречит тому, что подобной цепи не существует.
+\end{proof}
+
+Из доказанного следует, что любой элемент вполне упорядоченного множества представим
+в виде \( succ^n(\lambda) \), где \( n \in \Bbb N \), а \( \lambda \) — некий
+предельный элемент.
+
+Принцип математической индукции можно обобщить на произвольные вполне упорядоченные множества.
+
+\begin{prop*}[трансфинитная индукция]
+\marg{Формально, первый пункт избыточен, так как наименьший элемент вполне упорядоченного множества является
+и предельным элементом. Однако, с ним теорема выглядит *естественнее*.}
+пусть \( S \) — вполне упорядоченное множество,
+а \( \varphi : set(S) \to \bm 2 \). Кроме того, пусть верно следующее:
+
+\begin{enumerate}
+\item \( \varphi(\operatorname{min} A) \)
+\item \( (\forall s \in S)\enspace \varphi(s) \implies \varphi(succ(s)) \)
+\item \( ((\forall s < \lambda)\enspace \varphi(s)) \implies \varphi(\lambda) \) для всех предельных \( \lambda \in S \)
+\end{enumerate}
+
+Тогда \( \varphi(s) \) истино для всех \( s \in S \).
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Пусть это не так, тогда множество \( C = \{s \in S \mid \operatorname{not} \varphi(s)\} \) непусто.
+Так как \( S \) это вполне упорядоченное множество, то существует \( c = \operatorname{min} C \).
+
+Однако:
+
+\begin{enumerate}
+\item \( c \ne \operatorname{min} A \)
+\item \( (\forall s \in S)\enspace c \ne succ(s) \), потому что иначе \( c \ne \operatorname{min} C \)
+\item \( c \) не является предельным элементом, потому что иначе опять \( c \ne \operatorname{min} C \)
+\end{enumerate}
+
+Мы исчерпали все возможные \( c \). Следовательно, такого элемента не существует, и \( \varphi(s) \) истино для всех \( s \in S \).
+\end{proof}
+
+Индукция это схема *доказательства* для вполне упорядоченных множеств. Кроме этого, нам нужна схема построения
+функция из элементов вполне упорядоченного множества.
+
+\begin{prop*}[трансфинитная рекурсия]
+для вполне упорядоченного множества \( S \),
+существует единственная функция \( f : set(S) \to Z \), такая, что
+
+\[f(s) = g(s)(f|_{< s})\]
+
+Здесь \( g : (s \in S) \to (S_{<s} \to B) \to B \) , где \( S_{<s} = \{x \in S \mid x < s\} \),
+а \( f|_{< s} \) это ограничение функции \( f \):
+
+\[
+f|_{< s} : S_{<s} \to B
+\qquad
+f|_{< s}(x) = f(x)
+\]
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Чтобы построить такую функцию, определим множество
+
+\[
+U = \left\{(s, f) {\ \Bigg|\ }
+\begin{aligned}
+  s \in S \ &\mathrm{and}\ f : S_{<s} \cup \{s\} \to Z \\
+  &\mathrm{and}\ f(s) = g(s)(f|_{< s})
+\end{aligned}\right\}
+\]
+
+Докажем индуктивно, что \( (\forall s \in S)\ (\exists f)\enspace (s, f) \in U \).
+
+\begin{enumerate}
+\item Если \( s = \operatorname{min} S \), то \( f|_{< s} : \varnothing \to B \),
+и выражение \( g(s)(f|_{< s}) \) определено однозначно
+
+\item Если \( (s, f) \in U \), то \( (succ(s), f_+) \in U \), где
+\[
+f_+(x) = \begin{cases}
+f(x) &x < s \\
+g(s)(f) &x = s
+\end{cases}
+\]
+
+\item Пусть \( (\forall s < \lambda)\ (\exists f_s)\enspace (s, f_s) \in U \).
+Определим функцию \( f_{<\lambda} : S_{<\lambda} \to Z \) следующим образом:
+
+\[
+f_{<\lambda}(s) = f_s(s) \qquad (s, f_s) \in U
+\]
+
+Тогда \( (\lambda, f_\lambda) \in U \), где
+\[
+f_\lambda(s) = \begin{cases}
+f_{<\lambda}(s) &s < \lambda  \\
+g(s)(f_{<\lambda}) &s = \lambda
+\end{cases}
+\]
+\end{enumerate}
+
+Доказав, что множество \( U \) содержит все частично определённые функции,
+мы можем определить искомую функцию \( f \) как
+
+\[
+f(s) = f_s(s) \qquad (s, f_s) \in U
+\]
+\end{proof}
+
+\subsection{Индуктивные типы}
+
+В программировании у нас есть такая замечательная вещь, как алгебраические типы данных. В математике
+же так не принято, однако многие вещи проще и естественнее выражать рекурсивно, так что имеет смысл
+ввести аналог алгебраических типов в математике.
+
+Для начала, нам потребуются типы-суммы. Их аналогом в математике является размеченное объединение:
+
+\marg{
+Чаще его обозначают как \( A \sqcup B \). Но мы пишем \( + \)
+чтобы подчеркнуть связь с \( \times \).
+}
+\[
+S_1 + \dots + S_n = \hspace{-0.7em}\bigcup_{i \in \{0, \dots, n\}} \hspace{-0.7em}(\{i\} \times A)
+\]
+
+Размеченными объединениями неудобно пользоваться без имён, так что стоит заимстововать искусство
+давать вещам имена из программирования.
+
+Запись \( S = (left: A) + (right: B) \) означает, что \( S = A + B \)
+и при этом определены следующие функции в \( S \):
+
+\begin{align*}
+left(a) &= (0, a) \\
+right(b) &= (1, b)
+\end{align*}
+
+Аналогично, запись \( S = (first: A) \times (second: B) \) означает,
+что \( S = A \times B \) и при этом определены следующие функции из \( S \):
+
+\begin{align*}
+first((x, y)) &= x \\
+second((x, y)) &= y
+\end{align*}
+
+Элемент сооветствующего множества мы будем обозначать или как \( (first = a, second = b) \),
+или просто как \( (a, b) \).
+
+Как и произведения, размеченные объединения обладают универсальным свойством.
+
+\begin{prop*}
+пусть \( f : A \to Z \) и \( g : B \to Z \). Тогда существует
+единственная стрелка \( u : (i_1: A) + (i_2: B) \to Z \), такая, что следующая диаграмма коммутирует:
+
+% https://q.uiver.app/?q=WzAsNCxbMywxLCJBK0IiXSxbMywzLCJaIl0sWzAsMCwiQSJdLFs2LDAsIkIiXSxbMiwwLCJpXzEiXSxbMywwLCJpXzIiLDJdLFsyLDEsImYiLDJdLFszLDEsImciXSxbMCwxLCJ1IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+\[\begin{tikzcd}
+	A &&&&&& B \\
+	&&& {A+B} \\
+	\\
+	&&& Z
+	\arrow["{i_1}", from=1-1, to=2-4]
+	\arrow["{i_2}"', from=1-7, to=2-4]
+	\arrow["f"', from=1-1, to=4-4]
+	\arrow["g", from=1-7, to=4-4]
+	\arrow["u"{description}, dashed, from=2-4, to=4-4]
+\end{tikzcd}\]
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Действительно, единственной такой функция является следующая:
+
+\[
+u(s) = \begin{cases}
+f(a) &s = (0, a) \\
+g(b) &s = (1, b)
+\end{cases}
+\]
+\end{proof}
+
+Мы не можем выразить рекурсивные суммы прямо, так как схема построения классов не допускает рекурсии.
+Но мы можем построить их итеративно.
+
+Например, рассмотрим выражение
+
+\[
+T(A) = (leaf: A) + (node: T(A) \times T(A))
+\]
+
+Сначала мы строим множество, содержащее только нерекурсивные части этого выражения:
+
+\[
+T_0(A) = \{0\} \times A
+\]
+
+Затем мы определяем функцию, подставляющую данное множество в формальное определение \( T \):
+
+\[
+\tau(A)(T) = (\{0\} \times A) \cup (\{1\} \times (T(A) \times T(A)))
+\]
+
+И определяем \( T \) как:
+
+\[
+T(A) = \bigcup_{n \in \Bbb N} T_n(A) \qquad T_n(A) = \tau(A)^{n} (T_0(A))
+\]
+
+Уровень элемента \( t \in T(A) \) определим как
+
+\[
+lvl(t) = \min\,\{n \in \Bbb N \mid t \in T_n(A)\}
+\]
+
+Уровень элемента позволяет определять рекурсивные функции на рекурсивно определённом множестве. Например,
+пусть мы хотим определить функцию \( sum: T(\Bbb Z) \to \Bbb Z \), складывающую все листья
+дерева. Для этого мы сначала определяем функцию \( s: (n \in \Bbb N) \to T_n(\Bbb Z) \to \Bbb Z \) следующим образом:
+
+\[
+s(n) = \begin{cases}
+leaf(l) &\mapsto l \\
+node(x, y) &\mapsto s(n - 1)(x) + s(n - 1)(y) 
+\end{cases}
+\]
+
+И затем определяем искомую функцию как
+
+\[
+sum(t) = s(lvl(t))(t)
+\]
+
+Кроме функций, мы можем также рекурсивно определять отношения, рассматривая их как
+функции \( S \times S \to \bm 2 \). При этом уровень
+элемента \( (a, b) \in S \times S \) равен \( lvl(a) + lvl(b) \).
+
+\marg{Здесь мы переключаемся с «отношение как функция» на «отношение как подмножество произведения».
+Хотя формально подмножества и функции в \( \bm 2 \) это различные вещи, между
+ними существует взаимно однозначное соответствие.}
+Пусть \( R : S \times S \to \bm 2 \) — некоторое отношение на множестве \( S \).
+Мы можем определить соответствующее отношение эквивалентности \( \sim_R \) следующим образом:
+
+\begin{align*}
+R_{sim} &= R \cup R^{\mathrm T} \cup (=) \\
+\sim_R &= \left\{(x, y) \in S \times S \mid
+(\exists z \in S)\enspace R_{sim}(x, z) \mathbin\mathrm{and} R_{sim}(z, y)
+\right\}
+\end{align*}
+
+Здесь \( R^{\mathrm T} = \{(y, x) \mid (x, y) \in R\} \).
+
+\begin{prop*}
+\( \sim_R \) это наименьшее отношение эквивалентности, такое, что
+\( (\forall x, y \in S)\enspace R(x, y) \implies x \sim_R y \).
+\end{prop*}
+
+\begin{proof}[\unskip\indent\nopunct]
+Пусть \( \approx \) — некоторое другое отношение эквивалентности,
+такое что \( (\forall x, y \in S)\enspace R(x, y) \implies x \approx y \). Покажем,
+что \( (\sim_R) \subseteq (\approx) \).
+
+\begin{enumerate}
+\item \( x \approx x \), так как это отношение эквивалентности
+\item \( R(x, y) \implies x \approx y \mathbin\mathrm{and} y \approx x \)
+\item \( x \approx z \mathbin\mathrm{and} z \approx y \implies x \approx y \)
+\end{enumerate}
+\end{proof}
+
+\subsection{Моноиды}
+
+Моноид это тройка \( (set = M, mul = (\cdot), unit = e) \),
+где \( M \) — множество, \( (\cdot): M \times M \to M \), а \( e \in M \).
+При этом должны выполняться следующие аксиомы:
+
+\begin{align*}
+(\forall m \in M)\enspace &e \cdot m = m \cdot e = m \\
+(\forall m, n, p \in M)\enspace (&m \cdot n) \cdot p = m \cdot (n \cdot p)
+\end{align*}
+
+Первая аксиома это аксиома единицы, когда же вторая — ассоциативность.
+
+Примеры моноидов:
+
+- Сложение и умножение чисел
+- Конкатенация строк
+- Объединение и пересечение множеств
+- Умножение матриц n × n
+- Композиция функций \( S \to S \)
+- И многое, многое другое
+
+Как и для упорядоченных множеств, мы будем писать \( m \in M \) имея в виду \( m \in set(M) \).
+
+Элемент \( m^{-1} \in M \) называется обратным к \( m \) если \( m \cdot m^{-1} = m^{-1} \cdot m = e \).
+Моноид, каждый элемент которого обратим, называется группой.
+
+Аксиомы моноида не просто так похожи на свойства композиции функций: каждому \( m \in M \)
+можно сопоставить соответствующую функцию из \( set(M) \) в \( set(M) \):
+
+\[
+f_m = \_ \cdot m
+\]
+
+Умножению элементов \( m \cdot n \) соответствует композиция функций \( f_m \mathbin{\bm;} f_n \).
+
+Гомоморфизм из моноида \( M^{(\cdot)} \) в моноид \( N^{(*)} \) это
+тройка \( (dom = M^{(\cdot)}, cod = N^{(*)}, set = f) \), где \( f : M \to N \), для которой верно следующее:
+
+\begin{align*}
+f(unit(M^{(\cdot)})) &= unit(N^{(*)}) \\
+f(x \cdot y) &= f(x) * f(y) \qquad (\forall x, y \in M)
+\end{align*}
+
+Как и для отношения принадлежности, мы пишем \( f(m) \) имея в ввиду \( set(f)(m) \).
+
+Гомоморфизм переносит равенства из одного моноида в другой.
+Например, в случае \( (\_ \bmod 12) : \Bbb Z^{+} \to \Bbb Z^{+}/12 \):
+
+\[
+6 + 13 - 16 = 3 \implies 6 +_{12} 1 +_{12} 8 = 3
+\]
+
+В отличие от упорядоченных множеств, биективный гомоморфизм моноидов обратим.
+
+**Предложение:** пусть \( f : M^{(\cdot)} \to N^{(*)} \) — гомоморфизм, такой, что \( set(f) \) — биекция.
+Тогда \( (N^{(*)}, M^{(\cdot)}, set(f)^{-1}) \) также является гомоморфизмом.
+
+В самом деле:
+
+\begin{align*}
+f^{-1}(unit(N^{(*)})) &= unit(M^{(\cdot)}) \\
+f^{-1}(f(x \cdot y)) &= x \cdot y \\
+&= f^{-1}(f(x) * f(y))
+\end{align*}
+
+Подставив \( x = f^{-1}(\xi) \) и \( y = f^{-1}(\eta) \) во второе
+уравнение, получаем:
+
+\[
+f^{-1}(\xi * \eta) = f^{-1}(\xi) \cdot f^{-1}(\eta)
+\]
+
+Тривиальный моноид это моноид, содержащий только лишь нейтральный элемент:
+\[bm 1 = (\{e\}, {\cdot}, e)\]
+
+Как и в случае со множествами, каждому моноиду \( M \) соответствует единственный
+гомоморфизм из \( M \) в \( \bm 1 \). Однако, гомоморфизм из \( \bm 1 \)
+в \( M \) также единственнен.
+
+Прямое произведение моноидов \( M^{(\cdot)} \) и \( N^{(*)} \) это
+моноид \( M^{(\cdot)} \times N^{(*)} \), определённый следующим образом:
+
+\begin{align*}
+M^{(\cdot)} \times N^{(*)} = (
+  &M \times N, \\
+  &((a, x), (b, y)) \mapsto (a \cdot b, x * y), \\
+  &(unit(M), unit(N))
+)
+\end{align*}
+
+Для прямого произведения \( M\times N \) определены проекции в \( M \)
+и \( N \):
+
+\begin{align*}
+\pi_1((a, x)) = a \\
+\pi_2((a, x)) = x
+\end{align*}
+
+Для любых моноидов \( M \), \( N \) и \( P \) верно:
+
+\begin{align*}
+M \times \bm 1 &\cong M \\
+M \times N &\cong N \times M \\
+(M \times N) \times P &\cong M \times (N \times P)
+\end{align*}
+
+Произведение моноидов обладает тем же универсальным свойством, что и произведение упорядоченных множеств:
+
+% https://q.uiver.app/?q=WzAsNCxbMywwLCJYIl0sWzMsMiwiTVxcdGltZXMgTiJdLFswLDMsIk0iXSxbNiwzLCJOIl0sWzAsMSwidSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImRhc2hlZCJ9fX1dLFsxLDIsIlxccGlfMSJdLFsxLDMsIlxccGlfMiIsMl0sWzAsMywiZyJdLFswLDIsImYiLDJdXQ==
+\[\begin{tikzcd}
+	&&& X \\
+	\\
+	&&& {M\times N} \\
+	M &&&&&& N
+	\arrow["u", dashed, from=1-4, to=3-4]
+	\arrow["{\pi_1}", from=3-4, to=4-1]
+	\arrow["{\pi_2}"', from=3-4, to=4-7]
+	\arrow["g", from=1-4, to=4-7]
+	\arrow["f"', from=1-4, to=4-1]
+\end{tikzcd}\]
+
+Действительно, есть лишь один способ построить такой гомоморфизм:
+\[
+u(x) = (f(x), g(x))
+\]
+
+Как и среди упорядоченных множеств, среди моноидов есть свободные. Однако, свободный моноид определяется
+уже не столь тривиально.
+
+Основная идея проста: если мы не знаем, что такое \( x \cdot y \), так пусть *само
+выражение* и будет элементом! Конкретно, пусть \( S \) — множество. Определим
+множество \( F \) следующим образом:
+
+\[
+F = (e: \bm 1) + (val: S) + ((\cdot): F \times F)
+\]
+
+Это множество можно рассматривать как своего рода синтаксическое дерево, в листьях которого либо
+нейтральный элемент, либо элементы множества \( S \).
+
+Чтобы превратить \( F \) в моноид, определим наименьшее отношение эквивалентности, соответствующее следующим условиям:
+
+\begin{align*}
+e \cdot x &\sim x \\
+x \cdot e &\sim x \\
+(x \cdot y) \cdot z &\sim x \cdot (y \cdot z) \\
+\end{align*}
+\qquad
+\begin{align*}
+x \sim y &\implies x \cdot z \sim y \cdot z \\
+y \sim z &\implies x \cdot y \sim x \cdot z \\
+\,
+\end{align*}
+
+Взяв фактор-множество, получаем свободный моноид:
+
+\begin{align*}
+Free(S) = (
+  &F/{\sim},\\
+  &([a]_\sim, [b]_\sim) \mapsto [a \cdot b]_\sim,\\
+  &e
+)
+\end{align*}
+
+Моноиды, изоморфные \( Free(S) \), также называются называется свободными. Примеры:
+
+- (`List[T]`, `concat`, `[]`)
+- (`String`, `concat`, `""`)
+- \( \Bbb N^{+} \)
+
+Но чтобы по праву называть \( Free(S) \) свободным моноидом, нужно доказать, что
+выполняется соответствующее универсальное свойство:
+
+% https://q.uiver.app/?q=WzAsMyxbMCwwLCJTIl0sWzIsMCwic2V0KEZyZWUoUykpIl0sWzIsMiwic2V0KE0pIl0sWzEsMiwic2V0KHUpIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMSwiaSJdLFswLDIsImYiLDJdXQ==
+\[\begin{tikzcd}
+	S && {set(Free(S))} \\
+	\\
+	&& {set(M)}
+	\arrow["{set(u)}", dashed, from=1-3, to=3-3]
+	\arrow["i", from=1-1, to=1-3]
+	\arrow["f"', from=1-1, to=3-3]
+\end{tikzcd}\]
+
+Здесь \( i \) это естественное вложение \( S \) в \( set(Free(S)) \):
+
+\[
+i(s) = [val(s)]_\sim
+\]
+
+Каждой функции \( u : F/{\sim} \to set(M) \) взаимно однозначно соответствует
+функция \( \tilde u : F \to set(M) \), такая, что \( (\forall x \in F)\enspace \tilde u(x) = u([x]_\sim) \).
+При этом если \( x \sim y \), то \( \tilde u(x) = \tilde u(y) \).
+
+Но существует лишь одна такая функция \( \tilde u \), удволетворяющая одновременно и
+условиям коммутативности диаграммы, и определению гомоморфизма:
+
+\[
+\tilde u = \begin{cases}
+e &\mapsto unit(M) \\
+val(s) &\mapsto f(s) \\
+x \cdot y &\mapsto mul(M)(\tilde u(x), \tilde u(y))
+\end{cases}
+\]
+
+Можно легко проверить, что в самом деле \( x \sim y \implies \tilde u(x) = \tilde u(y) \).
+
+Добавляя к отношению эквивалентности свободного моноида дополнительные условия, мы можем получать
+другие моноиды. Например, пусть \( Z = \{s, p\} \) и пусть \( \sim_Z \)
+удволетворяет и условиям свободного моноида, и следующим условиям:
+
+\begin{align*}
+val(s) \cdot val(p) \sim_Z e \\
+val(p) \cdot val(s) \sim_Z e
+\end{align*}
+
+Тогда соответствующий моноид \( F/{\sim_Z} \) изоморфен моноиду целых чисел по сложению.
+Соответствующий изоморфизм нетрудно определить:
+
+\[
+f = \begin{cases}
+[e]_{\sim_Z} &\mapsto 0 \\
+[\underbrace{val(s) \cdot val(s) \cdot \dots}_n]_{\sim_Z} &\mapsto n \\
+[\underbrace{val(p) \cdot val(p) \cdot \dots}_n]_{\sim_Z} &\mapsto -n \\
+\end{cases}
+\]
+
+Других классов эквивалентности \( F/{\sim_Z} \) не содержит,
+так как \( s \) и \( p \) взаимно уничтожают друг друга.
+
+Подобное построение называется заданием моноида и записывается так:
+
+\[\langle s, p \mid s \cdot p = p \cdot s = e \rangle\]
+
+Кроме произведений и свободного моноида, мы можем определить аналог размеченного объединения для моноидов.
+Пусть \( M \) и \( N \) — моноиды. Определим множество \( P \)
+следующим образом:
+
+\begin{align*}
+P &= (e : \bm 1) \\
+{} &+ (i_1 : set(M) \setminus \{ unit(M)\}) \\
+{} &+ (i_2 : set(N) \setminus \{ unit(N)\}) \\
+{} &+ ((\cdot) : P \times P)
+\end{align*}
+
+Затем определим отношение эквивалентности \( \sim \), как наименьшее отношение,
+удволетворяющее условиям свободного моноида вместе со следующими условиями:
+
+\begin{align*}
+i_1(x) \cdot i_1(y) &\sim i_1(mul(M)(x, y)) \\
+i_2(x) \cdot i_2(y) &\sim i_2(mul(N)(x, y)) \\
+\end{align*}
+
+И затем определяем искомый моноид как
+
+\begin{align*}
+M * N = (
+  &P/{\sim},\\
+  &([a]_\sim, [b]_\sim) \mapsto [a \cdot b]_\sim,\\
+  &e
+)
+\end{align*}
+
+Этот моноид называется *свободным произведением* моноидов \( M \) и \( N \). Покажем, что он соответствует универсальному свойству для суммы:
+
+% https://q.uiver.app/?q=WzAsNCxbMywxLCJNKk4iXSxbMywzLCJaIl0sWzAsMCwiTSJdLFs2LDAsIk4iXSxbMiwwLCJpXzEiXSxbMywwLCJpXzIiLDJdLFsyLDEsImYiLDJdLFszLDEsImciXSxbMCwxLCJ1IiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+\[\begin{tikzcd}
+	M &&&&&& N \\
+	&&& {M*N} \\
+	\\
+	&&& Z
+	\arrow["{i_1}", from=1-1, to=2-4]
+	\arrow["{i_2}"', from=1-7, to=2-4]
+	\arrow["f"', from=1-1, to=4-4]
+	\arrow["g", from=1-7, to=4-4]
+	\arrow["u"{description}, dashed, from=2-4, to=4-4]
+\end{tikzcd}\]
+
+Действительно:
+
+\[
+u = \begin{cases}
+[e]_\sim &\mapsto unit(Z) \\
+[i_1(x)]_\sim &\mapsto f(x) \\
+[i_2(x)]_\sim &\mapsto g(x) \\
+[x \cdot y]_\sim &\mapsto mul(Z)(u(x), u(y))
+\end{cases}
+\]
+
+И снова единственность \( u \) следует из коммутативности диаграммы и определения гомоморфизма.
+
+\section{Категории}
+
+\subsection{Виды стрелок}
+\subsection{Функторы}
+\subsection{Стрелки из объекта в функтор}
+
+\section{Пределы}
+
+\subsection{Начальные и терминальные объекты}
+\subsection{Произведение и копроизведение}
+\subsection{Расслоёное произведение и сумма}
+\subsection{Пределы и копределы}
+
+\section{Естественные преобразования}
+
+\subsection{2-категории}
+
+\section{Функтор hom}
+
+\subsection{Представимые функторы}
+\subsection{Вложение Йонеды}
+
+\section{Сопряжённые функторы}
+\section{Монады}
+
+\end{document}
